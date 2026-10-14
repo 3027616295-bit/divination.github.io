@@ -126,18 +126,6 @@ body::after {
 /* Pick view: deck + spread below */
 .pick-info { text-align: center; margin-bottom: 16px; font-size: 15px; color: var(--ink-light); }
 .pick-info span { color: var(--sage-deep); font-weight: 600; }
-.question-box {
-  max-width: 560px; margin: 0 auto 18px; background: #fff;
-  border: 1px dashed var(--sage); border-radius: 14px; padding: 14px 18px;
-}
-.question-box label { font-size: 14px; font-weight: 600; color: var(--sage-deep); display: block; }
-.question-box input {
-  width: 100%; margin-top: 8px; padding: 10px 14px; border: 1px solid var(--sage-light);
-  border-radius: 10px; font-size: 14px; font-family: inherit; background: var(--cream);
-  color: var(--ink); outline: none;
-}
-.question-box input:focus { border-color: var(--sage); box-shadow: 0 0 0 3px rgba(122,153,124,.15); }
-.question-hint { font-size: 11px; color: var(--ink-light); margin-top: 6px; }
 .deck-grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
   gap: 8px; justify-items: center; padding: 10px 0 30px;
@@ -263,11 +251,154 @@ body::after {
   .pick-slot { width: 85px; height: 123px; }
   .lightbox-card .lb-img { width: 200px; height: 289px; }
 }
+
+/* ===== Sidebar ===== */
+.sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0; width: 170px; z-index: 90;
+  background: linear-gradient(180deg, #f3ece2, #f7f1e8);
+  border-right: 1px solid var(--sage-light);
+  display: flex; flex-direction: column; align-items: center; padding: 24px 10px;
+  box-shadow: 2px 0 14px var(--shadow);
+  transition: transform .3s ease;
+}
+.side-logo {
+  font-family: 'Ma Shan Zheng', 'Noto Serif SC', cursive;
+  font-size: 26px; color: var(--sage-deep); letter-spacing: 2px;
+  cursor: pointer; margin-bottom: 8px; user-select: none;
+}
+.side-logo small { display:block; font-family:'Noto Serif SC'; font-size:10px; letter-spacing:3px; color:var(--gold); }
+.side-item {
+  display: block; width: 100%; text-align: center; padding: 11px 6px; margin: 4px 0;
+  color: var(--ink); text-decoration: none; font-size: 14px; border-radius: 12px;
+  transition: all .2s; border: 1px solid transparent;
+}
+.side-item:hover { background: var(--sage-light); border-color: var(--sage); }
+.side-item.on { background: var(--sage); color: #fff; }
+.app { padding-left: 190px; transition: padding-left .3s ease; }
+.nav-btn { display: none; }
+/* Sidebar toggle */
+.side-toggle {
+  position: fixed; top: 16px; left: 16px; z-index: 96;
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--sage-light); border: 1px solid var(--sage-deep);
+  color: var(--ink); font-size: 17px; line-height: 1; cursor: pointer;
+  box-shadow: 0 2px 8px var(--shadow); display: flex; align-items: center; justify-content: center;
+  transition: all .25s;
+}
+.side-toggle:hover { background: var(--sage); color: #fff; }
+.side-toggle.on { left: 180px; background: var(--sage); color: #fff; }
+body.side-hidden .sidebar { transform: translateX(-100%); }
+body.side-hidden .app { padding-left: 10px; }
+body.side-hidden .side-toggle.on { left: 16px; background: var(--sage-light); color: var(--ink); }
+
+/* ===== Card Reference (牌义速查) ===== */
+.cat-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 20px auto 24px; }
+.cat-tab {
+  padding: 8px 18px; border-radius: 20px; border: 1px solid var(--sage);
+  background: #fff; color: var(--sage-deep); font-family: inherit; font-size: 13px;
+  cursor: pointer; transition: all .2s;
+}
+.cat-tab:hover { background: var(--sage-light); }
+.cat-tab.on { background: var(--sage); color: #fff; }
+.card-ref-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 14px; padding: 0 10px 30px; max-width: 980px; margin: 0 auto;
+}
+.card-ref-item { text-align: center; cursor: pointer; transition: all .2s; }
+.card-ref-item:hover { transform: translateY(-4px); }
+.card-ref-item .ref-img {
+  width: 96px; height: 139px; margin: 0 auto; border-radius: 6px;
+  background-size: 100% 100%; background-repeat: no-repeat; background-position: center;
+  border: 2px solid #fff; box-shadow: 0 3px 10px var(--shadow);
+}
+.card-ref-item .ref-name { font-size: 11px; margin-top: 6px; color: var(--ink); }
+.card-ref-item .ref-en { font-size: 9px; color: var(--ink-light); }
+
+/* Card detail modal */
+.cd-modal { display:none; position:fixed; inset:0; z-index:320; background:rgba(61,53,48,0.6); backdrop-filter:blur(4px); justify-content:center; align-items:center; padding:20px; }
+.cd-modal.show { display:flex; }
+.cd-box { background:var(--cream); border-radius:16px; max-width:640px; width:100%; max-height:88vh; overflow-y:auto; padding:28px; border:1px solid var(--sage); }
+.cd-top { display:flex; gap:20px; align-items:flex-start; }
+.cd-img { width:150px; height:217px; border-radius:8px; background-size:100% 100%; background-repeat:no-repeat; border:2px solid #fff; box-shadow:0 6px 20px var(--shadow); flex-shrink:0; transition: transform .4s ease; }
+.cd-head h3 { font-size:22px; color:var(--sage-deep); letter-spacing:2px; }
+.cd-head .cd-en { color:var(--ink-light); font-size:12px; margin:4px 0 10px; letter-spacing:1px; }
+.ori-tabs { display:flex; gap:8px; margin-bottom:12px; }
+.ori-tab { padding:6px 16px; border-radius:16px; border:1px solid var(--sage); background:#fff; font-family:inherit; font-size:13px; cursor:pointer; color:var(--ink); }
+.ori-tab.on { background:var(--sage-deep); color:#fff; }
+.cd-dims { width:100%; }
+.cd-dim { background:#fff; border:1px solid var(--sage-light); border-radius:10px; padding:10px 14px; margin-bottom:8px; font-size:13px; line-height:1.7; }
+.cd-desc { background:linear-gradient(135deg,#fff,var(--sage-light)); border:1px solid var(--sage); border-radius:10px; padding:12px 14px; margin-bottom:10px; font-size:13px; line-height:1.8; }
+.cd-desc b { color:var(--sage-deep); display:block; margin-bottom:6px; }
+.cd-desc p { margin:0; color:var(--ink); }
+.cd-el-wrap { background:var(--cream); border:1px dashed var(--sage); border-radius:10px; padding:12px 14px; margin-top:4px; font-size:13px; line-height:1.7; }
+.cd-el-wrap b { color:var(--sage-deep); display:block; margin-bottom:6px; }
+.cd-el { display:flex; gap:6px; padding:3px 0; color:var(--ink); }
+.cd-el-dot { color:var(--gold); font-weight:700; }
+.cd-dim b { color:var(--sage-deep); margin-right:6px; }
+.cd-close { display:block; margin:20px auto 0; padding:9px 36px; background:var(--sage); color:#fff; border:none; border-radius:22px; font-family:inherit; font-size:14px; cursor:pointer; }
+.cd-close:hover { background:var(--sage-deep); }
+
+/* ===== Question input (自定义问题) ===== */
+.question-box { max-width:560px; margin:0 auto 20px; background:#fff; border:1px solid var(--sage-light); border-radius:14px; padding:18px 20px; text-align:center; }
+.question-box label { font-size:14px; color:var(--sage-deep); font-weight:600; letter-spacing:2px; }
+.question-box input {
+  width:100%; margin-top:10px; padding:11px 14px; border:1px solid var(--sage); border-radius:10px;
+  font-family:inherit; font-size:14px; background:var(--cream); color:var(--ink); outline:none;
+}
+.question-box input:focus { border-color:var(--sage-deep); box-shadow:0 0 0 3px rgba(168,197,184,.3); }
+.question-box .q-hint { font-size:11px; color:var(--ink-light); margin-top:8px; }
+
+/* ===== Knowledge Library (塔罗知识小馆) ===== */
+.lib-wrap { max-width:900px; margin:0 auto; padding:0 10px 40px; }
+.lib-section { background:#fff; border:1px solid var(--sage-light); border-radius:14px; padding:24px; margin-bottom:20px; }
+.lib-section h3 { color:var(--sage-deep); font-size:18px; letter-spacing:2px; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+.lib-section h3 .dot { width:10px; height:10px; border-radius:50%; background:var(--gold); display:inline-block; }
+.lib-section p, .lib-section li { font-size:14px; line-height:1.9; color:var(--ink-light); }
+.lib-section ul { padding-left:20px; }
+.element-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(190px,1fr)); gap:14px; }
+.element-card { background:var(--cream); border:1px solid var(--sage-light); border-radius:12px; padding:16px; }
+.element-card .el-sym { font-size:26px; margin-bottom:6px; }
+.element-card h4 { color:var(--sage-deep); font-size:15px; margin-bottom:6px; }
+.element-card p { font-size:12px; line-height:1.7; color:var(--ink-light); }
+@media (max-width: 768px) {
+  .sidebar { width:100%; height:auto; top:0; bottom:auto; flex-direction:row; justify-content:flex-start; overflow-x:auto; padding:8px 10px; gap:4px; }
+  .side-logo { margin:0 8px 0 0; font-size:20px; white-space:nowrap; }
+  .side-logo small { display:none; }
+  .side-item { width:auto; padding:7px 12px; margin:0; white-space:nowrap; font-size:12px; }
+  .app { padding-left:10px; padding-top:64px; }
+  .side-toggle.on { left: 16px; }
+  .cd-top { flex-direction:column; align-items:center; text-align:center; }
+  .cd-dims { width:100%; }
+}
+
+/* ===== Click FX (爪印点击特效) ===== */
+.click-fx {
+  position: fixed; z-index: 9998; pointer-events: none;
+  width: 84px; height: auto;
+  opacity: 0; rotate: var(--fxRot, 0deg);
+  transform: translate(-50%, -50%) scale(.4);
+  animation: fxPop .65s ease-out forwards;
+}
+@keyframes fxPop {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(.4); }
+  15%  { opacity: .78; }
+  100% { opacity: 0; transform: translate(-50%, -58%) scale(1.25); }
+}
 </style>
 </head>
 <body>
 
-<button class="nav-btn" onclick="location.hash='home'">回到首页</button>
+<!-- ===== Sidebar ===== -->
+<button class="side-toggle on" id="sideToggle" onclick="toggleSidebar()" title="收起/展开菜单">☰</button>
+<nav class="sidebar" id="sidebarNav">
+  <div class="side-logo" onclick="location.hash='home'">🦊<small>狐狐占卜</small></div>
+  <a class="side-item" data-target="home" href="#home">首页</a>
+  <a class="side-item" data-target="spreads" href="#spreads">开始占卜</a>
+  <a class="side-item" data-target="horoscope" href="#horoscope">星座运势</a>
+  <a class="side-item" data-target="cards" href="#cards">牌义速查</a>
+  <a class="side-item" data-target="library" href="#library">塔罗知识小馆</a>
+</nav>
+
 <button class="notice-btn" onclick="openNotice()">占卜须知</button>
 
 <div class="modal-overlay" id="noticeModal">
@@ -311,9 +442,9 @@ body::after {
     <h2 class="view-title" id="pickTitle">抽牌</h2>
     <p class="pick-info">请凭直觉抽取 <span id="pickCount">0</span> 张牌（已抽取 <span id="pickedCount">0</span> 张）</p>
     <div class="question-box">
-      <label for="questionInput">💭 你的问题（可选）</label>
-      <input type="text" id="questionInput" placeholder="例如：我和TA的感情会如何发展？" maxlength="60">
-      <p class="question-hint">填写后，解读会结合你的问题语境呈现；留空则按通用解读</p>
+      <label>✧ 你的问题（可选）</label>
+      <input type="text" id="questionInput" placeholder="例如：我和TA的感情接下来会如何发展？" maxlength="60">
+      <div class="q-hint">填写后，解读结果会结合你的问题语境呈现，更具针对性；不填写则使用通用解读。</div>
     </div>
     <div class="deck-grid" id="deckGrid"></div>
     <div class="pick-spread-section">
@@ -358,6 +489,72 @@ body::after {
     <div class="overall-reading" id="horoResult"></div>
     <button class="again-btn" onclick="location.hash='home'">返回首页</button>
   </section>
+
+  <!-- CARD REFERENCE (牌义速查) -->
+  <section class="page" id="cards">
+    <h2 class="view-title">牌义速查</h2>
+    <p class="view-desc">点击任意一张牌，查看正位 · 逆位与四个维度的详细释义</p>
+    <div class="cat-tabs" id="catTabs"></div>
+    <div class="card-ref-grid" id="cardRefGrid"></div>
+  </section>
+
+  <!-- KNOWLEDGE LIBRARY (塔罗知识小馆) -->
+  <section class="page" id="library">
+    <h2 class="view-title">塔罗知识小馆</h2>
+    <p class="view-desc">了解四元素 · 牌组含义 · 牌阵使用技巧</p>
+    <div class="lib-wrap">
+      <div class="lib-section">
+        <h3><span class="dot"></span>四元素与塔罗</h3>
+        <p>塔罗牌的四组小牌对应四大元素，它们构成了世间万物运行的基本能量。理解四元素，就掌握了塔罗牌的底层语言。</p>
+        <div class="element-grid">
+          <div class="element-card">
+            <div class="el-sym">🔥</div>
+            <h4>火元素 · 权杖组</h4>
+            <p>代表行动、热情、创造力与生命力。火是向外燃烧的能量，与事业、冒险、激情相关。权杖多时，事情需要主动出击。</p>
+          </div>
+          <div class="element-card">
+            <div class="el-sym">💧</div>
+            <h4>水元素 · 圣杯组</h4>
+            <p>代表情感、直觉、关系与潜意识。水是流动的、滋养的能量，与爱情、感受、人际相关。圣杯多时，用心去感受而非用脑。</p>
+          </div>
+          <div class="element-card">
+            <div class="el-sym">🌬️</div>
+            <h4>风元素 · 宝剑组</h4>
+            <p>代表思维、沟通、真相与冲突。风是锋利而理性的能量，与思考、决策、言语相关。宝剑多时，注意表达方式与逻辑判断。</p>
+          </div>
+          <div class="element-card">
+            <div class="el-sym">🌍</div>
+            <h4>土元素 · 星币组</h4>
+            <p>代表物质、金钱、身体与现实。土是稳定而丰饶的能量，与财富、工作、健康相关。星币多时，脚踏实地才是关键。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lib-section">
+        <h3><span class="dot"></span>牌组含义</h3>
+        <ul>
+          <li><strong style="color:var(--sage-deep);">大阿卡纳（22张）</strong>：讲述"愚者之旅"——从愚者出发，经历世界，完成一场灵魂成长的旅程。大牌代表人生的重要课题、转折与深层能量，抽到大牌往往意味着此事非同小可。</li>
+          <li><strong style="color:var(--sage-deep);">权杖组（14张）</strong>：火之牌，关乎行动与热情。问事业、创业、竞争类问题时尤其重要。</li>
+          <li><strong style="color:var(--sage-deep);">圣杯组（14张）</strong>：水之牌，关乎情感与关系。问感情、友情、家庭类问题时重点参考。</li>
+          <li><strong style="color:var(--sage-deep);">宝剑组（14张）</strong>：风之牌，关乎思维与冲突。问决策、沟通、学业、纠纷类问题时值得留意。</li>
+          <li><strong style="color:var(--sage-deep);">星币组（14张）</strong>：土之牌，关乎物质与现实。问财运、工作、房产、健康类问题时的核心参考。</li>
+        </ul>
+        <p style="margin-top:10px;">四组牌与宫廷牌（国王、皇后、骑士、侍从）共同构成小阿卡纳，描绘具体生活场景中的能量显化。</p>
+      </div>
+
+      <div class="lib-section">
+        <h3><span class="dot"></span>牌阵使用技巧</h3>
+        <ul>
+          <li><strong style="color:var(--sage-deep);">按问题选牌阵</strong>：问简单现状选"三张牌"；问事情发展选"时间流"；问感情选"恋人金字塔""爱情十字"；两个选择纠结时用"二选一"；想全面看问题用"六芒星"。</li>
+          <li><strong style="color:var(--sage-deep);">提问要具体</strong>：好的问题是一句完整、具体、聚焦当下的句子，例如"我和TA的关系接下来三个月如何发展"，而不是模糊的"我最近怎么样"。</li>
+          <li><strong style="color:var(--sage-deep);">凭直觉抽牌</strong>：不要反复挑选、不要分析哪张"更好"。深呼吸，放松，让手替你选择，第一眼直觉最准。</li>
+          <li><strong style="color:var(--sage-deep);">结合位置解读</strong>：同一张牌在不同位置含义不同。"过去"位置的逆位死神，与"结果"位置的正位死神，解读重心完全不同。</li>
+          <li><strong style="color:var(--sage-deep);">看整体而非单张</strong>：先看牌面能量构成（哪组牌多）、正逆位比例，再逐张细读，最后整合成一段完整的叙事。</li>
+          <li><strong style="color:var(--sage-deep);">不重复占卜</strong>：同一问题在情况未变时不要反复占卜，尤其避免在焦虑情绪下追问——占卜是当下能量的快照，不是命运的判决书。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
 </div>
 
 <!-- Fixed footer disclaimer -->
@@ -372,6 +569,22 @@ body::after {
     <div class="lb-name" id="lbName"></div>
     <div class="lb-meaning" id="lbMeaning"></div>
     <div class="lb-hint">点击任意处关闭</div>
+  </div>
+</div>
+
+<!-- Card detail modal -->
+<div class="cd-modal" id="cdModal" onclick="if(event.target===this)closeCardDetail()">
+  <div class="cd-box">
+    <div class="cd-top">
+      <div class="cd-img" id="cdImg"></div>
+      <div class="cd-head">
+        <h3 id="cdName"></h3>
+        <div class="cd-en" id="cdEn"></div>
+        <div class="ori-tabs" id="cdTabs"></div>
+      </div>
+    </div>
+    <div class="cd-dims" id="cdDims"></div>
+    <button class="cd-close" onclick="closeCardDetail()">关闭</button>
   </div>
 </div>
 
@@ -484,6 +697,2270 @@ const CARDS = [
   [77,"宝剑骑士","Knight of Swords","快速行动、直接、冲劲、为真理而战","鲁莽、言语伤人、冲动、缺乏耐心"],
 ];
 
+/* ===== 牌义速查详细释义：78张 × (正位/逆位) × (感情/事业/财富/心灵) ===== */
+const CARD_MEANINGS = [
+  // 大阿卡纳 0-21
+  {up:{love:"一段充满新鲜感的关系，勇敢表达心意，享受冒险的快乐。",career:"适合尝试全新领域，大胆迈出第一步，不要怕犯错。",wealth:"新的财务机会正在出现，适合小成本试水、轻装上阵。",spirit:"保持纯真与开放，相信未知的可能，人生是一场冒险。"},
+   rev:{love:"害怕承诺、逃避责任，关系充满不确定性。",career:"计划不成熟，容易冲动决策，三分钟热度。",wealth:"财务规划欠缺，警惕冲动消费与盲目投资。",spirit:"迷失方向，需要停下脚步，找回初心。"}},
+  {up:{love:"主动出击魅力四射，善于表达心意，沟通力强。",career:"才华得以施展，适合展示能力、把握主动权。",wealth:"资源运作灵活，投资眼光精准，手中有牌可打。",spirit:"相信自己拥有创造现实的力量，你就是魔术师。"},
+   rev:{love:"花言巧语缺乏真心，警惕情感操控与画饼。",career:"能力被低估，或自我怀疑导致发挥失常。",wealth:"手段不当，警惕投机取巧带来的陷阱。",spirit:"潜能被封印，需要重建自信，连接内在力量。"}},
+  {up:{love:"凭直觉感知对方心意，感情含蓄而深沉，灵魂共鸣。",career:"适合幕后研究、策略规划，倾听内在指引。",wealth:"静观其变，不急于出手，等待最佳时机。",spirit:"相信直觉，连接内在智慧，答案在静默中浮现。"},
+   rev:{love:"隐藏情绪、回避沟通，对方的心思捉摸不透。",career:"信息不透明，警惕被蒙蔽或错过关键信号。",wealth:"判断失误，忽略隐性成本与风险。",spirit:"与内心失联，被外界噪音淹没，需要回归静默。"}},
+  {up:{love:"关系温暖滋养，充满爱的能量，享受被宠爱的感觉。",career:"项目开花结果，创意落地，收获认可与掌声。",wealth:"财运丰盈，物质生活富足，享受成果。",spirit:"学会接纳与自爱，感受生命的丰盛与美好。"},
+   rev:{love:"过度付出导致关系失衡，或过度依赖对方。",career:"创造力枯竭，进度停滞，灵感难以落地。",wealth:"过度消费，财务失衡，量入为出。",spirit:"忽视自我需求，能量枯竭，先照顾好自己。"}},
+  {up:{love:"关系稳定有担当，给人安全感，值得托付。",career:"领导力显现，掌控大局，秩序井然。",wealth:"财务稳健，善于管理资产与长期规划。",spirit:"建立内在秩序，自律带来真正的自由。"},
+   rev:{love:"控制欲过强，关系紧张，让对方喘不过气。",career:"专断固执，听不进意见，团队心生不满。",wealth:"财务僵化，缺乏弹性，守成有余开拓不足。",spirit:"内在僵化，抗拒柔软与变化，需要松动。"}},
+  {up:{love:"关系得到家人与朋友认可，传统而稳定，细水长流。",career:"遵循规范与流程，获得前辈提携与贵人相助。",wealth:"稳健理财，遵循传统方式，积少成多。",spirit:"在信仰、传统与归属感中找到精神寄托。"},
+   rev:{love:"价值观冲突，观念不合，家庭背景差异显现。",career:"束缚于教条与潜规则，创新受阻。",wealth:"固守旧法，错失新兴机会。",spirit:"质疑旧有信念，开始寻求属于自己的道路。"}},
+  {up:{love:"爱情甜蜜，灵魂契合，面临的重要选择指向真心。",career:"重要合作达成，关键选择正确，双赢开局。",wealth:"合作带来财运，共同投资有回报。",spirit:"追随真心，做出忠于自我的选择，心之所向。"},
+   rev:{love:"关系失衡，面临抉择痛苦，或三角关系困扰。",career:"合作破裂，选错方向，悔不当初。",wealth:"合伙财务纠纷，利益分配不均。",spirit:"内心矛盾，无法抉择，先与自己和解。"}},
+  {up:{love:"主动追求，关系向前推进，克服阻碍走向彼此。",career:"项目推进顺利，目标达成，赢得战役。",wealth:"财运强劲，主动出击有收获，果断决策。",spirit:"意志坚定，驾驭内在冲突，掌控人生方向。"},
+   rev:{love:"感情失控，方向不明，或冲动之下做出决定。",career:"计划受阻，方向迷失，力量分散。",wealth:"冲动投资，风险增大，方向盘不稳。",spirit:"内在矛盾激烈，动力不足，先整合自己。"}},
+  {up:{love:"温柔包容，以柔克刚，用耐心化解关系中的难题。",career:"耐心坚持，化解危机，赢得团队信任。",wealth:"稳步积累，不急于求成，复利效应显现。",spirit:"内在力量强大，情绪平和，温柔而坚定。"},
+   rev:{love:"缺乏自信，患得患失，不敢表达真实需求。",career:"自我怀疑，畏难退缩，错失关键节点。",wealth:"底气不足，机会面前犹豫不决。",spirit:"情绪失控，能量低迷，需要找回内在勇气。"}},
+  {up:{love:"感情需要独处思考，宁缺毋滥，等待对的人。",career:"独自钻研，厚积薄发，静待时机成熟。",wealth:"财务保守，积蓄力量，为未来布局。",spirit:"向内探寻，点亮内在明灯，独处亦是修行。"},
+   rev:{love:"过度孤立，拒绝亲密，把自己封闭起来。",career:"闭门造车，脱离团队，错过合作机会。",wealth:"过于保守，资金闲置，错失增长机会。",spirit:"逃避现实，拒绝成长，把孤独当成借口。"}},
+  {up:{love:"缘分流转，关系迎来重要转机，旧去新来。",career:"时来运转，机会降临，顺势而上。",wealth:"财运上升，把握周期规律，乘势而为。",spirit:"顺应命运之流，臣服于变化，相信安排。"},
+   rev:{love:"缘分波折，聚散无常，关系起伏不定。",career:"运势反复，计划生变，难以掌控。",wealth:"财运不稳，起落不定，避免大额投入。",spirit:"抗拒变化，试图抓住流水，陷入循环。"}},
+  {up:{love:"关系平等坦诚，责任分明，经得起考验。",career:"决策公正，赏罚分明，得到应有的回报。",wealth:"财务透明，账目清晰，合规经营。",spirit:"以诚待人，因果不虚，内心坦荡。"},
+   rev:{love:"关系不公，一方付出失衡，旧账被翻出。",career:"遭遇不公对待，或被误解指责。",wealth:"账务纠纷，警惕不义之财与灰色操作。",spirit:"逃避责任，内心不安，先诚实面对自己。"}},
+  {up:{love:"为爱付出与牺牲，学会换位思考，感情升华。",career:"暂时停滞是蓄力，换个角度看问题有惊喜。",wealth:"放缓节奏，以退为进，调整策略。",spirit:"放下执念，换个视角，获得全新领悟。"},
+   rev:{love:"无谓牺牲，自我感动，付出不被看见。",career:"白白等待，僵持不下，白白消耗时间。",wealth:"资金被套，进退两难，等待解套时机。",spirit:"固执己见，钻牛角尖，需要松动认知。"}},
+  {up:{love:"旧关系画上句号，迎来情感新生，凤凰涅槃。",career:"告别旧模式，转型开始，破茧成蝶。",wealth:"放下旧资产，重新布局，轻装出发。",spirit:"一个阶段彻底结束，蜕变重生，脱胎换骨。"},
+   rev:{love:"藕断丝连，无法放手，消耗彼此。",career:"拖延转型，固守旧路，被时代抛下。",wealth:"死守亏损资产，不愿止损，越陷越深。",spirit:"恐惧改变，停滞不前，卡在过去。"}},
+  {up:{love:"关系和谐，细水长流，节奏舒服自然。",career:"节奏稳健，融会贯通，张弛有度。",wealth:"收支平衡，理财有度，财富稳步增长。",spirit:"内心平静，情绪稳定，处世中庸。"},
+   rev:{love:"关系失衡，忽冷忽热，安全感缺失。",career:"资源调配不当，效率低下，忙而无功。",wealth:"收支失衡，过度挥霍，寅吃卯粮。",spirit:"心浮气躁，缺乏耐心，节奏被打乱。"}},
+  {up:{love:"强烈吸引，但也可能是执念与占有，警惕沉溺。",career:"被利益驱使，警惕职场陷阱与不良诱惑。",wealth:"欲望驱动，警惕过度杠杆与高风险操作。",spirit:"直面内心阴影，看清是什么在束缚你。"},
+   rev:{love:"挣脱不健康的关系，摆脱情感操控与依赖。",career:"摆脱不良环境，离开消耗你的组织。",wealth:"戒除不良消费与投机习惯，重获财务自由。",spirit:"觉醒解脱，挣脱枷锁，重获自由。"}},
+  {up:{love:"关系骤变，旧模式崩塌，真相猝不及防。",career:"突发变动，组织重组，项目推倒重来。",wealth:"财务震荡，警惕突发损失与意外开支。",spirit:"遮罩被揭下，破而后立，重建更真实的自我。"},
+   rev:{love:"危机暂时缓解，但问题根源仍在，早晚要面对。",career:"躲过一劫，隐患未除，需要主动加固。",wealth:"险险避过损失，需立刻加固财务防线。",spirit:"抗拒觉醒，自欺欺人，逃避真相。"}},
+  {up:{love:"感情重燃希望，伤口开始愈合，重新相信爱。",career:"愿景清晰，前路光明，目标值得追逐。",wealth:"财运复苏，慢慢好转，曙光初现。",spirit:"心怀信念，被星光指引，黑暗中仍有方向。"},
+   rev:{love:"希望渺茫，信心受挫，对感情悲观。",career:"目标模糊，动力不足，看不到前景。",wealth:"复苏缓慢，需要更多耐心与等待。",spirit:"悲观失望，忘记自己内在的光芒。"}},
+  {up:{love:"关系迷雾重重，真相不明，对方心意难测。",career:"情况不明朗，谨慎前行，信息不全勿下结论。",wealth:"财务不透明，警惕骗局与模糊条款。",spirit:"面对恐惧，穿越迷雾，答案藏在潜意识里。"},
+   rev:{love:"真相浮现，误会解开，拨云见日。",career:"迷雾散去，方向清晰，可以行动了。",wealth:"骗局揭穿，及时止损，悬崖勒马。",spirit:"摆脱恐惧，重获清明，内心重见光明。"}},
+  {up:{love:"感情阳光明媚，幸福满溢，关系光明温暖。",career:"事业成功，大放异彩，成果被看见。",wealth:"财运亨通，收获满满，钱包鼓起来。",spirit:"内心光明，喜悦丰盛，能量高涨。"},
+   rev:{love:"小摩擦不断，短暂阴霾，但整体向好。",career:"略有波折，小人作祟，不影响大局。",wealth:"小损失，小破财，不影响根基。",spirit:"乐观过头，得意忘形，保持清醒。"}},
+  {up:{love:"旧情复燃或关系升华，重新评估彼此，迎来新生。",career:"得到认可，重要转机，过往努力被见证。",wealth:"财务翻盘，重新出发，洗清旧账。",spirit:"灵魂觉醒，迎来第二次机会，与过去和解。"},
+   rev:{love:"纠结过往，无法翻篇，旧伤复发。",career:"错过时机，自我批判，悔恨内耗。",wealth:"旧账未清，难以翻身，先解决遗留问题。",spirit:"拒绝成长，陷入悔恨，卡在审判席上。"}},
+  {up:{love:"关系圆满，修成正果，幸福有了圆满的形状。",career:"项目圆满收官，达成目标，功德圆满。",wealth:"财务丰收，成果兑现，长久努力开花结果。",spirit:"内在完整，圆满自在，与世界合一。"},
+   rev:{love:"差最后一步，仍需努力，圆满在望但未抵达。",career:"收尾未竟，延迟交付，最后一公里最难。",wealth:"成果未兑现，还需耐心，别急着庆功。",spirit:"感觉不完整，寻找闭环，还有课题未完成。"}},
+  // 圣杯组 22-35
+  {up:{love:"新恋情萌芽，心动的开始，爱意满溢。",career:"工作带来情感满足，团队氛围温暖。",wealth:"人脉带来财富机会，情感连接生财。",spirit:"心灵获得滋养，爱意在内在流动。"},
+   rev:{love:"感情空窗期，爱意受阻，渴望被爱却不敢。",career:"职场情绪低落，缺乏动力与热情。",wealth:"情绪化消费，为心情买单。",spirit:"内心枯竭，需要先学会爱自己。"}},
+  {up:{love:"两情相悦，默契十足，心意相通。",career:"合作伙伴默契，协作顺畅，事半功倍。",wealth:"合作共赢，资源互补，财路打开。",spirit:"人际关系和谐，付出与接收平衡。"},
+   rev:{love:"关系疏离，沟通不畅，各怀心思。",career:"合作破裂，信任受损，各做各的。",wealth:"合伙纠纷，账目不清，利益冲突。",spirit:"人际隔阂，内心封闭，需要主动破冰。"}},
+  {up:{love:"感情甜蜜，社交活跃，朋友围绕，共享喜悦。",career:"团队融洽，庆祝成果，士气高涨。",wealth:"聚会带来人脉与财源，社交即生产力。",spirit:"享受当下的喜悦，与所爱之人同在。"},
+   rev:{love:"三人行隐患，社交疲劳，热闹背后是疏离。",career:"团队内耗，小团体纷争，庆祝变闹剧。",wealth:"过度应酬，开销增大，人脉变负担。",spirit:"表面热闹，内心孤独，需要真实的连接。"}},
+  {up:{love:"对现有感情不满，心不在焉，寻求新的可能。",career:"对工作倦怠，渴望改变，眺望窗外。",wealth:"对现状不满，观望新机会，蓄势待发。",spirit:"内省时刻，审视内心真正的需求。"},
+   rev:{love:"重新发现身边的美好，珍惜眼前人。",career:"重燃工作热情，找到价值感。",wealth:"抓住被忽视的机会，回头是岸。",spirit:"走出消沉，重新参与生活。"}},
+  {up:{love:"关系受挫，沉浸在失落中，只看到失去的。",career:"项目失败，士气低落，复盘比抱怨更重要。",wealth:"遭遇损失，懊悔不已，先接纳再行动。",spirit:"允许悲伤流动，转身看见还在的杯子。"},
+   rev:{love:"走出伤痛，向前看，疗愈正在发生。",career:"从失败中学习，收拾心情再出发。",wealth:"止损之后，重新开始，吃一堑长一智。",spirit:"接纳现实，重拾希望，悲伤终会过去。"}},
+  {up:{love:"旧人重逢，回忆美好，重温纯真的感情。",career:"回归熟悉的领域，老客户带来机会。",wealth:"旧投资有回报，积累开始兑现。",spirit:"找回纯真，疗愈内在小孩，与过去和解。"},
+   rev:{love:"沉溺过去，无法向前，旧人旧事成枷锁。",career:"依赖旧方法，创新不足，被时代淘汰。",wealth:"守着旧观念，错过新机会，抱残守缺。",spirit:"放下执念，走向成长，童年已远。"}},
+  {up:{love:"对感情抱有不切实际的幻想，选择太多心乱。",career:"机会很多但难抉择，警惕画饼与空头支票。",wealth:"诱惑众多，投资项目鱼龙混杂，仔细甄别。",spirit:"分辨真实与幻象，找到内心真正的渴望。"},
+   rev:{love:"认清现实，放下幻想，做出清醒的选择。",career:"目标明确，聚焦执行，不再三心二意。",wealth:"脚踏实地，拒绝空想，回归基本面。",spirit:"清醒务实，从云端落地，生根发芽。"}},
+  {up:{love:"离开不够滋养的关系，勇敢走向更深的意义。",career:"离开舒适区，追寻真正想做的事。",wealth:"放弃部分短期收益，换取长远发展。",spirit:"心灵踏上更深处的探索，成长伴随告别。"},
+   rev:{love:"想走又犹豫，反复拉扯，消耗自己。",career:"想跳槽却不敢行动，困在原地。",wealth:"瞻前顾后，错失良机，患得患失。",spirit:"害怕改变，困于现状，温水煮青蛙。"}},
+  {up:{love:"感情满足，幸福自在，心愿达成。",career:"工作顺心，成果满意，一切尽在掌握。",wealth:"财运丰盈，愿望达成，钱包满足。",spirit:"内心满足，感恩当下，享受自己的成果。"},
+   rev:{love:"表面幸福，内心空虚，欲求不满。",career:"自满懈怠，停止进步，躺在功劳簿上。",wealth:"贪心不足，欲望膨胀，得陇望蜀。",spirit:"追逐外在，忽略内在，永不满足。"}},
+  {up:{love:"家庭和睦，感情圆满，归属感强烈。",career:"团队如家，氛围温馨，稳定发展。",wealth:"家族财运，长久稳定，根基深厚。",spirit:"心灵归属，爱满人间，家是港湾。"},
+   rev:{love:"家庭矛盾，表面和谐，暗流涌动。",career:"团队不和，人心涣散，暗藏危机。",wealth:"家庭财务纠纷，分配不均，伤和气。",spirit:"归属感缺失，内心漂泊，无枝可依。"}},
+  {up:{love:"温柔可靠，懂得经营感情，情绪稳定的伴侣。",career:"领导有方，善于协调，以柔克刚。",wealth:"稳健理财，情绪稳定，不冒进不慌乱。",spirit:"情绪成熟，慈悲智慧，内心有海。"},
+   rev:{love:"情感操控，表面温和，实则压抑与算计。",career:"情绪化决策，威权管理，表面一套背后一套。",wealth:"情绪影响判断，忽左忽右，反复无常。",spirit:"压抑情绪，内心失衡，需要释放。"}},
+  {up:{love:"温柔体贴，充满爱意，共情力强的伴侣。",career:"共情力强，善解人意，团队润滑剂。",wealth:"直觉敏锐，财运柔和，贵人相助。",spirit:"爱自己，也滋养他人，能量流动。"},
+   rev:{love:"情感依赖，患得患失，过度付出失去自我。",career:"过度情绪化，影响判断，公私不分。",wealth:"情绪消费，缺乏理性，月光族。",spirit:"自我牺牲，忽视自我，先填满自己。"}},
+  {up:{love:"收到心动讯息，暗恋萌芽，新的情感消息。",career:"新创意涌现，机会敲门，灵感迸发。",wealth:"新的财务信息，学习理财的好时机。",spirit:"保持好奇，灵感涌现，童心未泯。"},
+   rev:{love:"消息落空，情感不成熟，一厢情愿。",career:"创意被否，计划延期，空欢喜。",wealth:"信息有误，警惕误导，以讹传讹。",spirit:"胡思乱想，情绪波动，稳住心神。"}},
+  {up:{love:"浪漫攻势，追随内心，为爱奔赴。",career:"为理想项目投入热情，愿景驱动。",wealth:"为热爱买单，也因热爱获得回报。",spirit:"跟随心灵的召唤，浪漫而不失方向。"},
+   rev:{love:"承诺落空，情绪化逃避，甜言蜜语后消失。",career:"半途而废，理想主义，落地困难。",wealth:"冲动消费，为幻想买单，打水漂。",spirit:"理想与现实脱节，需要落地生根。"}},
+  // 星币组 36-49
+  {up:{love:"感情基础稳固，务实经营，细水长流。",career:"新工作机会，升职加薪，扎根生长。",wealth:"财运启动，播种收获，财源开始流动。",spirit:"内在安全感建立，踏实而安稳。"},
+   rev:{love:"感情缺乏实际基础，空中楼阁。",career:"机会错失，起步不稳，根基薄弱。",wealth:"财务计划受阻，启动资金不足。",spirit:"缺乏安全感，焦虑不安，先稳住自己。"}},
+  {up:{love:"关系在忙碌中保持平衡，彼此支持。",career:"多线并行，灵活调度，游刃有余。",wealth:"多渠道收入，灵活理财，东边不亮西边亮。",spirit:"在变化中保持从容，举重若轻。"},
+   rev:{love:"分身乏术，忽视伴侣，平衡被打破。",career:"顾此失彼，压力山大，疲于奔命。",wealth:"财务失衡，捉襟见肘，拆东补西。",spirit:"手忙脚乱，内心失衡，需要简化。"}},
+  {up:{love:"共同建设关系，目标一致，分工合作。",career:"团队协作，专业受认可，众人拾柴。",wealth:"技能变现，合作生财，专业即财富。",spirit:"在协作中找到价值，彼此成就。"},
+   rev:{love:"关系分工不均，缺乏配合，互相推诿。",career:"团队摩擦，技能不足，项目卡壳。",wealth:"合作不畅，进度停滞，互相牵制。",spirit:"自我怀疑，不敢求助，独自硬扛。"}},
+  {up:{love:"关系稳定，但需更多情感表达，别只谈实际。",career:"守住成果，谨慎扩张，稳步前进。",wealth:"储蓄稳健，守护财富，安全感十足。",spirit:"安全感来自内在，而非占有与囤积。"},
+   rev:{love:"过度控制，关系窒息，抓得越紧失去越快。",career:"固步自封，错失良机，保守过度。",wealth:"吝啬守财，害怕失去，钱变成了枷锁。",spirit:"放下执念，学会流动，富足源于分享。"}},
+  {up:{love:"感情遇冷，感到被忽视，需要主动取暖。",career:"资源紧张，处境艰难，咬牙坚持。",wealth:"财务吃紧，精打细算，寒冬模式。",spirit:"感到被孤立，别怕求助，温暖就在门外。"},
+   rev:{love:"关系回暖，得到支持，走出低谷。",career:"困境缓解，贵人相助，柳暗花明。",wealth:"财务状况改善，缓过来了。",spirit:"走出低谷，相信转机，雪中送炭已至。"}},
+  {up:{love:"关系中的付出与回报平衡，相互扶持。",career:"资源分配合理，回报公平，论功行赏。",wealth:"慷慨助人，财富流动，善因结善果。",spirit:"学会接受，也学会给予，能量循环。"},
+   rev:{love:"付出不对等，一方索取，一方疲惫。",career:"待遇不公，分配失衡，心生怨气。",wealth:"债务纠纷，依赖他人，失去独立。",spirit:"内在匮乏，害怕索取，也不敢付出。"}},
+  {up:{love:"关系需要时间沉淀，不急不躁，静待花开。",career:"长期项目初见成效，耕耘有回报。",wealth:"投资等待回报，耐心是最好的策略。",spirit:"耐心耕耘，静待花开，信任过程。"},
+   rev:{love:"耐心耗尽，急于求成，反而破坏关系。",career:"投入无回报，怀疑方向，动摇信念。",wealth:"投资亏损，缺乏耐心，频繁操作。",spirit:"焦虑等待，怀疑耕耘，忘了春种秋收。"}},
+  {up:{love:"用心经营细节，感情升温，日常即浪漫。",career:"精进技能，匠人精神，专业口碑。",wealth:"勤奋生财，细水长流，手艺就是铁饭碗。",spirit:"在专注中找到心流，劳动即是修行。"},
+   rev:{love:"忙于工作，忽略感情，细节失守。",career:"完美主义，效率低下，钻牛角尖。",wealth:"劳而无获，方向偏差，白忙一场。",spirit:"倦怠麻木，失去热爱，需要重新点燃。"}},
+  {up:{love:"独立自信，享受自我空间，感情与自由兼得。",career:"成果斐然，独当一面，优雅从容。",wealth:"财务自由，享受成果，花园里赏花。",spirit:"内在丰盛，自得其乐，独处也充实。"},
+   rev:{love:"孤芳自赏，害怕亲密，把爱挡在门外。",career:"孤立无援，过度自我，单打独斗。",wealth:"财务依赖他人，失去自主权。",spirit:"表面光鲜，内心空虚，需要真实连接。"}},
+  {up:{love:"感情修成正果，组建家庭，传承延续。",career:"基业稳固，世代传承，长期主义。",wealth:"家族财富，长远规划，富过三代。",spirit:"与根源连接，安定传承，家国情怀。"},
+   rev:{love:"家庭纷争，传统束缚，观念代沟。",career:"企业内斗，根基不稳，内耗严重。",wealth:"财务纠纷，遗产问题，剪不断理还乱。",spirit:"与家族观念冲突，需要找到自己的路。"}},
+  {up:{love:"可靠稳重，给人安全感，值得托付终身。",career:"商业头脑，事业有成，稳坐钓鱼台。",wealth:"财富丰盛，管理有方，财源滚滚。",spirit:"脚踏实地，知行合一，德位相配。"},
+   rev:{love:"物质至上，感情麻木，用钱衡量一切。",career:"固执守旧，抗拒变化，被时代淘汰。",wealth:"贪财吝啬，风险失控，贪字变贫。",spirit:"被物质奴役，迷失本心，忘记为何出发。"}},
+  {up:{love:"温柔务实，把家打理得井井有条，宜室宜家。",career:"后勤保障，支持团队，默默托举。",wealth:"精打细算，理财有道，小钱变大钱。",spirit:"在生活烟火中修行，一粥一饭皆禅。"},
+   rev:{love:"过度操心，忽略自我，成了家里的保姆。",career:"事业家庭失衡，顾此失彼。",wealth:"财务焦虑，过度节省，苦了自己。",spirit:"操劳过度，忘记自爱，先照顾自己。"}},
+  {up:{love:"感情新手，认真探索，真诚学习如何爱。",career:"学习新技能，实习机会，职场新人。",wealth:"理财入门，小试牛刀，开个好头。",spirit:"保持求知，务实成长，一步一个脚印。"},
+   rev:{love:"感情幼稚，缺乏行动，纸上谈兵。",career:"学习拖延，三分钟热度，虎头蛇尾。",wealth:"冲动消费，计划散乱，财来财去。",spirit:"眼高手低，不愿踏实，心浮气躁。"}},
+  {up:{love:"感情稳定，慢热但可靠，值得等待。",career:"稳步推进，值得信赖，靠谱担当。",wealth:"稳扎稳打，积累财富，慢即是快。",spirit:"坚持信念，一步一个脚印，笃定前行。"},
+   rev:{love:"感情停滞，过于木讷，缺少激情。",career:"效率低下，死板固执，错失窗口。",wealth:"进展缓慢，错失机会，太保守。",spirit:"固步自封，缺乏活力，需要突破。"}},
+  // 权杖组 50-63
+  {up:{love:"一见钟情，火花四射，热情点燃。",career:"新项目启动，热情高涨，充满干劲。",wealth:"新财源开启，灵感变现，第一桶金。",spirit:"内在热情被点燃，生命之火燃烧。"},
+   rev:{love:"热情消退，心动不再，关系降温。",career:"项目搁浅，动力不足，虎头蛇尾。",wealth:"新机会受阻，计划搁置，时运未至。",spirit:"灵感枯竭，需要充电，重燃热情。"}},
+  {up:{love:"感情规划未来，目标一致，蓝图清晰。",career:"战略布局，放眼全局，谋定后动。",wealth:"投资规划，布局长远，运筹帷幄。",spirit:"站得高，看得远，格局打开。"},
+   rev:{love:"对关系未来犹豫，规划模糊，走一步看一步。",career:"畏首畏尾，不敢扩张，错失战略机遇。",wealth:"规划混乱，错判方向，南辕北辙。",spirit:"目光短浅，缺乏远见，困于当下。"}},
+  {up:{love:"关系走向新阶段，见家长、同居，水到渠成。",career:"业务扩展，前景广阔，扬帆起航。",wealth:"新市场带来财源，外贸出海，视野打开。",spirit:"视野开阔，期待未来，心中有远方。"},
+   rev:{love:"异地恋考验，进度延迟，相见不易。",career:"扩张受阻，计划推迟，船搁浅。",wealth:"合作延期，收益未至，耐心等待。",spirit:"期待落空，耐心等待，时机未到。"}},
+  {up:{love:"关系稳定，家庭氛围和谐，安居乐业。",career:"项目落地，庆祝成果，阶段性胜利。",wealth:"财务稳固，安居乐业，根基扎实。",spirit:"找到归属，内心安定，此心安处是吾乡。"},
+   rev:{love:"关系动荡，缺乏归属，如浮萍漂泊。",career:"项目不稳，根基不牢，进度反复。",wealth:"财务波动，居无定所，缺乏安全感。",spirit:"内心漂泊，缺乏安全感，需要扎根。"}},
+  {up:{love:"观点冲突，摩擦不断，需要磨合沟通。",career:"竞争激烈，意见分歧，火药味十足。",wealth:"市场竞争，争夺资源，狼多肉少。",spirit:"内在冲突，不同声音交战，需要调和。"},
+   rev:{love:"冲突缓和，达成和解，握手言和。",career:"竞争落幕，尘埃落定，休养生息。",wealth:"避免恶性竞争，及时收手，保存实力。",spirit:"内耗结束，归于平静，心平气和。"}},
+  {up:{love:"感情公开，获得祝福，光明正大的幸福。",career:"项目成功，获得认可，凯旋而归。",wealth:"投资回报，名利双收，载誉而归。",spirit:"自信闪耀，昂首前行，值得骄傲。"},
+   rev:{love:"感情受挫，缺乏支持，独自面对。",career:"成果被否定，落差感强，委屈。",wealth:"回报延迟，骄傲自满，乐极生悲。",spirit:"患得患失，害怕失败，忘了自己已经赢了。"}},
+  {up:{love:"捍卫感情，克服阻碍，为爱坚守。",career:"顶住压力，坚守阵地，寸土不让。",wealth:"守住优势，抵御风险，防守反击。",spirit:"守住初心，不随波逐流，立场坚定。"},
+   rev:{love:"防线失守，疲惫不堪，无力再战。",career:"压力过大，濒临放弃，孤军奋战。",wealth:"防御过重，错失合作，草木皆兵。",spirit:"孤立无援，需要支持，别硬扛。"}},
+  {up:{love:"感情进展神速，消息频传，快马加鞭。",career:"效率飞升，好消息不断，一路畅通。",wealth:"财流快速，收益到账，乘势而上。",spirit:"顺势而为，全速前进，心无挂碍。"},
+   rev:{love:"消息延误，计划延迟，干着急。",career:"进度受阻，混乱无序，方向不清。",wealth:"资金延迟，计划打乱，现金流紧张。",spirit:"节奏错乱，需要调整呼吸，重新对齐。"}},
+  {up:{love:"感情受伤后仍愿坚持，最后一搏的勇气。",career:"压力重重，咬牙坚持，防线犹在。",wealth:"财务吃紧，谨慎防守，守住底线。",spirit:"疲惫但坚定，守护信念，伤痕是勋章。"},
+   rev:{love:"心防太重，不敢再爱，一朝被蛇咬。",career:"精疲力竭，濒临放弃，撑不住了。",wealth:"防线崩溃，损失扩大，需要止损。",spirit:"过度防御，封闭内心，需要被温暖。"}},
+  {up:{love:"为感情付出很多，责任压身，但也幸福。",career:"任务过载，压力山大，身兼数职。",wealth:"债务压力，负担沉重，负重前行。",spirit:"承担过多，需要卸下，学会分轻。"},
+   rev:{love:"学会分担，关系减压，共同承担。",career:"放下重担，合理分工，轻松前行。",wealth:"还清债务，轻装上路，如释重负。",spirit:"学会放手，自我关怀，允许自己休息。"}},
+  {up:{love:"热情主动，魅力领导型伴侣，让人崇拜。",career:"领袖气质，开创事业，登高一呼。",wealth:"商业嗅觉，大胆投资，敢为天下先。",spirit:"内在燃烧，热情驱动，使命必达。"},
+   rev:{love:"强势专断，感情受压，另一半透不过气。",career:"冲动决策，刚愎自用，独断专行。",wealth:"冒进投资，风险失控，孤注一掷。",spirit:"热情失控，急于求成，需要刹车。"}},
+  {up:{love:"自信迷人，主动追求幸福，魅力无法挡。",career:"独立自信，独当一面，自带光芒。",wealth:"自信带来财气，敢于开拓，越敢越有。",spirit:"自我认可，光芒四射，我就是太阳。"},
+   rev:{love:"嫉妒不安，感情焦虑，疑心重重。",career:"强势急躁，团队摩擦，锋芒太露。",wealth:"冲动消费，情绪化决策，财来财去。",spirit:"自我怀疑，能量不稳，需要找回底气。"}},
+  {up:{love:"新恋情讯号，主动探索，勇敢搭话。",career:"新任务挑战，充满干劲，跃跃欲试。",wealth:"新财路消息，小机会也是机会。",spirit:"保持好奇，勇敢尝试，永远年轻。"},
+   rev:{love:"表白受阻，消息延迟，勇气不足。",career:"计划拖延，缺乏方向，热情消退。",wealth:"投资消息有误，轻信传言，注意核实。",spirit:"三分钟热度，缺乏坚持，浅尝辄止。"}},
+  {up:{love:"热情追求，大胆示爱，为爱冲锋。",career:"快速行动，抢占先机，先发制人。",wealth:"大胆投资，高风险高回报，敢拼敢赢。",spirit:"勇气十足，说走就走，自由如风。"},
+   rev:{love:"三分钟热度，承诺落空，追到手就跑。",career:"鲁莽冲动，半途而废，虎头蛇尾。",wealth:"冲动投资，损失惨重，追悔莫及。",spirit:"急于求成，缺乏耐心，需要沉淀。"}},
+  // 宝剑组 64-77
+  {up:{love:"看清感情真相，坦诚沟通，直击要害。",career:"思路清晰，果断决策，快刀斩乱麻。",wealth:"财务透明，明智判断，拨云见日。",spirit:"灵光一现，真理显现，头脑清明。"},
+   rev:{love:"误会丛生，言语伤人，越描越黑。",career:"判断失误，决策混乱，方向错误。",wealth:"信息误导，判断偏差，雾里看花。",spirit:"头脑混乱，看不清真相，需要静心。"}},
+  {up:{love:"逃避问题，关系僵持，假装无事发生。",career:"决策困难，犹豫不决，卡在十字路口。",wealth:"投资观望，进退两难，不敢下注。",spirit:"逃避内心，拒绝面对，蒙上眼睛。"},
+   rev:{love:"打破僵局，坦诚相对，真相浮出水面。",career:"做出决定，突破瓶颈，豁然开朗。",wealth:"看清局势，果断出手，不再犹豫。",spirit:"直面真相，获得解脱，摘下眼罩。"}},
+  {up:{love:"心碎时刻，感情受伤，痛彻心扉。",career:"项目受挫，失望打击，信心受创。",wealth:"财务损失，心痛不已，教训深刻。",spirit:"允许心碎，疗愈开始，哭出来才能好。"},
+   rev:{love:"走出情伤，慢慢愈合，伤口结痂。",career:"从失败中复原，总结经验，卷土重来。",wealth:"损失之后，学会放下，轻装前行。",spirit:"宽恕自己，走出阴霾，心碎亦可愈。"}},
+  {up:{love:"感情冷静期，各自沉淀，给彼此空间。",career:"暂停脚步，充电蓄力，休整再战。",wealth:"财务蛰伏，休养生息，按兵不动。",spirit:"静心冥想，恢复能量，休息是必要的。"},
+   rev:{love:"休息不足，疲惫复出，旧伤未愈。",career:"休息被打断，急于复工，越忙越乱。",wealth:"被迫停止，焦虑不安，无法安歇。",spirit:"无法静心，躁动不安，需要强制休息。"}},
+  {up:{love:"争吵不休，赢了道理，输了感情。",career:"办公室政治，争斗代价，两败俱伤。",wealth:"恶性竞争，损人不利己，杀敌一千自损八百。",spirit:"放下输赢，看清代价，赢了世界输了心。"},
+   rev:{love:"和解到来，放下争执，握手言和。",career:"冲突平息，言归于好，重回正轨。",wealth:"停止内耗，重新合作，共同做大蛋糕。",spirit:"从冲突中学习，成长蜕变，恩怨两清。"}},
+  {up:{love:"离开伤痛关系，走向平静，放下执念。",career:"过渡期，平稳交接，从容转身。",wealth:"财务过渡，慢慢好转，柳暗花明。",spirit:"疗愈之旅，轻舟已过万重山。"},
+   rev:{love:"被困原地，无法释怀，心结未解。",career:"卡在过渡，进退两难，骑虎难下。",wealth:"财务困局难破，困兽犹斗。",spirit:"抗拒疗愈，滞留痛苦，船不愿离岸。"}},
+  {up:{love:"关系中有所保留，需要坦诚，别耍小聪明。",career:"策略灵活，暗中布局，以智取胜。",wealth:"巧妙理财，注意合规，走正道。",spirit:"审视内心，诚实面对，别骗自己。"},
+   rev:{love:"谎言揭穿，信任危机，覆水难收。",career:"小聪明被识破，声誉受损。",wealth:"投机取巧，风险暴露，得不偿失。",spirit:"停止自欺，诚实为上，坦荡心安。"}},
+  {up:{love:"自我设限，不敢表达爱，画地为牢。",career:"思维受限，困于现状，不敢突破。",wealth:"财务观念束缚，不敢尝试，错失良机。",spirit:"受害者心态，以为别无选择，其实门一直开着。"},
+   rev:{love:"打破心墙，勇敢表达，破茧而出。",career:"突破瓶颈，重获自由，海阔天空。",wealth:"挣脱限制，找到新路，财路打开。",spirit:"觉醒解放，视野开阔，枷锁是自己戴的。"}},
+  {up:{love:"深夜emo，感情焦虑，放大担忧。",career:"压力山大，夜不能寐，职场内卷。",wealth:"财务焦虑，忧心忡忡，睡不安稳。",spirit:"恐惧来自内心，需要被看见，而非被喂养。"},
+   rev:{love:"焦虑缓解，放下担忧，安然入睡。",career:"压力释放，重获安宁，想通了。",wealth:"财务担忧缓解，焦虑落地，心宽了。",spirit:"走出恐惧，重见天日，黎明到来。"}},
+  {up:{love:"关系走到尽头，痛彻心扉，但也是解脱。",career:"项目终结，跌入谷底，推倒重来。",wealth:"财务重创，触底，最坏已过。",spirit:"谷底之后，唯有向上，绝处逢生。"},
+   rev:{love:"触底反弹，迎来新生，浴火重生。",career:"绝处逢生，重新开始，东山再起。",wealth:"谷底回升，慢慢恢复，元气渐复。",spirit:"凤凰涅槃，焕然一新，脱胎换骨。"}},
+  {up:{love:"理性冷静，沟通清晰，就事论事。",career:"专业权威，决策英明，令人信服。",wealth:"财务分析精准，理性投资，稳准狠。",spirit:"理性与智慧并存，头脑清明，心如明镜。"},
+   rev:{love:"冷漠刻薄，言语伤人，有理无情。",career:"独裁专断，滥用职权，众叛亲离。",wealth:"算计过度，理性冰冷，失了人情。",spirit:"过度理性，情感隔绝，聪明反被聪明误。"}},
+  {up:{love:"独立清醒，不将就不妥协，宁缺毋滥。",career:"洞察力强，客观公正，慧眼识人。",wealth:"财务独立，判断精准，巾帼不让须眉。",spirit:"清醒独立，智慧通透，精神独立。"},
+   rev:{love:"尖酸刻薄，情感隔绝，拒人千里。",career:"过度批判，难相处，孤家寡人。",wealth:"过度谨慎，错失机会，杯弓蛇影。",spirit:"封闭内心，孤芳自赏，需要柔软。"}},
+  {up:{love:"暗恋观察，心思细腻，静待时机。",career:"学习求知，收集信息，蓄势待发。",wealth:"研究理财，信息敏锐，先调研后出手。",spirit:"保持好奇，观察思考，好奇心是最好的老师。"},
+   rev:{love:"疑神疑鬼，言语八卦，制造是非。",career:"信息错误，判断失误，纸上谈兵。",wealth:"轻信小道消息，被割韭菜。",spirit:"思绪纷乱，无法专注，需要整理心绪。"}},
+  {up:{love:"直球表达，快刀斩乱麻，干脆利落。",career:"雷厉风行，推进神速，行动派。",wealth:"快速决策，抢占先机，唯快不破。",spirit:"为信念而战，勇往直前，虽千万人吾往矣。"},
+   rev:{love:"言语冲动，伤人伤己，覆水难收。",career:"鲁莽冒进，后患无穷，欲速不达。",wealth:"冲动投资，追悔莫及，刹车失灵。",spirit:"急躁冒进，缺乏耐心，欲速则不达。"}},
+];
+/* ===== 78张塔罗详解数据（来源：抖音《78张塔罗牌解读来啦》拾柒塔罗） ===== */
+const TAROT_DATA = [
+ {
+  "desc": "编号为0，万物之始，一段充满未知与可能的旅程开端。愚人并非真正愚蠢，而是未被世俗规则束缚的纯粹状态——不执着过去，不恐惧未来，以开放之心迎接生命的一切可能。",
+  "elements": [
+   "编号0：代表无限可能，可以是完整的圆，也可以是零——什么也没有。",
+   "太阳高悬：象征光明、希望与精神觉醒，始终被宇宙能量守护。",
+   "权杖挑起的行囊：象征已具备的经验与资源，但不负重前行，代表轻灵与自由。",
+   "白玫瑰：握于左手，象征纯洁、天真与心灵之美。",
+   "肩扛权杖：象征力量与行动力，拥有实现梦想的潜能。",
+   "桂冠：代表成功的可能性。",
+   "脚边小狗：象征本能、忠诚与提醒，既代表陪伴也暗示危险。",
+   "悬崖：脚下即是深渊，象征未知与风险，也代表新旧阶段之间的跳跃。",
+   "斑斓衣袍：象征多姿多彩的个性与自由灵魂，内穿白衣代表内心纯粹。",
+   "羽毛头饰：象征轻盈、自由与风元素特质。"
+  ],
+  "up": {
+   "love": "可能开始一段轻松愉快、不拘传统的恋情，以真诚开放的态度去爱，不计较结果，享受过程。",
+   "career": "适合开展新项目、转换跑道或自由职业，带着创意与勇气行动，易获得意想不到的机会。",
+   "wealth": "可能有新的投资机会或收入渠道出现，但伴随一定风险，建议以小步尝试的心态前进。",
+   "study": "学习状态轻松，容易对新领域产生兴趣，适合探索性学习、创意学科，保持好奇心态。",
+   "spirit": "鼓励相信直觉、勇于尝试，即便前路未知也有光明随行。"
+  },
+  "rev": {
+   "love": "容易因天真、冲动陷入不切实际的关系，或缺乏安全感导致恋情不稳定，需冷静审视。",
+   "career": "时机不佳，易错过机会或做出鲁莽决定，建议暂缓行动，重新评估目标。",
+   "wealth": "财务缺乏管理，易冲动消费或高风险投资，需建立理财观念，避免轻信他人。",
+   "study": "学习状态浮躁，容易分心，缺乏耐心深入，需调整方法、脚踏实地。",
+   "spirit": "警惕盲目乐观与逃避现实，回归理性，看清脚下再迈步。"
+  }
+ },
+ {
+  "desc": "编号为1，象征万物的开端与创造的原点，从潜能到显化的关键一步。他连接精神与物质，强调知行合一——通过意志、智慧与行动主动塑造命运，真正的魔法源于内在的专注与整合之力。",
+  "elements": [
+   "魔法棒高举向天：象征连接宇宙能量，代表意志力、行动主导权与显化能力。",
+   "头顶无限符号：象征无穷潜能、循环能量与灵性觉醒。",
+   "四元素法器（宝剑/权杖/圣杯/星币）：象征万全资源与整合之力。",
+   "红袍与白衣：红袍表热情活力与向外行动，白衣表内在纯洁、清晰意图与智慧。",
+   "蛇形腰带（衔尾蛇）：象征永恒循环、自我更新与能量转化。",
+   "玫瑰与百合：红玫瑰象征热情与生命力，白百合象征灵性纯洁与智慧成长。",
+   "左手指地右手指天：构建天地人桥梁，贯通精神与物质。",
+   "明黄色背景：象征光明、成功潜能、心智明晰与显化之力。"
+  ],
+  "up": {
+   "love": "感情中充满默契与吸引力，善于表达沟通，关系可能进入新阶段，适合主动营造浪漫。",
+   "career": "展现创造力与领导力，适合开展新计划、谈判或整合资源，易获得支持与机会。",
+   "wealth": "财运活跃，有机会通过智慧与人际关系获得收入，投资创业易有良好开端，仍需理性规划。",
+   "study": "学习状态佳，思维敏捷，善于举一反三，适合考试研究与新技能学习。",
+   "spirit": "主动创造者与智慧实践者，鼓励认清自身资源，以清晰思维坚定执行。"
+  },
+  "rev": {
+   "love": "可能出现沟通不畅、隐瞒或信任危机，一方缺乏诚意或态度犹豫，注意过于自我或控制欲过强。",
+   "career": "计划受阻、执行力下降，易因准备不足或沟通失误导致失误。",
+   "wealth": "财务决策易冲动，可能有投资失误、消费过度或被人误导的风险，建议暂缓重大动作。",
+   "study": "注意力分散，学习效率低下，需调整状态、扎实基础，避免投机取巧。",
+   "spirit": "能量涣散、意图不清时，先回到内在整合资源，再向外行动。"
+  }
+ },
+ {
+  "desc": "编号为2，象征深藏的智慧、静止的直觉与潜意识的门户，是事物发展过程中至关重要的酝酿阶段。她鼓励我们暂停向外寻求，转而向内探索，信任超越逻辑的知晓，在行动之前先与内在的智慧相连。",
+  "elements": [
+   "三重冠冕（弦月/满月组合）：象征完整的月亮循环、精神权威与意识层次。",
+   "蓝袍与白裙：蓝袍表冷静与灵性自由，白裙表内在纯洁与高道德标准。",
+   "胸前十字架：象征信仰、灵性联结与四元素统一。",
+   "TORA卷轴：半掩的律法书，代表隐秘智慧与待揭示的古老真理。",
+   "黑白双柱（Boaz与Jakin）：黑柱为阴、潜意识，白柱为阳、意识，女祭司居中平衡二元。",
+   "身后石榴帘幕：分隔可见与不可见世界，隐藏未显化奥秘。",
+   "脚下新月：象征被驾驭的潜意识、强大直觉与情绪调节力。",
+   "平静神情：象征静默之力、内在洞察与知者不言。"
+  ],
+  "up": {
+   "love": "注重精神共鸣与灵魂契合的柏拉图式关系，可能处于暗恋或需要深刻精神交流的感情中，享受情感酝酿沉淀。",
+   "career": "进入需要深思熟虑、潜心研究的阶段，拥有敏锐洞察力与直觉，可暂时观望等待最佳时机。",
+   "wealth": "财务状况稳定，消费理性且善于计划，更注重精神富足，投资偏保守与长期。",
+   "study": "学习状态极佳，拥有强大的理解力、专注力与求知欲，适合深度研究与学术攻关。",
+   "spirit": "答案不在外界喧嚣中，而在内心深处的静默与聆听里，先与内在智慧相连。"
+  },
+  "rev": {
+   "love": "可能变得冷漠、疏离或过度情绪化，容易陷入单相思而拒绝沟通，或设置过高的精神壁垒。",
+   "career": "直觉失灵、判断力下降，易因犹豫错失良机，警惕过于固执或脱离实际。",
+   "wealth": "理性消费观念崩塌，可能出现无计划开销、隐藏财务漏洞或盲目跟风投资。",
+   "study": "学习状态浮躁，难以深入思考，基础知识不牢，容易分心或停留在表面理解。",
+   "spirit": "忽视内在直觉、过度理性压抑感受时，需重新倾听内心的声音。"
+  }
+ },
+ {
+  "desc": "编号为3，三生万物的丰饶显化，象征创造、孕育、滋养与物质世界的绝对繁荣。她是创造的果实，鼓励我们敞开感官体验世界、信任自然的周期，慷慨地付出与接受，在物质与情感的富居中庆祝生命本身。",
+  "elements": [
+   "十二星冠：象征统御黄道十二星座与全年循环的宇宙秩序与丰饶权威。",
+   "金色权杖（杖顶地球仪）：代表对物质世界的温柔掌控、生命力与具象创造力。",
+   "华服与石榴图案：象征多产、丰饶、生命潜能与甜美果实。",
+   "金星符号与心形靠垫：强调爱与美的金星能量，及基于感官愉悦的创造。",
+   "茂密森林与蜿蜒河流：象征蓬勃生命力、情感流动与自然的滋养庇护。",
+   "金黄麦田：代表丰收、物质保障与大地慷慨馈赠。",
+   "珍珠项链（九颗）：象征行星和谐、天地连结，亦表完整与尊贵。",
+   "慵倚姿态与安详神情：喻示内在安全、富足状态与享受当下的生命态度。"
+  ],
+  "up": {
+   "love": "感情进入丰饶甜蜜的成熟阶段，可能涉及谈婚论嫁或迎来新生命，充满相互滋养与深刻满足。",
+   "career": "事业处于收获期，适合艺术、设计、教育等与美和滋养相关的行业，易得女性贵人相助。",
+   "wealth": "财运亨通、物质丰裕，可能有意外之财或投资收益，善于利用资源创造价值。",
+   "study": "学习充满灵感与创造力，利于艺术人文等需感性与美感的学科，成绩进步显著。",
+   "spirit": "以母性原型的力量孕育、守护、滋养，信任自然的周期，庆祝生命本身。"
+  },
+  "rev": {
+   "love": "情感滋养渠道受阻，可能过度依赖或控制欲强令对方窒息，或冷漠疏于经营，关系缺乏结果。",
+   "career": "创造力枯竭，项目进展缓慢，工作懒散缺乏成就感，与女性同事或上司关系易紧张。",
+   "wealth": "财务失衡，可能因虚荣、过度享乐挥霍无度或投资失利，需警惕超出能力的消费。",
+   "study": "学习懈怠，缺乏耐心与专注力，偏科严重或只追求表面成绩，灵感易枯竭。",
+   "spirit": "滋养与自我关爱失衡时，先照顾好自己的需求，再谈付出。"
+  }
+ },
+ {
+  "desc": "编号为IV，象征世俗权力的巅峰、秩序结构的建立与理性意志的统御。他并非冷漠的独裁者，而是通过经验、规则与责任守护疆域与群体的父亲原型。结构成就自由——清晰的边界、坚定的自律与成熟的权威，才能带来真正的安全与成就。",
+  "elements": [
+   "编号IV：象征稳定、秩序与结构的四大支柱。",
+   "皇冠：代表至高的权威、成熟的领导力与已获得的世俗成就。",
+   "权杖（古埃及十字架）：代表生命的主权、统治的力量与做出决断的意志。",
+   "宝球（十字圣球）：象征对现实世界的掌控、秩序的赋予与资源管理。",
+   "石制王座：象征稳固的权力基础、不可动摇的原则与历经考验的权威。",
+   "王座羊头装饰：连接白羊座，象征开创的勇气与进攻性的领导风格。",
+   "全身盔甲：代表常备不懈的防御、理性对外界的隔离与强大的责任感。",
+   "红色长袍：象征激情、行动力与权威的外在彰显。",
+   "背后荒芜山川：象征挑战、需要征服的领域与宏观视野。"
+  ],
+  "up": {
+   "love": "关系稳定、承诺坚实，倾向传统角色分工，伴侣可靠有责任感，注重实际付出与长远规划。",
+   "career": "处于领导地位或展现强大掌控力，适合管理、创业、从政等需要架构与规则的领域。",
+   "wealth": "财务状况稳健，善于规划管理资产，正财运强，适合权威、地产或系统化投资。",
+   "study": "擅长有结构有目标的学科，学习严谨自律，适合法律、管理、工程等逻辑规则领域。",
+   "spirit": "以理性导航、以行动落实，在现实世界中建立自己的王国。"
+  },
+  "rev": {
+   "love": "控制欲过强导致关系紧张，或因软弱逃避责任引发不稳定，可能存在专制冷漠或不可靠的伴侣。",
+   "career": "领导无能、规则僵化或纪律涣散，可能遭遇独断专行的上级，或因缺乏规划而失败。",
+   "wealth": "因武断决策、缺乏管理或过度消费造成损失，财务失控易受骗，需重建理财秩序。",
+   "study": "学习散漫、缺乏毅力或方法僵化，可能因好高骛远逃避困难导致成绩下滑。",
+   "spirit": "僵化的权威与过度的防御，需要用柔软与弹性重新平衡。"
+  }
+ },
+ {
+  "desc": "编号为V，象征传统智慧的守护、灵性体系的传承与集体规范的建立。他并非僵化的教条者，而是人类经验与灵性真理之间的桥梁。在传承中寻得自由——真正的成长，往往始于对已有智慧体系的尊重、学习与内化。",
+  "elements": [
+   "三重皇冠：象征身心灵三层面的统御与完整权威。",
+   "祝福手势：右手食指中指并拢指天，连接神圣与世俗，传递启示、恩典与教化。",
+   "三重十字权杖：象征神圣不可侵犯的权威与精神领域的领导力。",
+   "交叉的金银钥匙：金钥启世俗智慧，银钥启灵性之门。",
+   "红袍与白袍：红色象征权威热情行动，白色代表内在纯洁神圣奉献。",
+   "双柱与殿堂：象征经验、稳定与二元性，殿堂代表制度与受保护的智慧空间。",
+   "跪拜的信徒：象征对灵性指引的渴求与对传统的臣服。",
+   "脚下棋盘格：象征阴阳平衡、善恶分野与宇宙运行的秩序法则。"
+  ],
+  "up": {
+   "love": "关系稳定传统且受祝福，可能通过相亲或长辈介绍结识，注重精神共鸣、承诺与长期责任。",
+   "career": "在体制内、传统行业或大型机构发展顺利，易得贵人导师提携，遵循规则稳步晋升。",
+   "wealth": "财务状况稳健，偏好储蓄、定期投资等保守理财，可能通过合作或家族支持获利。",
+   "study": "在学校或传统教育体系中如鱼得水，易遇良师，遵循课程方法能取得好成绩。",
+   "spirit": "通过师承、社群与仪式找到属于自己的人生坐标，在传承中寻得自由。"
+  },
+  "rev": {
+   "love": "关系受传统束缚或遭外界反对，可能因教条、沟通不畅或价值观冲突产生矛盾。",
+   "career": "挑战权威或反体制导致发展受阻，可能失去贵人、团队不合或感到工作僵化。",
+   "wealth": "因循规蹈矩错失机会，或轻信非正规渠道导致损失，财务计划脱离实际。",
+   "study": "抗拒师长教导或传统学习方法，导致成绩下滑，需寻找适合自己的路径。",
+   "spirit": "挣脱僵化教条的同时，小心不要丢掉真正有价值的传承与指引。"
+  }
+ },
+ {
+  "desc": "编号为VI，象征人生关键的抉择、灵魂的共鸣与关系的完美融合。它远不止于浪漫爱情，代表着任何需要深度结合、真诚沟通与价值对齐的重要关系。核心内涵是自由意志下的选择——倾听内心真实的声音，做出忠于自我的决定。",
+  "elements": [
+   "编号VI：象征和谐、平衡与责任，代表关系中的共创与成长。",
+   "天使拉斐尔：展开红色翅膀，象征沟通、疗愈与神圣祝福。",
+   "亚当望向夏娃：代表阳性原则、行动力与显化意识。",
+   "夏娃望向天使与知识之树：代表阴性原则、接纳性与内在智慧。",
+   "知识之树与蛇：五颗苹果代表五种感官，蛇象征智慧、选择与诱惑。",
+   "生命之树：十二团火焰象征十二星座的完整能量。",
+   "中央山峰：象征关系的崇高目标与必须共同承担的挑战。",
+   "灿烂太阳：代表意识的光明、真理的启示与关系的积极能量。"
+  ],
+  "up": {
+   "love": "遇见深刻吸引或灵魂伴侣，双方坦诚心灵相通，适合做出严肃承诺，关系受祝福可能步入婚姻。",
+   "career": "出现优质合作机会、合伙关系或团队协同，贵人运强沟通顺畅，适合通过结盟获得成功。",
+   "wealth": "通过合作、合伙创业或资源共享获得财富，有共同投资获利的机会。",
+   "study": "易得良师益友，适合小组讨论共同研究，文科艺术或沟通表达学科表现出色。",
+   "spirit": "真正的结合源于意识的觉醒与双向奔赴的勇气。"
+  },
+  "rev": {
+   "love": "关系出现沟通障碍、信任危机或价值不合，可能面临冷战、分离、三角关系或逃避承诺。",
+   "career": "合作破裂、团队内耗或遭遇背叛，决策失误、合同纠纷，需警惕口头承诺与利益陷阱。",
+   "wealth": "因合作失败、团队解散或错误投资导致损失，开销无度，避免财务纠纷。",
+   "study": "学习方向错误、缺乏耐心与计划，容易分心，需独立钻研避免受消极影响。",
+   "spirit": "在忠于他人与忠于自我之间摇摆时，先厘清自己真正想要的选择。"
+  }
+ },
+ {
+  "desc": "编号为VII，象征以坚定意志驾驭内在冲突、在动态平衡中驶向目标的英雄征程。核心并非单纯的外在胜利，而是内在秩序的胜利——将对立的情感与理性、冲动与克制，转化为前进合力的卓越能力。",
+  "elements": [
+   "战士与铠甲：象征以理性武装自己，展现坚定意志与守护者姿态。",
+   "八角星桂冠：象征胜利法则、精神统治与已获认可的成就。",
+   "手持权杖：象征主导行动的权威与将意志付诸实践的能力。",
+   "肩甲新月符号：呼应月亮与巨蟹座，代表需驾驭的情绪与直觉。",
+   "黑白狮身人面兽：朝向各异，代表需调和的内在对立力量。",
+   "无缰绳战车：象征不依赖外在约束，凭内在意志与平衡术掌控。",
+   "四根支柱：代表火水风土四元素完整支持。",
+   "身后河流：象征情感的流动与潜意识支持。",
+   "远方城堡：象征已守护的成就与物质根基。"
+  ],
+  "up": {
+   "love": "感情中展现主动、守护与坚定的姿态，能理性处理矛盾，关系虽有挑战但凭借信心与沟通稳固前行。",
+   "career": "目标明确行动力强，在竞争或项目中能凭意志力与策略胜出，适合领导、开拓或竞标。",
+   "wealth": "通过主动进取、竞争或投资获得财富增长，趋势向上，适合新财务计划或购置大件资产。",
+   "study": "学习自律性强，善于应对考试与竞赛，目标驱动能克服困难。",
+   "spirit": "成为自己生命战车的驭者，以清晰的头脑导航，穿越竞争与内心风暴。"
+  },
+  "rev": {
+   "love": "关系失控，因过度控制、情绪化或缺乏安全感引发争吵，双方方向不一，需警惕冲突升级。",
+   "career": "计划受阻、团队内耗，或因犹豫不决缺乏自律导致失败。",
+   "wealth": "财务失控，易因冲动消费、风险投资或合伙纠纷破财，应暂停重大决策。",
+   "study": "学习状态涣散，缺乏毅力与方向，易受情绪影响拖延放弃，需重建目标感。",
+   "spirit": "内在对立未被调和时，先停下处理冲动与恐惧，再出发。"
+  }
+ },
+ {
+  "desc": "编号为VIII，象征以柔克刚的智慧、内在勇气的觉醒与本能力量的驯服。核心哲学是真正的强大源于温柔的掌控——征服外在挑战的关键，在于先以耐心与信心调和内心的恐惧、冲动与欲望。",
+  "elements": [
+   "女神情态与姿态：表情平静祥和、姿态放松坚定，象征以柔克刚的智慧与从容掌控。",
+   "狮子：象征原始的欲望、本能、兽性、冲动与内在恐惧。",
+   "女性双手动作：轻柔合上狮子的嘴，象征以温和而坚定的力量驾驭原始情绪。",
+   "头顶无限符号：象征无限的内在能量与永恒的精神力量。",
+   "头顶与腰间花环：象征与自然的和谐、成功的冠冕与平和的精神境界。",
+   "白色长袍与红色腰带：白袍表纯洁灵性，红腰带象征热情、爱与生命活力。",
+   "背景山脉：象征稳固的依靠与内心坚定的骨架。",
+   "狮子尾巴下垂：象征野性被成功驯服，本能欲望转化为友善能量。"
+  ],
+  "up": {
+   "love": "关系和谐稳固，能以耐心与包容化解矛盾，感情中充满信任与勇气。",
+   "career": "凭借内在信心与韧性应对挑战，易获赏识，适合需要耐心与说服力的工作。",
+   "wealth": "对财务状况有良好掌控感与安全感，消费理性，适合长期稳健的理财规划。",
+   "study": "拥有攻坚克难的毅力与耐心，能克服困难科目，表现稳定出色。",
+   "spirit": "以柔韧的内心之力面对生命中的一切野兽，真正的强大源于温柔的掌控。"
+  },
+  "rev": {
+   "love": "关系失控，缺乏安全感或耐心，可能因情绪化、自私或逃避问题引发争吵。",
+   "career": "内心软弱，缺乏应对挑战的勇气与韧性，可能因鲁莽、优柔寡断导致失败。",
+   "wealth": "财务失控，易冲动消费、透支或受诱惑损失钱财，欲望凌驾于理智之上。",
+   "study": "学习缺乏耐心与毅力，遇到困难容易放弃，无法专注深入。",
+   "spirit": "当恐惧与冲动占了上风，先温柔地安抚内在，而不是硬碰硬。"
+  }
+ },
+ {
+  "desc": "编号为IX，象征主动的退隐、深度的内省与内在智慧的追寻。他并非逃避世间，而是选择暂时离开喧嚣，以完成灵魂所必需的沉淀与澄明。孤独中照见自己——真正的答案，在你敢于转身面对的那片内心寂静里。",
+  "elements": [
+   "灰袍老者：象征岁月沉淀的智慧、成熟与通透。",
+   "六芒星明灯：象征精神与物质的平衡、真理与智慧，微光就是内在直觉的指引。",
+   "木质权杖：象征过往经验的支撑、坚定的意志与探索旅途中的依靠。",
+   "寒山雪岭：代表远离尘世的独处场域与精神成长所需的高度。",
+   "灰色斗篷：象征自我保护、与世俗的暂时隔离。",
+   "低首垂目姿态：体现深度沉思、内观与不受外界干扰的定力。",
+   "灰蓝与黄色调：灰蓝营造清冷静寂氛围，黄色象征智慧之光的温暖启示。",
+   "整体构图留白：突出孤独感与精神性，强调向内探索的空间。"
+  ],
+  "up": {
+   "love": "需要或享受一段独处时光以反思情感需求，可能暂时单身或进行精神恋爱，或在成熟关系中给彼此冷静空间。",
+   "career": "适合独立研究、幕后规划或需要专注细节的工作，宜退一步审视全局，耐心积累等待时机。",
+   "wealth": "财务状况稳定，持保守谨慎的理财观，注重长期规划与储蓄，不做冒险投资。",
+   "study": "进入深度学习与独立思考的好时机，适合钻研难题、构建知识体系。",
+   "spirit": "通过独处与反思成为自己的灯塔，孤独中照见自己。"
+  },
+  "rev": {
+   "love": "因过度封闭、逃避沟通或过于挑剔导致关系冷漠，可能陷入误解冷战或恐惧亲密。",
+   "career": "因固执己见、拒绝合作或方向错误导致停滞，可能逃避责任或陷入无意义忙碌。",
+   "wealth": "因错误判断、缺乏规划或消极逃避导致损失，可能挥霍或过于吝啬。",
+   "study": "学习散漫、逃避困难或钻牛角尖，方法错误缺乏耐心，需寻求帮助。",
+   "spirit": "退隐若变成逃避，需分辨是沉淀还是躲藏。"
+  }
+ },
+ {
+  "desc": "编号为10，象征一个阶段的完成与新一轮循环的开始。轮盘代表宇宙运行的法则与命运的周期性流转，高峰与低谷皆为过程，唯有接纳变化、顺势而为，才能在命运的洪流中把握转机。",
+  "elements": [
+   "轮盘三层结构：内圈空无象征无限创造力，中圈炼金符号代表物质世界基本要素，外圈TARO与YHVH暗喻宇宙法则。",
+   "四角活物（狮/鹰/牛/人）：象征四元素与固定星座，在变动中以智慧保持平衡。",
+   "向下行进的蛇：代表毁灭、低谷与必须面对的黑暗面，预示阻碍可被克服。",
+   "阿努比斯背负轮盘上升：象征死亡与重生、转机与希望。",
+   "人面狮身像持剑坐于轮顶：象征智慧、理性与稳定，提醒以清醒心智面对变化。",
+   "炼金术符号（汞硫水盐）：代表转化与成长的循环。",
+   "八道直线：象征宇宙能量向八方辐射，代表命运的广泛影响力。"
+  ],
+  "up": {
+   "love": "缘分降临，可能一见钟情或关系进入新阶段，单身者易在旅行、学习场合邂逅良缘，现有感情趋向圆满。",
+   "career": "迎来转机，如升迁、调岗或项目突破，宜顺势而为，接纳新合作模式，贵人运强。",
+   "wealth": "有意外的收入或投资获利，财运向好，建议把握机会但保持理性，避免过度投机。",
+   "study": "考运佳，适合进修、远行学习，长期积累迎来回报，考试或研究中易获突破。",
+   "spirit": "命运并非盲目的偶然，而是积累与选择交织的因果之网，无论顺逆皆为成长必经之路。"
+  },
+  "rev": {
+   "love": "关系停滞或陷入分分合合循环，容易因环境压力或相同问题反复争吵，需冷静审视根本矛盾。",
+   "career": "抗拒改变导致瓶颈，时机不佳努力徒劳，宜暂停并重新规划方向。",
+   "wealth": "财务失控，如冲动投资失利、意外支出增多，需建立理财观念避免跟风投机。",
+   "study": "学习效率低、方向迷茫，可能因浮躁或方法错误进展缓慢，需脚踏实地扎实基础。",
+   "spirit": "感到被命运捉弄时，先停止对抗，接受变化本身即是转机的开始。"
+  }
+ },
+ {
+  "desc": "编号为11，象征因果、平衡与理性的裁决。并非冷酷无情的法条，而是宇宙间最根本的公平法则——你所有的选择与行为，终将带来对应的结果。种瓜得瓜种豆得豆，提醒我们对自己的人生负起全部责任。",
+  "elements": [
+   "正义女神端坐：象征庄严与稳定，直视前方的目光代表理性客观，不掺杂个人情感。",
+   "金色王冠中央宝石：象征第三眼的洞察力与至高智慧。",
+   "左手天秤：处于完美平衡状态，象征对利弊、善恶、得失的精密权衡。",
+   "右手宝剑：剑尖垂直向上，象征斩断迷思、厘清真相的决断力与执行力。",
+   "红色长袍：象征热情、力量与落地的行动力，正义需要坚定意志践行。",
+   "胸前方形扣环：象征对四要素的融合与掌控，寓意周全的考量。",
+   "灰色石柱：象征支撑判决的稳定性，也代表严厉与慈悲需要平衡兼顾。",
+   "紫色帷幕：暗示所有审判都应在庄重且受保护的环境中进行。"
+  ],
+  "up": {
+   "love": "关系平等坦诚、双方权责清晰，适合缔结婚姻或重要承诺，沟通理性，能公平解决矛盾。",
+   "career": "处事公正，能平衡各方利益，利于法律、仲裁、管理类工作，晋升或签约过程顺畅。",
+   "wealth": "财务状况稳定、收支平衡，适合税务合同事务，投资理财理性，付出与回报对等。",
+   "study": "学习态度端正，付出与成绩成正比，考试评审公正，按计划复习即可取得应得成果。",
+   "spirit": "过往的付出在此刻显化，未来的道路由当下的正直抉择铺就。"
+  },
+  "rev": {
+   "love": "关系严重失衡，存在欺骗、隐瞒或单方面过度付出，可能陷入法律纠纷或不道德关系。",
+   "career": "遭遇不公待遇，如成果被窃、背黑锅，决策失误逃避责任，可能引发劳务仲裁或诉讼。",
+   "wealth": "收支失控，易卷入债务纠纷、被骗或收到罚单，合伙账目不清，需法律介入。",
+   "study": "学习环境或评分不公，或因作弊、学术不端被揭发，或严重偏科导致失败。",
+   "spirit": "当世界显得不公时，先检查自己是否也回避了责任与真相。"
+  }
+ },
+ {
+  "desc": "编号为12，象征一种充满智慧的自愿牺牲与深邃内省。并非被动的受苦，而是主动的暂停——通过放弃对物质世界的即时掌控与短视利益，获得精神的觉醒与更高的智慧。有时最大的前进恰恰需要看似后退的忍耐。",
+  "elements": [
+   "倒吊姿态：头下脚上，象征自愿牺牲与视角的彻底转换。",
+   "T型树木（世界之树）：代表连接天与地的桥梁，是此次精神之旅的支撑。",
+   "头部金色光环：象征在悬停与独处中获得的灵性觉醒与顿悟。",
+   "蓝色上衣：象征冷静、理智与内在知识的沉淀。",
+   "红色裤子被倒置：寓意将物质层面的关注暂时放下，专注灵性成长。",
+   "双手反绑于背后形成三角形：代表精神的升华、自愿接受的限制。",
+   "双腿交叉成十字：与双手三角构成炼金术符号，象征从低层次欲望向高层次灵魂的转化。",
+   "平静面容：体现对当前处境的全然接纳与内心的平静。"
+  ],
+  "up": {
+   "love": "处于需要耐心与奉献的时期，可能是单恋、等待回应，或需要换位思考、主动妥协以换取长远和谐，忌急躁。",
+   "career": "项目可能遇到瓶颈或进展缓慢，不宜强攻，适合暂停反思重新评估策略，牺牲短期利益积累内在价值。",
+   "wealth": "财运平淡，不宜冒险投资，可能有意花钱消灾或为长远目标暂时节制消费。",
+   "study": "学习遇到瓶颈，付出与收获不成正比，需转换方法深入反思，沉淀后的理解更为珍贵。",
+   "spirit": "停止无谓的挣扎，向内探索，在静止中看见只有静止才能发现的秘密。"
+  },
+  "rev": {
+   "love": "牺牲变得毫无意义，可能是单方面过度付出得不到回应，或拒绝为关系做出妥协，易陷入自私逃避责任的僵局。",
+   "career": "感到努力白费、回报甚微，或因抗拒改变固执己见无法突破，充满焦躁与无力感。",
+   "wealth": "财务陷入停滞或损失，可能因冲动消费跟风投资被骗，需警惕价值观混乱导致的决策失误。",
+   "study": "学习效率低下、方法错误且拒绝调整，可能因缺乏耐心放弃或在压力下破罐破摔。",
+   "spirit": "若暂停变成了逃避，分辨一下是蓄力还是沉溺。"
+  }
+ },
+ {
+  "desc": "编号为13，象征无可避免的终结、深刻的转变与紧随其后的新生。并非预示肉体消亡，而是代表旧有阶段、模式或关系的彻底结束，为新生腾出空间。不破不立——唯有经历彻底的结束，灵魂才能卸下重负，在废墟之上重建新生。",
+  "elements": [
+   "骷髅骑士：象征死亡本身是不可抗拒、公正无私的自然法则。",
+   "白色战马：象征纯洁、力量与通往彼岸的使者，也预示着新旅程的开始。",
+   "黑色旗帜上的白色玫瑰：象征精神不朽与转化后的新生。",
+   "河流与帆船：河流代表生命之流与阴阳界限，船是摆渡灵魂、通往新生的工具。",
+   "初升的太阳：象征黑暗终结后的希望、重生与全新周期的黎明。",
+   "倒下的国王：王冠脱落，象征世俗权力与旧有结构在变革面前的瓦解。",
+   "跪地的少女：象征对改变的恐惧、抗拒与无法直面终结的脆弱情感。",
+   "献花的孩童：代表新生代的希望、无惧与全新的开始。"
+  ],
+  "up": {
+   "love": "一段关系面临彻底结束，如分手、离婚，这是不可逆转的转变，需勇敢放手，结束也为了清理空间迎接更契合的关系。",
+   "career": "工作项目终结、职位变动甚至失业，一个旧职业阶段强制画上句号，为转型或新方向铺平道路。",
+   "wealth": "财务上可能经历重大损失或投资失败，旧有盈利模式失效，需接受现实彻底调整理财策略。",
+   "study": "一个学习阶段或旧方法彻底结束，可能伴随失败，需完全放下过去，以全新心态面对。",
+   "spirit": "死神带来的不是绝望，而是一个强制性的、充满力量的转化契机。"
+  },
+  "rev": {
+   "love": "抗拒关系的自然结束，陷入分分合合纠缠不清，可能是假性复合，问题未解，恐惧独自面对。",
+   "career": "害怕改变，死守即将淘汰的工作或模式导致发展停滞，拖延转型，陷入温水煮青蛙的困境。",
+   "wealth": "财务危机已现却不愿面对，拖延处理导致损失扩大，或试图用旧方法挽救败局。",
+   "study": "无法顺利结束某个学习阶段，旧知识体系已不适用却拒绝更新，导致学习停滞。",
+   "spirit": "抗拒改变本身，比改变更消耗能量——放手的那一刻，新生才开始。"
+  }
+ },
+ {
+  "desc": "编号为14，象征动态的平衡、耐心的调和与灵性的整合。天使以智慧将两股看似对立的能量进行循环与转化，核心哲学是中庸之道与知行合一。节制并非被动的约束，而是主动的创造——真正的力量来自内在的和谐。",
+  "elements": [
+   "大天使：象征高阶智慧、灵性指引与超越世俗的调和视角。",
+   "红色翅膀：代表内在的热情、行动力与生命活力，表明平衡是积极充满能量的状态。",
+   "白色长袍：象征心灵的纯净、清晰的理性与无杂念的专注。",
+   "胸前符号（白色正方形+红色三角形）：代表身心灵三层面的完美调和与互补。",
+   "双圣杯与水：水流平稳循环，象征对立情感或能量的沟通、融合与转化。",
+   "一脚踏水一脚踏岸：寓意在潜意识与物质现实之间自如往来，取得平衡。",
+   "远方道路与山脉：道路象征灵性成长的漫长旅程，山脉代表需要克服的挑战。",
+   "山顶太阳：象征希望、觉醒的生命力与终极智慧，是平衡后抵达的目标。",
+   "鸢尾花：象征希望、自然循环、重生以及连接天地的精神桥梁。"
+  ],
+  "up": {
+   "love": "关系和谐稳定，双方能理性沟通相互理解包容，情感细水长流，能在分歧中找到折中方案共同成长。",
+   "career": "工作节奏张弛有度，擅长整合资源与人际协调，项目稳步推进，合作顺畅。",
+   "wealth": "财务状况健康收支平衡，消费理性储蓄有计划，投资策略谨慎，财富稳定缓步增长。",
+   "study": "学习心态平稳，懂得分配时间精力，各学科发展均衡，善于整合知识获得扎实进步。",
+   "spirit": "在物质与精神、行动与思考之间找到完美契合点，中庸之道即是力量。"
+  },
+  "rev": {
+   "love": "沟通失效，易情绪化争吵或陷入冷战，关系失衡，要么过度索取要么一味付出。",
+   "career": "工作与生活严重失衡，效率低下，团队合作困难，项目停滞或资源浪费。",
+   "wealth": "收支严重失调，要么挥霍无度要么过度吝啬，易因情绪冲动消费或做出不理智投资决策。",
+   "study": "学习状态失调，可能严重偏科或无法适应新方法，心态浮躁成绩起伏不定。",
+   "spirit": "当调和变成稀释，注意不要为了表面和平而压抑真实的声音。"
+  }
+ },
+ {
+  "desc": "编号为15，象征物质束缚、原始欲望与自我设定的牢笼。揭示我们如何被贪婪、成瘾、恐惧或对权力金钱的执着所奴役。魔鬼并非外在邪恶，而是内心阴影的投射——锁链往往是松垮的，困境大多源于我别无选择的自我欺骗。",
+  "elements": [
+   "恶魔形象（羊角、蝙蝠翅、羊腿）：象征被动物本能、原始欲望与黑暗面支配的精神状态。",
+   "倒立五芒星：象征物质世界凌驾于精神之上，价值观被物欲扭曲。",
+   "右手土星符号：代表来自物质世界、规则与时间的限制、压迫与诱惑。",
+   "左手火炬向下：象征用欲望之火引导并控制下方的人类使其沉沦。",
+   "亚当与夏娃头顶兽角与葡萄藤：代表人类天性经不住诱惑，甘受欲望奴役。",
+   "颈间锁链（松垮可脱）：象征束缚多源于自我的恐惧、依赖与不愿挣脱的心理。",
+   "亚当火焰尾巴：象征被点燃的、无法控制的原始欲望与性冲动。",
+   "夏娃葡萄藤尾巴：象征对物质享受、感官愉悦的沉迷与执着。"
+  ],
+  "up": {
+   "love": "关系充满控制、占有或沉溺肉欲，可能伴有不忠嫉妒，彼此依赖却痛苦，像一种成瘾难以割舍。",
+   "career": "可能成为工作狂，被野心金钱或权力驱使，处在高压剥削性的环境中，用健康换物质成功。",
+   "wealth": "对金钱过度贪婪，可能涉足高风险投资、投机或不当得利，消费只为填补内心空虚。",
+   "study": "学习动机极端功利，仅为成绩或文凭，可能作弊走捷径，感觉被学业束缚。",
+   "spirit": "直视并承认内心的欲望与恐惧，才能找到真正解脱的钥匙。"
+  },
+  "rev": {
+   "love": "开始意识到关系中的毒素与控制，尝试挣脱不健康的依赖，可能决心分手、拒绝诱惑。",
+   "career": "幡然醒悟，拒绝继续被剥削或盲目追逐名利，可能转换跑道寻找意义。",
+   "wealth": "开始反思对物质的过度执着，尝试摆脱债务或不良消费习惯，转向财务与精神平衡。",
+   "study": "从唯成绩论的压抑中解脱，寻找学习的内在动力与真正兴趣，压力减轻心态回归。",
+   "spirit": "挣脱牢笼的第一步，是承认锁链其实一直都没有锁死。"
+  }
+ },
+ {
+  "desc": "编号为16，象征突如其来的剧变、根基的摧毁与不可避免的觉醒。代表那些长期忽视、压抑或建立在虚假基础上的结构被命运以粗暴却直接的方式彻底瓦解。高塔的崩塌虽痛苦，却是强制的破旧立新——撕碎幻象，为真正的重建腾出空间。",
+  "elements": [
+   "高塔本身：象征人为建造的、看似稳固却根基虚浮的信念体系、自我或物质结构。",
+   "金色皇冠坠落：象征世俗成就、权力、荣耀的彻底瓦解。",
+   "雷霆闪电：象征不可抗拒的命运裁决、神圣启示或外部突发冲击。",
+   "坠落的一男一女：象征无论身份高低都被剧变波及，旧有身份的强制剥离。",
+   "红衣与蓝衣人物：代表被摧毁的涵盖物质与精神层面的旧有状态。",
+   "二十二颗火花：象征破坏中蕴含的净化与转化能量，对应全部大阿尔卡纳。",
+   "三扇窗户：代表身心灵，敞开暗示内在脆弱面被暴露。",
+   "灰暗背景：象征剧变发生时的黑暗时期与空虚感。"
+  ],
+  "up": {
+   "love": "关系遭遇断崖式剧变，如激烈争吵后突然分手、信任彻底崩塌、长期隐藏的欺骗被揭穿，是一段虚假关系的强制终结。",
+   "career": "工作发生突然巨变，如裁员、项目意外失败、行业危机，旧有职业道路被不可抗力强行中断。",
+   "wealth": "遭遇突发财务危机，如投资暴雷、重大损失或收入来源突然中断，不稳固的财务结构瞬间崩塌。",
+   "study": "学习遭遇重大挫折，如考试严重失常、重要申请被拒，固有方法被证明无效需彻底重建。",
+   "spirit": "崩塌虽然痛苦，但它撕碎幻象，让你站在真实的废墟上重建。"
+  },
+  "rev": {
+   "love": "逃避关系的最终破裂，陷入分手拉锯战或冷暴力僵局，明知关系已死却不放手。",
+   "career": "预感到危机却拖延不决，或经历不彻底的打击，抗拒根本性转变在缓慢消耗中挣扎。",
+   "wealth": "财务危机已现端倪却心存侥幸不愿面对，试图挽救注定失败的局面导致损失扩大。",
+   "study": "学习问题积重难返，在错误方法上反复挣扎却拒绝彻底调整，结果悬而未决持续焦虑。",
+   "spirit": "拖延与侥幸不会让塔不倒，只会让重建来得更晚。"
+  }
+ },
+ {
+  "desc": "编号为17，象征希望、灵感、精神的疗愈与内在的指引。出现在高塔崩塌之后，代表经历冲击与混乱后心灵重获平静与信心。核心是相信内在的灯塔——即使在黑暗中，也能看见远方恒久的星光。并非承诺即时成功，而是赋予持续前行的信念与在废墟上重建愿景的可能。",
+  "elements": [
+   "八颗星辰：中央巨大八角星是核心希望与神圣指引，七颗小星象征宇宙的和谐与无限潜能。",
+   "裸体女性：象征褪去所有伪装与束缚，展现最纯粹真实的本我。",
+   "右手水壶倒入水池：代表用灵感与情感滋养潜意识、浸润内在精神世界。",
+   "左手水壶洒向大地：代表将创意与能量注入现实世界，促进物质层面的生长。",
+   "一脚踏入水池：连接情感、直觉与潜意识领域，深入内在探索。",
+   "一脚立足大地：与外在物质世界保持连接，确保灵感的落地与实践。",
+   "平静的水池：象征清澈的潜意识与内在的平静，是灵感涌现的源头。",
+   "树上的朱鹭：象征更高的灵性指引、不朽的灵魂与艺术创造力。"
+  ],
+  "up": {
+   "love": "遇见精神契合、真诚透明的理想关系，现有感情进入疗愈深度理解的和谐阶段。",
+   "career": "灵感迸发，创意项目前景光明，直觉能指引正确方向，适合创新、艺术或人道主义领域。",
+   "wealth": "财务状况积极渐进式改善，可能有意外之喜或长期投资显现回报。",
+   "study": "学习心态平和，好奇心与理解力增强，特别适合需要创造力的学科，努力会带来收获。",
+   "spirit": "相信内在的灯塔，即使在黑暗中也能看见远方恒久的星光。"
+  },
+  "rev": {
+   "love": "陷入不切实际的幻想或对关系过度悲观，可能出现欺骗、沟通不畅或期望严重落空。",
+   "career": "失去方向与目标感，热情消退，可能好高骛远却缺乏行动，或感到被画大饼。",
+   "wealth": "财务计划脱离现实，可能导致破财、错失良机或投资失误，警惕盲目乐观。",
+   "study": "学习倦怠，目标设定不切实际，急于求成基础不牢，或失去学习兴趣成绩下滑。",
+   "spirit": "若星光变成逃避现实的借口，先脚踏实地，再仰望星空。"
+  }
+ },
+ {
+  "desc": "编号为18，象征潜意识的涌动、未知的恐惧与情绪的迷幻。核心并非外在的客观事件，而是内在的心理状态——深藏心底的恐惧、未被觉察的欲望、混乱的直觉与自我欺骗的倾向。它邀请我们勇敢地正视阴影，在混沌中分辨直觉与妄想，方能穿越情绪的迷雾。",
+  "elements": [
+   "三层月亮：新月、满月与中间的人脸，象征情绪的阴晴圆缺、不确定性与潜在欺骗性。",
+   "十五滴露珠/眼泪：象征思想与灵感，也象征焦虑不安情绪的具象化滴落。",
+   "蜿蜒小径：通往远山，象征意识探索的旅程与走向潜意识深处的路径。",
+   "水池：代表情感的渊薮、潜意识的领域，隐藏着未被察觉的真相与情绪。",
+   "岸边的狼与狗：狼象征未被驯服的原始兽性与恐惧，狗代表被社会化的本能。",
+   "水中的龙虾/蝎子：象征比表层恐惧更深层、更隐秘的情感与威胁。",
+   "远处的双塔：代表人造的社会结构、心理的安全界限与遥远模糊的目标。",
+   "远山：象征终极的成就与渴望，但在月光下显得遥远而不真切。"
+  ],
+  "up": {
+   "love": "关系充满不安全感、猜疑与隐瞒，可能有暧昧、三角关系或难以言说的秘密，直觉感到不安但真相模糊，易陷入情绪内耗。",
+   "career": "工作环境复杂，可能遭遇小人中伤、信息不透明或潜在危机，前途迷茫，宜谨慎观察。",
+   "wealth": "财务状况不稳定有潜在风险，不宜投资，警惕欺诈、虚假信息或非理性财务决策。",
+   "study": "学习状态低迷，心神不宁注意力难以集中，可能对考试莫名恐惧，需克服内心不自信与焦虑。",
+   "spirit": "最大的挑战往往来自内心滋生的猜疑与幻觉——分辨直觉与妄想，才能抵达清醒的彼岸。"
+  },
+  "rev": {
+   "love": "笼罩关系的迷雾开始散去，一些欺骗或误会可能被揭露澄清，情绪逐渐稳定，但信任重建需要时间。",
+   "career": "先前隐藏的问题逐渐浮现，局势趋于明朗，最混沌的阶段正在过去，可着手务实解决。",
+   "wealth": "财务上的危机感或盲目性降低，状况趋于平稳，适合保守理财清偿债务，仍不宜冒险。",
+   "study": "内心混乱与恐惧感减轻，学习状态好转，可能找到新方向方法，思路逐渐清晰。",
+   "spirit": "迷雾散去之时，是承认自己曾被恐惧牵引，还是继续相信那个谎言——选择权在你。"
+  }
+ },
+ {
+  "desc": "编号为19，象征绝对的光明、蓬勃的生命力与圆满的成功，是大阿卡纳中最积极充满能量的牌之一。如日中天的鼎盛状态——清晰、温暖、无阴霾，一切秘密与恐惧都被驱散。它不仅是外在顺遂，更是一种返璞归真、从心所欲的内在光辉。",
+  "elements": [
+   "巨大的太阳：散发21道光芒（对应21张大牌），是生命力、智慧与一切积极能量的源头。",
+   "裸身孩童：象征最纯粹的真诚、天真无邪的本心与历经成长后的返璞归真。",
+   "孩童头上的红色羽毛：与愚人牌呼应，象征充满热情的思想与活跃的灵感。",
+   "红色旗帜：代表胜利、荣耀、旺盛的行动力与对自身成就的自信宣告。",
+   "白色骏马：未被束缚，象征纯洁、神圣、自由的力量与事情的自然推进。",
+   "四朵向日葵：朝向孩童生长，象征个体内在的光辉已足够强大，吸引万物助力。",
+   "低矮的石墙：象征安全稳固的边界，隔绝外界危险与负能量。",
+   "明亮黄色主调：营造温暖、乐观、充满活力与绝对安全的幸福氛围。"
+  ],
+  "up": {
+   "love": "关系充满阳光，坦诚无隔阂，相处温暖甜蜜，极易得到众人祝福，可能步入婚姻或确立稳定关系。",
+   "career": "目标清晰行动力强，前景一片光明，易获贵人赏识帮助，可能获得晋升或重大成果。",
+   "wealth": "财运亨通，收入稳定且可能有意外之喜，投资眼光佳，财务状况健康宽松。",
+   "study": "学习状态巅峰，心态积极自信，知识掌握牢固，考试运极佳能轻松应对挑战。",
+   "spirit": "以最坦诚、最热情的本心去拥抱生活，便能收获无限的祝福与成长。"
+  },
+  "rev": {
+   "love": "关系热度下降，可能出现盲目乐观或沟通不畅，热情流于表面，缺乏深度承诺。",
+   "career": "成功延迟，可能因过度自信忽视细节导致失误，行动力减弱，需调整过于乐观的预期。",
+   "wealth": "财务规划可能出问题，如冲动消费、虚荣支出或投资过于乐观导致亏损。",
+   "study": "学习动力不足，可能因自满松懈或压力过大无法发挥，考试需防粗心。",
+   "spirit": "阳光太强也会刺眼——若快乐显得空洞，停下来看看是不是在表演乐观。"
+  }
+ },
+ {
+  "desc": "编号20，象征灵魂的觉醒与终极的重生。天使吹响号角唤醒沉睡的人们，寓意深刻的内在召唤与生命阶段的彻底更迭。这是一场灵魂层面的清算——面对过去的全部经历，整合喜悦与伤痛、成功与遗憾，在清晰认知中做出走向新生的决定。旧我必须被检视与释放，新的自我方能破壳而出。",
+  "elements": [
+   "大天使加百列：神圣的使者，象征来自高维意识或内心深处的终极召唤。",
+   "号角：唤醒与宣告的工具，代表觉醒的讯号已响起，不容忽视。",
+   "红色十字旗帜：象征牺牲、业力平衡与精神层面的救赎与秩序。",
+   "海洋：代表潜意识、情感的深处与灵性的源泉，人们从中苏醒。",
+   "漂浮的棺木：旧有模式、过往经历与已死状态的载体，正被打开与超越。",
+   "复活的人们：全人类灵魂的象征，代表不同面向的自我正整合重生。",
+   "远方雪山：纯净崇高的灵性巅峰，象征觉醒后所能抵达的高远境界。",
+   "人物仰首张臂：接纳、回应召唤的姿态，体现全然信任与交付的决心。"
+  ],
+  "up": {
+   "love": "关系迎来决定性阶段，可能是破镜重圆、复合或进入婚姻、孕育新生命的时期，双方深刻自省后建立更真诚深刻的灵魂连接。",
+   "career": "职业面临重要转型或清算，可能是升迁、跳槽、项目收官或关键offer，是对过往努力的评估与回报。",
+   "wealth": "财务上的清算期，适合处理遗产、重大投资或债务重组，过往决策将显现结果。",
+   "study": "学习历程的关键节点，如毕业、考证、收到录取通知，过往积累的知识将整合升华。",
+   "spirit": "你已听到内心的号角，是时候起身回应，拥抱命运赋予你的蜕变与升华。"
+  },
+  "rev": {
+   "love": "逃避关系中的核心问题，沉溺于旧伤或旧情，可能纠缠于无果的关系，拒绝沟通或成长。",
+   "career": "拒绝改变或听不进忠告，可能错失转型良机，固守无望的工作，因害怕评估而拖延决策。",
+   "wealth": "财务决策失误的后果显现，可能因盲目投资、逃避债务导致损失扩大，或错失补救时机。",
+   "study": "缺乏方向与动力，拒绝面对学习上的不足，可能考试失利、拖延复习或陷入自我怀疑。",
+   "spirit": "号角已经吹响却假装没听见，只会让清算来得更迟。"
+  }
+ },
+ {
+  "desc": "编号21，象征宇宙的圆满、完整的循环与终极的成就。作为大阿卡纳的终点，代表一段漫长旅程的完美收官。舞者在桂冠中和谐舞动，寓意动态的圆满——成就并非僵化的终点，而是生命在达成平衡与整合后展现的自由活力。结束即开始，每一次巨大的完成都是通往更广阔宇宙的新起点。",
+  "elements": [
+   "中央舞者（雌雄同体）：象征阴阳整合与完满人格，赤裸代表本真坦诚，舞姿体现达成目标后的自由喜悦。",
+   "月桂花环：绿色象征胜利、丰收与永恒的生命力，椭圆形结构代表完成的闭环与宇宙的无限性。",
+   "紫色丝巾：象征智慧、灵性与神圣的庇护，连接物质与精神世界。",
+   "双手持握的权杖/钥匙：代表掌控力与成就的钥匙，是开启新阶段的象征。",
+   "四角神兽（狮牛鹰天使）：象征四大元素的齐备与平衡，宇宙力量的支持。",
+   "红色∞字符：代表永恒、无限循环与能量的生生不息。",
+   "咬尾蛇：象征生命的永恒循环、自我完善，终点即是起点。",
+   "蓝色光环或星空背景：代表宇宙的包围、精神的无限领域与最终的归属感。"
+  ],
+  "up": {
+   "love": "关系达到和谐稳定的圆满阶段，可能订婚、结婚或迎来爱情结晶，彼此理解深刻，感情深厚而自由。",
+   "career": "重大项目圆满成功，职业生涯迎来高峰（如升职获奖），可能涉及国际业务，努力获得公认。",
+   "wealth": "财务目标稳健实现，长期投资获得丰厚回报，达到财富自由或稳定丰足的状态。",
+   "study": "学业旅程完美结束，如顺利毕业、考取证书或完成重要研究，知识融会贯通。",
+   "spirit": "你已身心灵合一，与世界和谐共振，可以自信地庆祝胜利，并准备好迎接下一个循环。"
+  },
+  "rev": {
+   "love": "关系看似稳定却缺乏生机，或卡在临门一脚（如恐婚），可能因安于现状逃避更深承诺。",
+   "career": "项目临近结束却出现拖延、瑕疵或功亏一篑，可能拒绝必要转变而困在舒适区。",
+   "wealth": "财务计划延迟兑现，收益未达预期，可能因自满疏忽管理导致几乎成功却未能圆满落袋。",
+   "study": "学习进入平台期，毕业或考试延期，知识掌握不够系统全面，需查漏补缺。",
+   "spirit": "圆满若变成停滞的借口，记得世界之舞从来不是终点，而是循环的起点。"
+  }
+ },
+ {
+  "desc": "圣杯王牌是水元素的纯粹开端，编号为1，象征情感、爱与灵性的源泉自此涌流。它并非一段具体的情感关系，而是爱本身降临的瞬间——心灵被突然注满，直觉苏醒，内在的丰盈盈溢而出。这份情感的馈赠直接来自潜意识与灵性层面，是无需刻意寻求的恩典。",
+  "elements": [
+   "云中托杯之手：象征情感与灵感的源泉直接来自潜意识或更高层次的赐予。",
+   "华丽圣杯：情感的完美容器，象征心灵、爱、直觉与接纳的载体。",
+   "五道涌流：对应人类五种感官，暗示丰沛情感通过体验流入世界。",
+   "白鸽衔圣饼：象征圣灵、和平与神圣祝福，代表灵性注入物质世界。",
+   "飘洒的水珠：象征情感的祝福细腻地渗入潜意识的每一个角落。",
+   "池塘与莲花：象征集体潜意识与从中生发的纯洁、爱与精神升华。",
+   "水蓝色调：强化水元素的柔和、深邃、流动与感性特质。"
+  ],
+  "up": {
+   "love": "全新的、充满喜悦的情感开端，可能遇到令你心动的人，或现有关系进入更深情满足的阶段，感受到无条件的爱与精神契合。",
+   "career": "工作充满灵感与创意，适合艺术、疗愈、咨询等需要同理心的项目，团队氛围和谐合作顺畅。",
+   "wealth": "财务状况良好有富足感，可能有源于情感联结或创意带来的收益。",
+   "study": "学习中充满直觉与灵感，利于文学、艺术、心理学等感性学科，对新知识有天然共鸣。",
+   "spirit": "真正的满足始于与内在情感源泉的连接，当心灵容器被注满，才有能力滋养他人与世界。"
+  },
+  "rev": {
+   "love": "情感通道受阻，可能心扉紧闭害怕受伤，或沉溺于过去阴影，关系中出现冷漠、误解或单方面付出得不到回报。",
+   "career": "灵感枯竭，工作缺乏情感投入与满足感，项目可能因准备不足或缺乏内在动力而停滞。",
+   "wealth": "财务上感到匮乏或流失，可能因情绪化消费、缺乏规划造成损失。",
+   "study": "学习状态涣散，缺乏兴趣与专注力，直觉失灵理解浮于表面。",
+   "spirit": "先接住自己的渴望，才有能力真正地给予爱。"
+  }
+ },
+ {
+  "desc": "圣杯二牌是小阿卡纳中的小恋人，编号为2，象征情感关系中最珍贵的状态：平等、共鸣与和谐的联结。它描绘的不只是爱的萌发，更是爱的双向确认与流通。核心哲学是关系的圆满源于能量的平衡——寻求并经营那些能彼此滋养、共同提升的情感联结。",
+  "elements": [
+   "对饮的男女：象征异性或阴阳能量间的平等对话与情感交流。",
+   "平举的圣杯：代表关系中的平等互惠、相互尊重与情感平衡。",
+   "赫密士之杖：象征沟通、契约、能量结合与精神保护。",
+   "带翼狮头：象征被驯服的情感力量、精神的提升以及关系中的勇气。",
+   "人物的服饰：蓝衣显平静深度，绿叶花环象征生机与感性智慧。",
+   "远处的房舍：象征这段关系具有落地生根、走向稳固与未来的潜力。",
+   "脚下的土地：暗示这段情感联结的基础扎实，前路相通。"
+  ],
+  "up": {
+   "love": "遇见情投意合、彼此深度理解的伴侣，关系平等沟通顺畅，可能预示重要恋情的开始或现有关系进入更和谐承诺的阶段。",
+   "career": "建立极佳的合作或伙伴关系，团队默契利益共享，适合签署协议、建立联盟或紧密协作项目。",
+   "wealth": "通过合作、合伙带来财运，财务往来公平，收入与付出成正比。",
+   "study": "找到志同道合的学伴或良师益友，通过讨论与合作大幅提升学习效率。",
+   "spirit": "关系的圆满源于能量的平衡，寻找能彼此滋养、共同提升的联结。"
+  },
+  "rev": {
+   "love": "关系失衡，出现权力争斗、单方面付出或沟通断绝，可能陷入冷战猜忌，或感觉双方不在同一频率。",
+   "career": "合作破裂，伙伴关系陷入僵局或利益冲突，团队内耗，协议难产，感到被利用。",
+   "wealth": "因合作失利、毁约或分配不公导致财务损失，合伙生意容易出现纠纷。",
+   "study": "小组学习效果差，与同学或导师产生误解，难以找到学习上的共鸣与支持。",
+   "spirit": "当关系变成单向消耗，先看见自己的位置，再决定是否继续举杯。"
+  }
+ },
+ {
+  "desc": "圣杯三牌编号为3，是情感与社交领域的丰收庆典，象征通过合作、分享与情感联结所获得的圆满喜悦。核心是情感的乘法——个人的快乐在分享中增值，集体的成功滋养每个成员。鼓励走出二人世界，融入社群，在庆祝与协作中体会丰盛与满足。",
+  "elements": [
+   "三位起舞的女子：象征平等、和谐的社会性联结与团体协作。",
+   "高举的三只圣杯：形成三角结构，代表庆祝、成功干杯与共享成果。",
+   "丰收的果实：象征辛勤耕耘后的物质回报与生命的富足。",
+   "头戴的花环：象征胜利的荣誉、自然的馈赠与对欢乐时刻的加冕。",
+   "红橙白三色袍：分别代表身体的欢愉、社交的智能与灵性的追求。",
+   "环形舞蹈姿态：象征仪式感、永恒的循环与无等级的情感凝聚。",
+   "绿色大地与淡蓝天空：象征丰饶根基与情感的清明愉悦。"
+  ],
+  "up": {
+   "love": "感情生活充满欢乐与分享，可能涉及订婚、婚礼等庆祝仪式，恋情得到朋友家人祝福，单身者易在社交场合结识新缘分。",
+   "career": "团队项目取得圆满成功，职场人际关系融洽协作顺畅，可能获得多方合作机会或收到好消息。",
+   "wealth": "通过合作、投资或团队项目获得可观收益，如分红奖金，财务上处于收获期。",
+   "study": "小组学习或团队项目成果出色，学习氛围轻松愉快，能通过讨论分享共同进步。",
+   "spirit": "个人的快乐在分享中增值，集体的成功滋养每个成员。"
+  },
+  "rev": {
+   "love": "欢乐不再，可能出现第三者干扰或朋友介入导致关系紧张，过度社交可能忽略伴侣导致情感疏离。",
+   "career": "团队合作出现裂痕，如分工不均、内部竞争或项目未达预期，庆祝活动可能演变成应酬负担。",
+   "wealth": "合作生变导致财务损失，或因过度人情消费、沉溺享乐而破财。",
+   "study": "学习小组效率低下，成员不和，或过度社交影响学业，成绩未达预期。",
+   "spirit": "当聚会变成逃避，当热闹变成负担，问自己真正想要的是联结还是填充。"
+  }
+ },
+ {
+  "desc": "圣杯四牌编号为4，是情感进入稳定状态后所引发的内省性停滞。它象征着情感上的倦怠、对现有选择的漠视，以及对新机遇的无意识抗拒。并非没有机会，而是内心感到空洞、不满，因而对外界关闭了通道。这是情感旅程中必要的暂停键，旨在为真正的觉醒和新的投入积蓄力量。",
+  "elements": [
+   "闭目盘坐的男子：象征自我封闭、情感内收与对外界的防御。",
+   "面前的三只圣杯：代表他已拥有的情感成果或熟悉机会，现被漠视或厌倦。",
+   "云中手与第四杯：象征一个崭新、来自更高层面的情感机遇。",
+   "背后的大树：象征稳固的支撑、物质根基与精神成长的可能性。",
+   "红色上衣与灰色外袍：象征被压抑的激情与外在的沉闷疏离。",
+   "交叉的手臂与腿：强化了拒绝、自我保护与能量在体内循环的状态。",
+   "宁静偏冷的环境：营造出疏离与停滞的氛围。"
+  ],
+  "up": {
+   "love": "对现有关系感到倦怠缺乏热情，容易忽略伴侣付出或对新的桃花视而不见，警惕身在福中不知福。",
+   "career": "工作进入倦怠期，对日常任务感到枯燥乏味，可能错过新项目机会因为心态拒绝改变。",
+   "wealth": "财务状况稳定但无增长，满足于现状不思进取，可能拒绝新的投资思路导致财富停滞。",
+   "study": "学习提不起兴趣感到枯燥，对新知识有抵触心理，容易分心陷入被动学习状态。",
+   "spirit": "当情感陷入惯性循环，需要停下来深度内省，分辨是真正的不满足，还是对变化的恐惧。"
+  },
+  "rev": {
+   "love": "从封闭中逐渐苏醒，开始意识到关系中的问题或看到新的可能性，可能愿意尝试沟通或接受约会，情感上出现转机。",
+   "career": "倦怠感缓解，开始留意并愿意考虑新的工作机会、项目或合作邀请，行动力有所恢复。",
+   "wealth": "不再安于现状，开始主动寻求新的收入渠道或投资机会，财务状况有望打破僵局。",
+   "study": "学习状态回暖，重新找到兴趣点或动力，愿意接受新的方法或挑战，成绩有望进步。",
+   "spirit": "清醒地接过那第四杯——是时候打破平静，让新的能量流入。"
+  }
+ },
+ {
+  "desc": "圣杯五牌编号为5，象征在情感领域遭遇失落、悲伤与遗憾后，陷入的短暂沉溺与视角局限。核心并非全然的绝望，而是一种因过度聚焦于已失去而导致的选择性失明。它承认悲伤的正当性，也温柔提醒：治愈与转变的起点，往往始于一次转身，去看见那些未被泪水淹没的、依然完整的存在。",
+  "elements": [
+   "黑色斗篷人物：象征沉浸在悲伤中、自我封闭与外界情感隔离的防卫状态。",
+   "倾倒的三个圣杯：象征已发生的损失、破灭的希望与逝去的情感。",
+   "矗立的两个圣杯：象征未被注意的、依然拥有的支持、潜在机会与内在资源。",
+   "蜿蜒的河流：象征情感的阻隔、悲伤情绪的流淌与需要跨越的内心障碍。",
+   "前方的石桥：象征通往疗愈、新生活或回归稳定的可行路径。",
+   "远处的房屋/城堡：象征安全、家园、情感的归宿或一个等待回归的稳定环境。",
+   "灰暗阴郁的天空：映射出人物内心世界的压抑、悲观与缺乏光明希望的情绪。"
+  ],
+  "up": {
+   "love": "沉浸于失恋或关系破裂的伤痛中难以自拔，可能不断回忆过去的美好，忽视身边其他可能的关心或新机会。",
+   "career": "因项目失败或错失良机而倍感挫败士气低落，可能沉溺于对过去成绩的怀念，无法正视尚存的积极面。",
+   "wealth": "遭受财务损失后沉浸在懊悔中，只看到损失部分而忽视剩余资产或调整策略挽回局面的可能。",
+   "study": "重要考试失利后信心受创，容易陷入自我怀疑和悲观情绪，看不到已有知识基础或改进方法的可能。",
+   "spirit": "悲伤是正当的，但治愈始于一次转身——看见身后那两个依然完整的圣杯。"
+  },
+  "rev": {
+   "love": "从悲伤中逐渐觉醒，开始接受感情已逝的现实，愿意尝试原谅、放下或主动修复关系。",
+   "career": "在挫败后开始振作总结经验教训，视角从失去转向如何利用现有资源重新开始。",
+   "wealth": "停止沉溺于损失，开始积极寻求补救措施或开辟新的收入来源，财务规划转向务实。",
+   "study": "从失利阴影中走出，调整心态和学习方法，开始看到不足与改进空间，为下一次挑战做准备。",
+   "spirit": "跨过那座桥，屋舍就在对岸——你已经拥有的，比你以为的多。"
+  }
+ },
+ {
+  "desc": "圣杯六牌编号为6，是情感脉络中的温馨回溯，象征通过重返纯真、回忆美好与接受馈赠而获得的情感安全感与疗愈。它提醒我们，在向前奔跑的旅途中，偶尔回望那些给予我们最初温暖与信任的人与事，能够为心灵充电，找回内心的安宁与力量。",
+  "elements": [
+   "互动的孩童：象征纯真、童年的友谊、未受污染的情感交流或过去联结。",
+   "赠予的圣杯与鲜花：象征无私的给予、情感的馈赠与美好回忆的分享。",
+   "繁茂的花园：象征安全、庇护、无忧无虑的环境与情感自由生长的沃土。",
+   "远处的城堡与房舍：象征家园、稳定的根源、情感的归宿与安全感。",
+   "持剑的守卫：象征对这份纯真与安宁环境的默默保护、秩序与守护。",
+   "石板路与土路对比：暗示社会阶层的差异或不同人生路径的交汇。",
+   "明媚温暖的色调：营造出祥和、欢乐、充满希望与正面情绪的整体氛围。"
+  ],
+  "up": {
+   "love": "关系充满温情与照顾，可能涉及青梅竹马、旧情复燃，情感联结根植于深厚的信任与美好共同回忆。",
+   "career": "工作环境稳定和谐，可能依赖过去积累的经验人脉，适合童年、教育、护理或传统行业，易得长辈提携。",
+   "wealth": "财务状况稳定，可能获得家庭支持、遗产继承或意外礼物，过去投资储蓄开始显现安稳回报。",
+   "study": "学习状态踏实基础牢固，可能得益于师长般引导者，在熟悉支持的环境中学习效率最高。",
+   "spirit": "回望那些给予最初温暖与信任的人与事，为心灵充电，找回内心的安宁。"
+  },
+  "rev": {
+   "love": "可能过度沉溺于过去的感情或回忆影响现有关系，照顾与依赖失衡演变成控制或过度索取。",
+   "career": "对过去的成就或方法过于依赖，拒绝适应新变化导致停滞，需要走出舒适区。",
+   "wealth": "经济安全感被动摇，可能因沉溺过去消费习惯或依赖旧有经济来源面临压力，需建立新财务规划。",
+   "study": "活在过去成绩的光环或阴影下，无法专注当下学习，方法陈旧需要创新调整。",
+   "spirit": "回忆是养料不是牢笼——把过去收进心里，而不是把自己留在过去。"
+  }
+ },
+ {
+  "desc": "圣杯七牌编号为7，是情感与潜意识领域的欲望迷宫，象征在众多选择、幻想与内心投射面前所产生的深刻迷惘。描绘的不是现实的匮乏，而是选择的过载与认知的迷雾。真正的抉择始于对自我欲望的清醒审视，唯有在幻象中辨明方向，才能将梦想落于现实之地。",
+  "elements": [
+   "悬浮于云雾中的七个圣杯：象征漂浮于意识层面的各种欲望、选择、机会与幻想，近在咫尺却难以捉摸。",
+   "杯中象征物（城堡、珠宝、桂冠、龙、人头、发光人形、蛇）：分别代表安全/冒险、财富、成功、恐惧/诱惑、人际、未知潜能与智慧/欺骗。",
+   "桂冠下的骷髅头：暗示荣耀背后的代价、虚荣的虚幻本质或对成就的警醒。",
+   "黑色人影：象征沉溺于欲望审视中的做梦者，姿态透露出迷茫与难以抉择。",
+   "浓密缭绕的云层：象征思维的混沌、认知的模糊与幻想间的界限不清。",
+   "人影伸手向前的姿态：表现出试图抓住或触碰某个选择的倾向，动作中透露犹豫与挣扎。"
+  ],
+  "up": {
+   "love": "容易陷入对关系或对象的理想化想象，可能同时被多人吸引或对现有关系抱有不切实际期待，警惕爱上的只是自己的幻想。",
+   "career": "面前可能出现多个发展方向但大多流于空想，容易因目标过多分散精力，缺乏专注与实际行动。",
+   "wealth": "对财富有诸多设想，但多停留在想象阶段，缺乏理性评估与执行，需警惕虚假的财务繁荣感。",
+   "study": "兴趣广泛但浅尝辄止，学习目标不明确或过于理想化，需要聚焦核心并制定切实可行的计划。",
+   "spirit": "在纷繁的可能性面前，穿透我想要的表象，触摸到我真正需要的内核。"
+  },
+  "rev": {
+   "love": "可能从白日梦中惊醒，开始正视关系的真实面貌，可能做出选择、结束单方面幻想，或因幻灭而失望。",
+   "career": "从空想转向实际，被迫或主动从众多选项中筛选出可行路径开始落实，但也可能因理想破灭变得消极。",
+   "wealth": "开始理性评估财务机会，放弃不切实际的投资幻想进行务实规划，也可能看清财务陷阱而采取保守策略。",
+   "study": "从迷茫中寻回焦点，确定主攻方向或放弃不现实目标，学习态度变得务实。",
+   "spirit": "当迷雾散去，选择不再困难——因为你看清了哪个是渴望，哪个是恐惧。"
+  }
+ },
+ {
+  "desc": "圣杯八牌编号为8，是情感旅程中一次主动的、寻求更深满足的离开。当外在的情感收获已无法填补内在的空虚与对更高意义的渴望时，当事人选择转身，独自走向未知的旅途。并非逃离痛苦，而是出于清醒的不满足感——一次向着内在山巅的孤独朝圣。",
+  "elements": [
+   "离去的红衣人：象征决绝的行动力、内在热情与踏上孤独追寻的勇气。",
+   "整齐排列的八个圣杯：象征已获得的情感成就、人际关系或世俗满足。",
+   "圣杯阵列的空缺：象征不完整感与离开的根本动因。",
+   "高悬的日月同辉：象征直觉与意识的共同指引、日夜兼程的追寻与内在觉醒。",
+   "蜿蜒的河流与沼泽：象征被留下的情感牵绊、需要穿越的情绪泥沼。",
+   "远方的崎岖山路：象征追寻之路充满挑战、需要精神提升以获得更高远视野。"
+  ],
+  "up": {
+   "love": "对现有关系感到深层不满足或精神不同步，可能选择冷静离开去寻求更契合的灵魂伴侣或专注自我成长。",
+   "career": "对当前职业感到倦怠或缺乏意义，可能决定离职转行，去追寻真正有热情有成长空间的新方向。",
+   "wealth": "可能为了更高追求主动放弃部分稳定收入，进行长期投资（尤其是对自我的投资）。",
+   "study": "不满足于现有知识体系，可能转换专业、研究方向，去探索更前沿更契合个人志趣的领域。",
+   "spirit": "放下既有的安稳，勇敢响应内心的召唤，去探索精神与情感上未被触及的深度。"
+  },
+  "rev": {
+   "love": "明知关系有问题却因恐惧依赖或习惯无法离开，陷入痛苦僵局，或冲动离开后又后悔陷入反复。",
+   "career": "感到职业枯竭却不敢改变，用借口拖延；或未经深思仓促离职，结果陷入更糟境地。",
+   "wealth": "因情绪化决策导致财务受损，或缺乏改变现状的动力，在不满中维持不健康的财务习惯。",
+   "study": "对学习感到厌倦却强迫自己继续，效率低下；或想转换方向却因害怕失败而迟迟不行动。",
+   "spirit": "如果离开是逃避，留下是消耗——那么真正的问题不是去哪，而是你为什么不敢选择。"
+  }
+ },
+ {
+  "desc": "编号为9，情感旅程中愿望达成与自我满足的丰碑，象征情感、物质与精神层面皆获圆满的喜悦状态，是美梦成真的时刻。核心是健康的自我价值感与发自内心的快乐，也提醒在享受成就的同时保持感恩与分享之心。",
+  "elements": [
+   "自信端坐的男子：神情愉悦满足、姿态放松，象征内在的丰盈与对现状的满意。",
+   "交叉环抱的手臂：双手胸前交叉抱合，形成类似无限符号，象征自给自足与内在力量的循环完满。",
+   "整齐排列的九个圣杯：象征已实现的情感愿望、达成的目标与积累的成就。",
+   "蓝色桌布与帷幕：象征平静的内心、深邃的情感满足与衬托成就的智慧背景。",
+   "鲜红帽饰与羽毛：象征对生命的热情、活力的思想与成功的荣耀感。",
+   "朴素灰白衣着：暗示满足源于内在精神世界，体现质朴的丰足。",
+   "稳固的木质坐凳：象征成就的根基牢固、处境的安稳与持久满足。",
+   "明亮黄色背景：象征智慧、光明、乐观情绪与丰收般的欢庆氛围。"
+  ],
+  "up": {
+   "love": "情感关系非常满足与和谐，双方都感到幸福与被珍视，可能刚实现重要承诺或处于互相滋养的稳定关系。",
+   "career": "工作成就显著，获得认可、奖励或晋升，自信心强，可能成功完成大项目或达到个人里程碑。",
+   "wealth": "财务状况极佳，收入稳定丰厚，投资有望获利，消费多用于提升生活品质。",
+   "study": "学业取得优异成绩或重要突破，学习充满成就感，对能力感到自豪满足。",
+   "spirit": "你的渴望值得被满足——先肯定自己的价值，同时保持感恩与分享，避免孤芳自赏。"
+  },
+  "rev": {
+   "love": "表面满足下隐藏着空虚，可能因过度自我中心忽略伴侣感受，或关系停留在物质层面缺乏深层联结。",
+   "career": "成功可能带来傲慢，因过度自信判断失误，或停滞于现有成就不再进取。",
+   "wealth": "可能因挥霍、不当投资或贪婪导致财务损失，或陷入为炫耀而消费的恶性循环。",
+   "study": "可能因自满而松懈导致成绩下滑，或目标不切实际产生挫败感，需检查学习动机。",
+   "spirit": "警惕自满与孤立，真正的满足来自分享与连接，而非独自占有。"
+  }
+ },
+ {
+  "desc": "圣杯十编号为10，象征情感历程的圆满与和谐，是水元素在情感世界的最终实现。它不只代表家庭幸福，更指向一切情感团体的和谐共生——包括友谊、社群与亲密关系。核心哲学是共享的喜悦——情感不仅被拥有，更被看见、被回应、被传递。",
+  "elements": [
+   "编号10：象征完满与转化，代表情感历程的终结与达成，也预示新循环的起点。",
+   "彩虹与十个圣杯：形成天桥，象征上天祝福、理想照进现实。",
+   "一家四口：代表稳定的情感团体，父母拥抱展现爱与支持，孩子舞蹈象征纯真与传承。",
+   "房屋：象征安全感、归属与物质根基，是情感得以扎根的现实容器。",
+   "河流：象征情感的延续与滋养，也代表生命力的温柔流淌。",
+   "绿地与远山：象征生机、丰饶与长远稳定，寓意情感在自然生长中结出果实。",
+   "蓝天白云：代表清澈心境与和谐能量，呼应内在宁静与外在顺遂。"
+  ],
+  "up": {
+   "love": "关系进入稳定成熟阶段，如家人般默契和谐，适合谈婚论嫁、共建家庭，情感深厚且能彼此扶持。",
+   "career": "团队氛围融洽合作顺畅，易达成共同目标，适合家庭事业、团队项目或稳定发展型职业。",
+   "wealth": "财务稳定收支平衡，家庭经济状况良好，适合为家庭进行长期规划或共享资源。",
+   "study": "学习环境支持性强，心态放松且效率高，适合小组学习、家庭辅导或在温暖氛围中成长。",
+   "spirit": "真正的幸福源于与所爱之人的深度联结，并在平凡日常中看见永恒。"
+  },
+  "rev": {
+   "love": "情感冷漠或家庭矛盾显现，可能感到倦怠疏离，需检视关系中是否缺乏真诚交流。",
+   "career": "团队协作出现问题，目标不一致或合作破裂，应避免过度自我或忽视他人感受。",
+   "wealth": "家庭开支压力大，财务规划混乱，或因情感问题引发经济损失。",
+   "study": "学习状态受情绪干扰，易分心或缺乏支持系统，需重建学习节奏与情感平衡。",
+   "spirit": "当幸福变成表演，先问自己：这个团体里，有谁听见了杯子裂缝的声音？"
+  }
+ },
+ {
+  "desc": "圣杯国王，作为宫廷牌中的情感统帅，象征情感力量的至高成熟、慈悲与权威的完美融合。他并非情感的奴隶，而是水元素力量与土元素稳定结合的智慧舵手——一位能驾驭情感海洋、将深刻直觉转化为现实影响力与创造性成就的成熟领导者。",
+  "elements": [
+   "国王姿态与神情：稳坐海上宝座，目光深邃平静，象征内在宁静、情感掌控与成熟权威。",
+   "手中权杖与圣杯：权杖代表领导力，圣杯代表情感，两者并持体现理性与感性的平衡统御。",
+   "海上宝座与波涛：宝座稳固置于汹涌海浪中，象征于情感波澜外界动荡中保持内在稳定。",
+   "跃出海面的鱼：象征潜意识灵感、直觉智慧的瞬间显现，被成熟心智捕获并升华。",
+   "背景航行的帆船：象征人生旅程、外界挑战与机遇，在国王守护下安稳前行。",
+   "华美长袍与色彩：蓝袍表忠诚深度，红袍显行动热情，金饰喻智慧丰盛。",
+   "鱼形项链或装饰：象征与深层情感、创造力的内在连接及直觉具象化能力。",
+   "多层皇冠：象征情感、精神与世俗领域的多重权威与整合智慧。"
+  ],
+  "up": {
+   "love": "拥有成熟、稳定、充满安全感的情感关系，伴侣可靠体贴，善于沟通与提供情绪价值，关系如家人般深厚且受祝福。",
+   "career": "作为充满人文关怀与创造力的领导者，善于管理团队调解矛盾，适合艺术、疗愈、咨询、教育等领域。",
+   "wealth": "财务状况稳健，具备良好的财务掌控力与长远规划，善于通过创意、人际或稳健投资获利。",
+   "study": "学习上能深刻理解并灵活运用知识，尤其在直觉与逻辑结合的人文学科或创造性学科上表现出色。",
+   "spirit": "以深情掌舵现实——拥有海洋般深邃的情感，却始终保持如大地般沉稳的掌控力。"
+  },
+  "rev": {
+   "love": "情感封闭、冷漠或失控，可能因过去的伤害无法信任，或情绪压抑爆发导致关系僵持。",
+   "career": "领导力失效，可能过于情绪化、优柔寡断或滥用情感权威，团队失去方向。",
+   "wealth": "财务失控，因情感用事做出错误决策或缺乏规划导致损失，可能为维系表面和谐而过度支出。",
+   "study": "学习动力不足，容易被情绪干扰或沉溺空想，难以深入钻研，知识掌握流于表面。",
+   "spirit": "当情感成为王座的裂缝，先修复内心的风浪，再谈驾驭他人。"
+  }
+ },
+ {
+  "desc": "圣杯王后，作为宫廷牌中的情感导师，象征直觉的深度、情感的炼金术与无条件的爱的滋养。她并非单纯的情绪化身，而是水元素力量成熟与升华的体现——一位能倾听心灵低语、将情感波澜沉淀为智慧与灵感的心灵炼金师。",
+  "elements": [
+   "王后姿态与神情：安坐凝视圣杯，姿态宁静包容，神情专注慈悲，象征内省直觉与情感沉浸。",
+   "华丽圣杯：杯身精美常有天使装饰，象征情感与灵性的神圣容器。",
+   "水边环境与流动水体：象征与潜意识直接连通、情感的永恒流动。",
+   "白色或浅色长袍：象征灵魂的纯洁、内心的柔和与不染尘埃的情感本质。",
+   "王座与稳固基石：象征情感力量在现实中的稳固根基与温柔权威。",
+   "美人鱼/小天使装饰：象征保护性能量、丰富想象力与神秘联结。",
+   "彩色鹅卵石/贝壳：象征被情感打磨出的丰富创意、多元灵感与心灵宝藏。",
+   "头顶皇冠：象征情感领域的统治力、成熟的直觉智慧与内在的灵性权威。"
+  ],
+  "up": {
+   "love": "拥有深刻的情感理解力与滋养力，关系充满信任与精神共鸣，是体贴的伴侣，能提供深厚的情感支持与安全感。",
+   "career": "在需要同理心、直觉与创造力的领域表现出色，如艺术、疗愈、心理咨询或教育，是善于协调滋养团队的领导者。",
+   "wealth": "财务状况稳定，善用直觉进行稳健的理财或投资，可能通过艺术、灵性或情感服务获得收益。",
+   "study": "在人文、艺术、心理学等学科上拥有敏锐感知力与深刻领悟力，学习过程充满灵感。",
+   "spirit": "以深情洞见世界——真正的力量，源于对情感深海的了如指掌，并将感知转化为温柔包容与创造。"
+  },
+  "rev": {
+   "love": "情感过度泛滥、依赖或缺乏边界，可能情绪化、多愁善感，或陷入自怜、幻想的关系，需警惕情感勒索或失去自我。",
+   "career": "直觉失灵，情绪干扰判断，可能因敏感、优柔寡断或感情用事导致决策失误，或在不良环境中消耗自己。",
+   "wealth": "财务因情绪化消费、缺乏规划或轻信他人而混乱，可能为虚假的情感寄托挥霍金钱。",
+   "study": "学习被情绪淹没，难以专注或深入，可能沉溺空想、依赖他人答案。",
+   "spirit": "当共情变成自溺，当滋养变成消耗——先学会接住自己，再谈接住世界。"
+  }
+ },
+ {
+  "desc": "圣杯侍从，作为宫廷牌中的使者，象征情感世界的初探、纯净直觉的觉醒与创意灵感的萌芽。他并非幼稚，而是代表着情感天赋的最初形态——一种对内在世界敞开接纳、愿意相信并追随感觉的状态。用心聆听内在低语，让创意如鱼跃出水面般自然涌现。",
+  "elements": [
+   "年轻侍从姿态：姿态轻松专注，单手持杯，象征对情感讯息开放接纳与好奇探索。",
+   "圣杯与跃出的鱼：圣杯为情感容器，鱼跃出象征潜意识灵感、直觉讯息与创意的具象显现。",
+   "侍从服饰与色彩：衣袍色彩斑斓，象征青春活力、艺术感性与丰富的情感层次。",
+   "帽檐浪花装饰：象征思维情感的流动不息与丰富想象力。",
+   "袖口麦穗与花朵：麦穗预示潜在收获与成长，花朵代表浪漫美好。",
+   "背景浩瀚水面：象征广袤潜意识、情感深度与内在无限可能。",
+   "侍从面容表情：专注温和略带惊讶，象征对内在讯息的敏感接收与天真情感态度。"
+  ],
+  "up": {
+   "love": "一段纯真、浪漫关系的开始或萌芽，如初恋、暧昧，感情真诚而直接，充满美好的幻想与甜美的互动。",
+   "career": "工作迎来需要创意、灵感或情感投入的新机会，适合艺术、策划、心理咨询等领域，或收到好消息。",
+   "wealth": "可能有基于兴趣或直觉的小额投资机会，或通过创意、人际获得收益，前景可期。",
+   "study": "学习上充满好奇心与灵感，善于想象与联想，适合文学、艺术、心理学等感性学科。",
+   "spirit": "像孩子般对心灵波动的全然好奇与信任——灵感始于用心聆听内在的低语。"
+  },
+  "rev": {
+   "love": "情感不成熟、幻想过多或缺乏承诺，可能陷入暧昧、多角关系，或因依赖、情绪化导致关系不稳定。",
+   "career": "想法脱离现实，缺乏行动力与计划，可能错失机会，或在工作中情绪波动效率低下。",
+   "wealth": "财务上缺乏规划，易情绪化消费或轻信他人，投资过于理想化导致浪费或损失。",
+   "study": "学习浮躁易分心，沉迷空想而缺乏扎实努力，可能偏科严重或对学习失去兴趣。",
+   "spirit": "当灵感只是幻想，当好奇变成逃避——把那只鱼放回水里，先面对现实。"
+  }
+ },
+ {
+  "desc": "圣杯骑士，作为宫廷牌中的追寻者，象征浪漫理想的化身、情感的主动奉献与灵感的优雅承载。他并非鲁莽的战士，而是水元素中融合火元素特质的诗意旅人——既怀有深邃的情感与直觉，又具备将灵感转化为行动的潜在热情。为美与爱而远征。",
+  "elements": [
+   "白马与缓慢步伐：白马象征纯洁理想，步伐徐缓，体现骑士从容诗意、行动深思熟虑。",
+   "骑士华美盔甲：蓝银色盔甲象征以理性保护内在敏感，是外在防御与内在温柔的并存。",
+   "手中圣杯：被平稳持握，象征骑士珍视的情感理想、艺术灵感或等待奉献的深情。",
+   "盔甲鱼纹/红色图案：象征活跃创造力、浪漫热忱与潜意识灵感。",
+   "头盔羽毛装饰：象征轻盈思想、崇高追求与探索精神。",
+   "背景河流与旱地：河流滋养情感生命，旱地代表现实枯燥，对比凸显情感灌注的重要。",
+   "骑士年轻面容：神情专注温和略带沉思，象征敏感共情、重视内在体验的个性魅力。"
+  ],
+  "up": {
+   "love": "遇见浪漫、体贴、富有魅力的理想型伴侣，或关系进入充满诗意与奉献的新阶段，感情深厚注重精神交流。",
+   "career": "从事需要创意、艺术感或人际情感的领域表现出色，可能获得灵感迸发、合作邀约。",
+   "wealth": "财务状况稳步建立，可能通过艺术、人情或灵感相关途径获得收益，适合为长期理想投资。",
+   "study": "在人文、艺术、心理学等需要直觉与共情的学科上灵感充沛，学习因热爱而深入。",
+   "spirit": "人生不仅需要理性的规划，更需要追随内心的召唤，为值得的人事物优雅奔赴。"
+  },
+  "rev": {
+   "love": "情感泛滥、缺乏承诺或过于理想化，可能遇人不淑、陷入多角关系，或用浪漫表象掩盖不专一与逃避。",
+   "career": "想法脱离实际，缺乏行动力与持久性，计划多变易受情绪影响，出现拖延或人际虚浮。",
+   "wealth": "财务表面光鲜内里虚空，易为情绪、享乐或虚假机会消费，需警惕欺诈与投资陷阱。",
+   "study": "学习兴趣短暂，沉溺空想而缺乏扎实努力，可能偏科严重或用取巧方式应付。",
+   "spirit": "白马踏浪而来时，先分辨那是真爱，还是对平凡的恐惧。"
+  }
+ },
+ {
+  "desc": "星币一，又称星币王牌，象征物质世界的全新开始、丰盛机遇与务实的根基。它如同从云端之手递来的礼物，代表着一份实实在在的财富、资源或潜力被交付到你手中。核心意义是种下美好的种子，才能收获丰硕的果实——精神的追求需要物质的承载，真正的繁荣始于对当下资源的珍视与妥善经营。",
+  "elements": [
+   "云端之手：象征来自宇宙或更高层面的恩赐、机遇与祝福，是纯粹潜能的具象化。",
+   "星币：圆形钱币上刻有五角星，代表物质财富、完整性与人体五部分的和谐统一。",
+   "五角星：一角垂直向上，象征心智对物质欲望的引导与控制。",
+   "玫瑰花拱门：象征丰饶与美好的精神世界，暗示物质背后需有精神滋养。",
+   "白色花丛：象征旺盛的生命力、纯洁的初心以及繁荣前的准备阶段。",
+   "花园与草坪：象征安全、被庇护的领域，想法在此得以孕育与保护。",
+   "蜿蜒小径：通向远方，象征通往成功的路径，需要一步步踏实前行。",
+   "远山：象征长远的目标与仍需努力攀登的挑战。",
+   "方形大拇指印：象征土元素的本质——稳定、坚固与物质世界的法则。"
+  ],
+  "up": {
+   "love": "一段稳定、务实关系的新开始，可能遇到能提供安全感、适合共同规划未来的对象，感情有坚实的物质或情感基础。",
+   "career": "开创事业或项目的新契机，资金充足前景光明，适合启动新计划、投资或创业，成功概率极高。",
+   "wealth": "财运极佳，可能有意外收入、加薪或良好投资机会，适合进行理财规划让钱生钱。",
+   "study": "学习迎来新起点，对务实学科（如经济、工程）兴趣浓厚，基础打得牢，适合制定长期学习计划。",
+   "spirit": "种下美好的种子，才能收获丰硕的果实——珍惜当下的资源，妥善经营。"
+  },
+  "rev": {
+   "love": "感情缺乏稳固基础，可能因现实问题（如经济压力、价值观差异）难以推进，关系流于表面享乐。",
+   "career": "错失良机或准备不足导致项目失败，财务决策失误资源浪费，或因怀疑能力而不敢争取发展。",
+   "wealth": "财务混乱入不敷出，可能因过度享乐、冲动消费或投资失误导致损失，缺乏理财观念。",
+   "study": "学习基础不牢好高骛远，可能因懒惰或方法不当无法取得应有成绩，警惕投机行为。",
+   "spirit": "礼物被递到手中却被忽视——先看清自己手里已经握着的资源。"
+  }
+ },
+ {
+  "desc": "星币二，象征生活的起伏波动与在变化中寻求平衡的智慧。核心并非规避波动，而是学习在动荡中保持从容与弹性，像艺人一样将重心在两极间流畅转移。面对多重事务、财务起伏或情感抉择时，不必僵守一端，应顺势而为，以轻松的心态找到动态的平衡。",
+  "elements": [
+   "杂耍艺人：象征灵活应变、从容不迫，能在变动中游刃有余地处理多重事务。",
+   "两枚星币：代表金钱、物质资源，也象征两个选择、两份工作或两种需要平衡的事物。",
+   "无限符号（8字形带）：象征能量循环、金钱流动、动态平衡与无尽的可能性。",
+   "红色帽子与衣裤：体现行动力、热情与活力。",
+   "绿色腰带：代表平衡、和谐与生生不息的希望，稳固核心。",
+   "背后汹涌海浪：象征生活的起伏、命运的波动以及不可控的外部变化。",
+   "海上帆船：寓意人在人生浪潮中航行，需灵活掌舵顺应潮流。",
+   "艺人动态姿态：表现持续调整重心以适应变化的必要性。"
+  ],
+  "up": {
+   "love": "关系充满变化与激情，双方需适应彼此的波动，可能面临两个对象的选择或需平衡感情与工作。",
+   "career": "工作起伏较大，可能身兼数职或同时推进多个项目，需灵活应对把握时机，有望在变动中获得收益。",
+   "wealth": "财务状况波动有进有出，适合短期投资或流动性强的理财，注意收支平衡避免大起大落。",
+   "study": "学习状态随心情起伏成绩不稳定，需要合理分配时间劳逸结合，通过娱乐调节压力提升效率。",
+   "spirit": "不必僵守一端，顺势而为——用幽默感化解压力，在动荡中保持从容。"
+  },
+  "rev": {
+   "love": "关系严重失衡，可能因第三者或现实压力产生重大裂痕，情绪化冲突增多，复合易陷入分分合合。",
+   "career": "面对多重任务无力招架，工作态度消极常出错，可能因过度玩乐或应酬影响表现错失良机。",
+   "wealth": "财务混乱进出严重不平衡，可能因赌博、冲动消费或投资失误导致损失。",
+   "study": "成绩大幅下滑心浮气躁无法专注，因环境变动频繁难以静心学习，需先稳定情绪。",
+   "spirit": "当两颗星币都抓不住时，先放下一个，才有手去接住另一个。"
+  }
+ },
+ {
+  "desc": "星币三，象征团队协作、专业技艺与初步成果的稳固建立。核心并非单打独斗的英雄主义，而是不同专业背景的人们因共同目标而协同创造。真正持久的价值建立在稳固基础之上，需要时间沉淀、专业精进与开放沟通。努力将获得应有的回报。",
+  "elements": [
+   "雕刻师（工匠）：身着蓝衣，象征冷静沉着、专注技艺的执行者。",
+   "设计师（修士/修女）：手持图纸，象征智慧、规划与创意，为工程提供蓝图与方向。",
+   "观察者（僧侣）：端详成果，代表精神层面的审视与对完美的追求。",
+   "设计图纸：隐约可见三枚星币，象征行动需要周密计划。",
+   "锤子与凿子：锤子凝聚注意力，凿子象征穿透困难的意志力与精益求精的态度。",
+   "修道院拱门：建筑结构融合立方体（土/物质）与圣杯（水/情感），预示物质与精神的结合。",
+   "三角结构：代表火元素的文化之精、智慧与协作的象征。",
+   "都铎玫瑰：象征精神觉醒、宇宙种子与潜在的创造力。"
+  ],
+  "up": {
+   "love": "关系稳定务实，建立在共同目标与良好分工之上，可能门当户对适合谈婚论嫁，但需注意情感交流避免过于沉闷。",
+   "career": "团队合作顺畅各司其职，项目取得初步成果，专业能力获认可，有望晋升或接到重要任务。",
+   "wealth": "财务基础稳固，适合长期保值投资（如房地产），通过团队协作获利，可逐步积累资产。",
+   "study": "成绩优异部分科目表现突出，适合与同学交流切磋教学相长，专业能力将帮助获得荣誉与认可。",
+   "spirit": "将个人才华转化为集体成就——真正持久的价值，建立在分工与协作之上。"
+  },
+  "rev": {
+   "love": "关系根基不稳，缺乏沟通与包容，可能因过度关注物质而忽略情感，出现分歧或第三方介入。",
+   "career": "团队内部矛盾重重信任基础崩塌，计划不周能力不足或沟通不畅导致挫败。",
+   "wealth": "收入不稳定利润分配不均引发纠纷，理财计划有差错，需注意合作细节避免疏忽损失。",
+   "study": "基础薄弱成绩平平，缺乏耐心与专注，好高骛远却难见成效，需从基层积累。",
+   "spirit": "当分工变成推诿，当协作变成角力——回到图纸，重新对齐目标。"
+  }
+ },
+ {
+  "desc": "星币四，象征对物质财富的强烈占有欲、对安全感的极度渴望以及在守护与流动之间的挣扎。当守护演变为禁锢，财富便从资源沦为牢笼。真正的丰盛在于让资源在适度开放中创造价值，而非如守财奴般将其冻结在恐惧之中。",
+  "elements": [
+   "端坐的男子：姿态紧绷专注，象征对财富的强烈掌控欲与对外界的高度警惕。",
+   "头顶星币：压在皇冠之上，象征荣誉地位建立在物质基础之上，也是稳固与限制的双重象征。",
+   "怀抱星币：双手环抱成圆形，象征被紧紧守护的流动资产，暗示不愿分享与流动。",
+   "双脚踏星币：象征财富的根基深扎于现实，也隔绝了与大地能量的直接连接。",
+   "深蓝色披风：象征情感隔绝、自我保护与内心的孤独。",
+   "红色长袍：代表内心深处依然涌动的热情、欲望与行动力。",
+   "身后的石凳：象征社会地位与权力，也暗示坐拥财富却与外界隔绝的孤独。",
+   "背景的城市：代表物质世界的丰富繁荣，与男子的孤独封闭形成鲜明对比。"
+  ],
+  "up": {
+   "love": "关系稳定但缺乏激情，建立在物质基础与共同规划之上，一方可能有较强控制欲或占有欲，情感安全却容易让人感到束缚。",
+   "career": "职场保守谨慎，收入稳定可靠，适合财务、管理等领域，但可能因拒绝变革而错失发展良机。",
+   "wealth": "财务状况极佳，可能获遗产、奖金或投资回报，善于储蓄与积累，但需警惕过度节俭导致错失增值机会。",
+   "study": "学习态度扎实成绩稳定，善于把握重点持续努力，但可能因方法保守难以突破瓶颈。",
+   "spirit": "安全感的真正来源不是抓得越紧，而是敢于让资源流动。"
+  },
+  "rev": {
+   "love": "关系陷入停滞或对立，一方不愿付出或过于固执，可能因价值观冲突产生裂痕，情感基础动摇。",
+   "career": "工作脱离掌控出现无法处理的阻碍，缺乏发展前景，可能因保守错失转型时机。",
+   "wealth": "财务出现不稳定，投资走下坡路，可能因贪婪或吝啬导致损失，过度控制反而造成资源流失。",
+   "study": "成绩波动基础不牢，可能因思维僵化、死记硬背导致学习效果不佳，需打破固有模式。",
+   "spirit": "抓紧的恐惧，最终会变成失去的原因。"
+  }
+ },
+ {
+  "desc": "星币五，象征物质与精神的双重匮乏、逆境中的考验以及苦难中若隐若现的希望。并非全然绝望——困境中的陪伴、教堂窗户上的星币代表未被察觉的精神支持或潜在转机。真正的救赎不是逃避苦难，而是在黑暗中学会看见微光，让匮乏成为唤醒内在力量的契机。",
+  "elements": [
+   "两位乞丐：衣衫褴褛弯腰驼背，象征物质匮乏、社会边缘化以及在困境中相互扶持的陪伴。",
+   "拐杖与绷带：象征身体的疾病、伤残以及坚持前行的毅力。",
+   "脖子上的铃铛：象征厄运、疾病、被社会隔离的警示。",
+   "纷飞的雪花：代表外在环境的严酷、情感的冰冷以及精神上的净化考验。",
+   "彩色玻璃窗：透出温暖光芒，象征精神庇护、信仰希望与未被察觉的援助。",
+   "五枚星币（窗户上）：代表物质资源近在咫尺却难以触及，也暗喻精神财富。",
+   "教堂建筑：象征物质与精神的庇护所，无门的构图暗示援助需要主动寻求。",
+   "两人低头赶路：象征专注于现实苦难而忽视潜在的精神支持。"
+  ],
+  "up": {
+   "love": "关系面临现实压力如经济困难、健康问题，但两人仍不离不弃患难见真情，陪伴本身就是力量。",
+   "career": "职场遭遇寒冬，可能失业、降薪或项目停滞，需勒紧腰带度过难关，寻求过渡性工作。",
+   "wealth": "财务状况极度拮据，可能负债累累或收入中断，需精打细算优先保障基本生存。",
+   "study": "学习因经济或环境问题受阻，基础薄弱成绩不佳，需坚持积累，放弃将更无希望。",
+   "spirit": "在黑暗中学会看见微光——匮乏可以是唤醒内在力量的契机。"
+  },
+  "rev": {
+   "love": "从冷漠疏离中尝试重建联结，可能共同面对经济压力或寻求外部帮助修复关系，但需警惕貌合神离。",
+   "career": "困境中出现微弱转机，如找到兼职或接受低薪岗位暂缓危机，需抓住任何改善机会。",
+   "wealth": "财务从谷底缓慢回升，债务重组或临时收入带来喘息，仍需极度节俭重建财务纪律。",
+   "study": "学习在困境中重启，如半工半读、利用免费资源，成绩波动但渐入正轨。",
+   "spirit": "那扇没有门的教堂，提醒你：援助需要主动去敲——转机属于先伸手的人。"
+  }
+ },
+ {
+  "desc": "星币六，象征资源分配中的施与受、权力关系中的支配与顺从，以及财富流动中的公平与失衡。核心并非简单的慷慨慈善，而是探讨在给予与接受的过程中如何保持尊严、责任与感恩的平衡。真正的丰盛不是独占资源，而是让财富在流动中创造共生价值。",
+  "elements": [
+   "红衣施舍者：衣着华贵，象征财富、权力以及掌握资源分配的主导地位。",
+   "手中天平：象征公平分配、理性衡量以及对施与受分寸的精准把控。",
+   "两个跪着的乞丐：象征物质匮乏、接受帮助以及处于权力关系中的弱势方。",
+   "伸出的手：代表给予、分享以及资源的实际流动。",
+   "乞丐跪地接受：体现顺从、感恩以及关系中地位的不平等。",
+   "六枚星币：三枚已递出三枚待分，象征资源的合理分配与各取所需的和谐。",
+   "背景葱绿树木：象征困境已过春夏到来，接受者迎来转机。",
+   "垂直三层构图：施者站立、受者跪地，清晰呈现权力结构与资源流向。"
+  ],
+  "up": {
+   "love": "关系甜蜜满足，但可能存在经济或地位的差异，一方愿意付出另一方懂得感恩，需警惕控制倾向保持双向滋养。",
+   "career": "工作状况良好收入可观，适合团队合作分享成果，可能有贵人相助或资源分配合理。",
+   "wealth": "财务稳定且有余裕帮助他人，可能通过合作互利共赢，适合投资理财但需量力而行。",
+   "study": "成绩突出在同学中表现优异，善用专长帮助他人教学相长，可获更多学习机会。",
+   "spirit": "在给予与接受之间，保持尊严、责任与感恩的平衡——让财富在流动中共生。"
+  },
+  "rev": {
+   "love": "关系扭曲，存在经济控制、情感勒索或单方面过度索取，一方可能被利用，付出得不到回应。",
+   "career": "职场资源分配不公，存在裙带关系或暗箱操作，可能遭遇克扣薪资或因贪婪失去信任。",
+   "wealth": "财务陷入困境，可能因过度施舍无法收回或被诈骗，需建立财务边界优先保障生存。",
+   "study": "学习资源分配不均，可能因依赖他人（如抄袭）导致能力退化，需回归自主学习。",
+   "spirit": "当给予变成控制，当接受变成依赖——天平的平衡，先要回到自己心里。"
+  }
+ },
+ {
+  "desc": "星币七，象征耕耘后的初步收获、对成果的审视以及对未来方向的深度思考。他已完成阶段性劳作却尚未采摘，正站在选择的十字路口。核心并非简单的丰收庆祝，而是强调在积累的基础上进行价值判断：哪些努力值得继续，哪些方法需要调整，如何将短期成果转化为长期可持续的成长。",
+  "elements": [
+   "农夫形象：身着红衣（热情行动）与蓝衣（理性冷静），象征追求目标时兼具活力与清醒。",
+   "倚靠锄头的姿态：暂歇而非放弃，代表劳动后的停顿、反思以及为下一阶段积蓄能量。",
+   "锄头：象征劳动力、坚定的意志力以及将理想转化为现实的决心。",
+   "茂盛的灌木丛：代表经过长期耕耘后获得的成果、财富与资源积累。",
+   "七枚星币：悬挂于枝头，象征丰硕的收成，也对应数字七的内省与突破能量。",
+   "地上的一枚星币：暗示仍有细节待完成，或提醒关注被忽略的潜在资源。",
+   "远处的紫色山脉：象征未来的潜力、更高的目标以及仍需攀登的挑战。",
+   "晴朗天空：代表希望明朗、时机成熟，是收获与展望的适宜环境。"
+  ],
+  "up": {
+   "love": "关系稳定成熟，进入思考未来的阶段，可能讨论婚姻、同居等长远规划，需耐心沟通避免急于求成。",
+   "career": "工作取得初步成效但未达巅峰，需评估现有成果调整策略，以长远眼光规划下一步，创意是突破关键。",
+   "wealth": "财务已有积累，正考虑如何优化配置，投资初显获利但需理性分析，探索新增长点。",
+   "study": "学习基础扎实成绩不错但遇瓶颈，需深入思考原理，用创意打破僵局。",
+   "spirit": "真正的智慧不仅在于耕耘的勤奋，更在于收成前的冷静思索。"
+  },
+  "rev": {
+   "love": "关系陷入瓶颈对未来迷茫焦虑，可能因急于推进或缺乏规划导致矛盾，需暂停脚步重新审视彼此需求。",
+   "career": "努力与回报不成正比，或因缺乏清晰方向导致项目停滞，可能遭遇画饼、资源不足。",
+   "wealth": "财务进展缓慢投资回报未达预期，可能因目光短浅或盲目行动造成损失。",
+   "study": "学习遇到瓶颈焦虑却无力突破，可能因方法错误或缺乏耐心导致成绩下滑。",
+   "spirit": "收成之前先问自己：这片果园，是值得继续耕耘，还是该换一片土地？"
+  }
+ },
+ {
+  "desc": "星币八，象征专注投入、技艺精进与通过勤奋工作获得的扎实成就。核心并非天赋异禀的灵感迸发，而是日复一日的坚持与对细节的极致追求。真正的专业源于耐得住寂寞的积累，每一份努力都在为未来的成功奠定基石。",
+  "elements": [
+   "工匠：身着蓝色工作服（沉稳理性）、红色裤子（热情行动），象征专注工作时的身心合一。",
+   "黑色围兜：象征全身心投入、隔绝干扰的工作状态。",
+   "手中刻刀与锤子：代表精雕细琢的技艺与将创意具象化的行动力。",
+   "已完成的星币（六个）：象征过去的努力成果与经验的积累。",
+   "未完成的星币（两个）：代表仍需耐心雕琢的当下任务。",
+   "长凳：象征稳定、务实的职业基础。",
+   "背后的城市/城堡：预示工作终将服务于社会，也是休息与目标所在。",
+   "黄色道路：象征劳动成果与社会需求的联系。"
+  ],
+  "up": {
+   "love": "关系稳定持久，双方可能因共同兴趣或事业目标而相互成就，虽相处时间有限但彼此信任，需注意情感交流的深度。",
+   "career": "高度技术性工作多劳多得，通过专注与勤奋获得认可，适合深耕专业领域、考取证书或精进技能。",
+   "wealth": "财务状况良好，收入主要来源于工作，需注重储蓄与合理规划，积累将带来丰厚回报。",
+   "study": "学习态度勤奋专注基础扎实成绩优异，适合通过反复练习与深度钻研突破瓶颈。",
+   "spirit": "真正的专业源于耐得住寂寞的积累，专注本身便是最珍贵的美德。"
+  },
+  "rev": {
+   "love": "关系表面维持实则感情淡漠，可能因一方过于专注工作而忽视对方，缺乏真诚沟通，易陷入乏味或功利化的相处。",
+   "career": "工作缺乏热情与专注，可能走捷径、偷工减料导致失败，或陷入机械性重复效率低下。",
+   "wealth": "财务状况不稳定，可能因借贷、高利贷或不当投资陷入困境，需谨慎管理收支。",
+   "study": "学习不够用功，依赖小聪明或不当手段基础不牢，注意力涣散难以深入。",
+   "spirit": "当专注变成僵化，当勤奋变成惯性——抬起头，看看那条通向城市的路。"
+  }
+ },
+ {
+  "desc": "星币九，象征通过自律与努力获得的丰硕成果、物质与精神的双重富足以及优雅独立的自我实现。核心不仅是外在财富的积累，更是内在自信与掌控力的确立——她无需依赖他人，独自享受着劳动果实，却也暗示着这种丰盛可能伴随着某种孤独。",
+  "elements": [
+   "贵族女子：身着华丽长袍，象征通过自身努力获得的富足、优雅与独立的社会地位。",
+   "宁静满足的表情：体现内在的平和、自信以及对当下成果的全然享受。",
+   "九枚星币：象征丰硕的物质收获与长期努力的结晶。",
+   "葡萄藤与葡萄：代表丰饶、丰收、迷醉与狂喜，也暗喻辛勤耕耘后的甜美回报。",
+   "戴头罩的小鸟：象征智慧、灵性，但也暗示被驯服、失去自由的另一面。",
+   "独栋城堡：代表丰厚的家业、安全与独立，也暗示与外界隔绝的孤独。",
+   "繁茂花园：象征富饶、舒适、安全以及被精心打理的生活环境。",
+   "蜗牛：代表耐心、坚持以及悠闲从容的生活节奏。"
+  ],
+  "up": {
+   "love": "关系成熟稳定，双方享受优质的情感与物质生活，单身者独自美丽享受自我成长，也可能遇到成熟优质的伴侣。",
+   "career": "工作驾轻就熟进展顺利，达到阶段性成功，可能获得晋升、项目分红或独立创业的机遇。",
+   "wealth": "财务状况极佳不愁吃穿，适合稳健理财长期投资，但需警惕挥霍保持理性消费。",
+   "study": "成绩不错但对课外兴趣更热衷，需平衡学习与爱好，利用自律保持优势避免自满退步。",
+   "spirit": "真正的富足源于自我成就——享受成果时，保持物质与精神的平衡，避免沉溺于黄金筑起的牢笼。"
+  },
+  "rev": {
+   "love": "感情表面优渥实则空虚，可能被物质迷惑而忽略真情，过度依赖或控制对方，或因追求完美而错失良缘。",
+   "career": "工作繁琐而无意义或陷入虚假繁荣，可能因傲慢拒绝合作、创新力枯竭导致团队离心。",
+   "wealth": "财务计划不切实际，可能因挥霍、赌博或投资失误陷入危机，需回归理性。",
+   "study": "学习心思涣散偷工减料成绩下滑，可能沉迷娱乐或虚名，需端正态度。",
+   "spirit": "葡萄园再丰盛，若无人分享，也只是一座更漂亮的牢笼。"
+  }
+ },
+ {
+  "desc": "星币十，象征物质财富的极致圆满、家族传承的稳固根基以及物质繁荣背后潜在的情感疏离。财富已达成完整闭环，形成可代代相传的家业。然而深刻之处在于暗藏的警示：当物质繁荣达到顶峰时，情感联结反而可能被忽视。真正的富足不仅是财富的堆积，更是心灵的相通与家族温度的延续。",
+  "elements": [
+   "十枚星币排列成生命之树：象征财富的完整闭环、创造的完成以及代代相传的家业根基。",
+   "老人：端坐于画面中央，代表用智慧与经验积累财富的长者，与家人互动少，暗示情感交流的缺失。",
+   "拱门与盾徽：象征保护与完整、家族荣誉、悠久传统与稳固的社会地位。",
+   "夫妇：两人相望交谈但视线未交汇，男人凝视远方工厂，象征物质追求与情感疏离的并存。",
+   "小孩：天真活泼增加家庭温馨感，但被大人忽略，反映出繁荣家庭中对下一代情感关怀的不足。",
+   "两只白狗：象征物质繁荣中仍存留的温情，但与人互动有限。",
+   "葡萄藤与果树：代表丰收、富饶与自然的馈赠，也暗喻家族繁荣如枝繁叶茂。",
+   "天秤浮雕：呼应星币六的公平分配，暗示家族财富需要平衡与持续性。"
+  ],
+  "up": {
+   "love": "关系稳定物质基础扎实，适合谈婚论嫁共建家庭，但需警惕感情因过于安逸而变得无趣。",
+   "career": "工作稳定，可能在家办公或任职于大型企业，按部就班即可获得成功，但需避免僵化思维。",
+   "wealth": "财务状况极佳，可获家族财富支持或遗产，适合做长期规划如购房投资，需注意财富管理与代际传承。",
+   "study": "学习状态稳定，成绩虽不拔尖但持续进步，持之以恒终将获得丰厚成果。",
+   "spirit": "真正的富足不仅是财富的堆积，更是心灵的相通与家族温度的延续。"
+  },
+  "rev": {
+   "love": "关系基于金钱而非真情，可能因财务问题争吵不断，家庭内部矛盾重重缺乏安全感与情感支持。",
+   "career": "工作经手大笔资金风险与机遇并存，可能因管理不善导致损失或陷入家族企业纷争。",
+   "wealth": "财务出现漏洞投资错过最佳时机，可能因过度消费、诈骗或遗产争端陷入困境。",
+   "study": "学习反应较慢需加倍努力才能跟上进度，可能因基础不牢或心不在焉成绩落后。",
+   "spirit": "当城堡里没有人看彼此一眼，财富堆得再高，也只是华美的空壳。"
+  }
+ },
+ {
+  "desc": "星币国王，象征物质成就的巅峰、权威与责任的完美结合以及财富管理的终极智慧。他不仅是资源的占有者，更是价值的创造者与分配者。真正的王者不是贪婪的积累者，而是懂得在稳健中寻求发展、在权威中保持包容、在物质成就中不忘精神平衡的智者。",
+  "elements": [
+   "国王端坐姿态：沉稳威严，象征事业的完全掌控、经验与权威的完美结合。",
+   "手中星币：托于膝上，代表对财富的珍视、管理能力以及将物质转化为价值的智慧。",
+   "权杖与圣球：权杖象征权力与领导力，圣球代表对世界的掌控与创造力。",
+   "王冠上的百合与玫瑰：象征收获、成果以及权力与美的平衡。",
+   "衣服上的葡萄藤蔓：代表多产、丰收以及国王丰厚的物质实力。",
+   "脚下公牛雕刻：金牛座象征，彰显务实、力量、权势以及遵循世俗规范的稳健。",
+   "背景城堡与葡萄园：隐喻稳固的事业版图与世代传承的基业。",
+   "铠甲外的华丽袍服：象征在强大实力外的包容与刚柔并济的管理智慧。"
+  ],
+  "up": {
+   "love": "关系以物质保障与责任感为核心，情感稳定可靠，能给对方充分的安全感，适合共建家庭，是值得信赖的终身伴侣。",
+   "career": "事业达到巅峰稳居领导者位置，擅长战略布局与资源整合，行业经验丰富，收入丰厚且来源多元。",
+   "wealth": "财务状况极佳，资产配置科学，投资眼光精准，注重财富世代传承，有能力进行慈善捐赠。",
+   "study": "学习目标明确注重实用性（如商科金融），基础扎实考试稳定，善于将知识转化为商业价值。",
+   "spirit": "真正的王者不是贪婪的积累者，而是懂得在稳健中寻求发展、在权威中保持包容。"
+  },
+  "rev": {
+   "love": "关系因控制欲或冷漠疏离陷入危机，可能以物质替代情感，或因工作狂忽视家庭温情。",
+   "career": "因固执己见拒绝创新或独断专行压制团队导致竞争力下滑，可能因财务丑闻失去权威。",
+   "wealth": "因贪婪投机或挥霍无度陷入财务危机，可能投资失误资产缩水，或因资产分配不公引发纠纷。",
+   "study": "学习功利心过重根基不牢，可能因临时抱佛脚导致考试失利，知识结构僵化。",
+   "spirit": "当权威变成傲慢、富足变成贪婪——王座越高，摔得越重。"
+  }
+ },
+ {
+  "desc": "星币王后，象征丰盛资源的智慧管理、母性滋养的温暖力量以及物质与情感的完美平衡。她既能脚踏实地地创造和管理财富，又能以温柔之心滋养他人，在务实与关怀之间找到和谐。真正的丰盛源于对自我价值的尊重，让财富如水流动，既灌溉他人，也滋养自己的根系。",
+  "elements": [
+   "王后端坐姿态：端庄稳重，象征成熟、自信以及对生活与资源的完全掌控。",
+   "手中星币：象征对财富与资源的珍视、管理能力以及创造新价值的能力。",
+   "繁花盛开的庭院：代表丰盈的物质基础、富饶的生活以及付出与回报的良性循环。",
+   "跳跃的兔子：象征多产、丰饶、生命力以及破除障碍的魔法力量。",
+   "宝座上的山羊头雕刻：象征权力、地位与物质世界的掌控力，呼应摩羯座特质。",
+   "天使与孩童雕刻：代表慈爱、母性光辉以及对家庭与后代的守护。",
+   "绿色披风：象征与自然的深度联结、务实的根基以及对生命的滋养。",
+   "背后蓝色山脉与流动小溪：代表稳固持久与资源的持续流动。",
+   "玫瑰藤蔓：象征爱与美，暗示物质繁荣中需保留情感的温度。"
+  ],
+  "up": {
+   "love": "关系稳定而充满安全感，双方愿意为家庭付出通过实际行动表达关爱，可能共同经营家庭，情感深厚且彼此尊重。",
+   "career": "工作状况稳定可充分发挥才能，擅长资源整合、财务管理，适合农业、家居、理财等领域。",
+   "wealth": "财务状况良好资产配置合理，善于精打细算，适合长期投资，行有余力帮助他人。",
+   "study": "学习态度稳定方法高效，对实用型学科（如经济、营养学）领悟透彻，能将知识转化为实际技能。",
+   "spirit": "精打细算却不吝啬，务实勤奋却不失温情——让财富如水流动，既灌溉他人也滋养自己。"
+  },
+  "rev": {
+   "love": "关系过于物质化，可能因控制欲或经济依赖失去温情，一方可能吝啬付出或过度自我牺牲导致失衡。",
+   "career": "因过度保守错失良机或资源管理不当造成浪费，可能投入过多却缺乏助力。",
+   "wealth": "财务出现危机，可能因挥霍、虚荣消费或错误信任他人导致损失，需理性规划。",
+   "study": "学习表现不稳定，过于关注成绩而忽视知识积累，可能因家庭事务分心或方法僵化。",
+   "spirit": "当滋养变成牺牲、持家变成掌控——先浇灌自己的根，才能荫蔽他人。"
+  }
+ },
+ {
+  "desc": "星币侍从，象征务实的学习态度、对物质世界的探索萌芽以及脚踏实地的成长潜力。他或许经验尚浅，却拥有无限的求知欲与耐心，愿意从最基础的事情做起，一步一个脚印地积累。核心意义是幼苗的成长法则：谦卑、专注与恒心比天赋更为珍贵。",
+  "elements": [
+   "年轻侍从：象征初学者、学习者，代表对知识与技能充满渴望的萌芽阶段。",
+   "手捧星币：双手郑重托举目光凝视，体现对物质财富、学识的专注与珍视。",
+   "绿色长袍：象征自然生命力、成长潜力以及与物质世界的深度联结。",
+   "红色帽子/头巾：代表热情、积极的行动力以及活跃的思维。",
+   "脚下花草与田野：暗示成长的潜力、丰收的可能性与自然的馈赠。",
+   "背后蓝色山脉：象征未来需克服的挑战与即将踏上的探索旅程。",
+   "黄色/暖色背景：阳光、乐观、清晰的思维，为学习与成长提供良好的能量场。"
+  ],
+  "up": {
+   "love": "对待感情谨慎而真诚，愿意在关系中学习与成长，可能经验不多但会主动付出体贴对方，共同规划务实的未来。",
+   "career": "处于学习与积累阶段，适合从基层做起专注提升专业技能，工作勤勉能获得前辈指导。",
+   "wealth": "财务状况清晰善于规划与储蓄，适合投资自己（如学习课程），稳健理财避免冒进。",
+   "study": "学习态度踏实注重基础知识积累，成绩稳步提升，吸收能力强，适合钻研实用型学科。",
+   "spirit": "每一次专注的学习、每一份勤勉的付出，都在为未来的参天大树奠定基石。"
+  },
+  "rev": {
+   "love": "关系不稳定缺乏承诺与责任感，双方可能不愿被约束，或过于注重物质而忽略情感交流。",
+   "career": "工作状态混乱缺乏效率与方向，可能半途而废、敷衍了事或因粗心大意导致失误。",
+   "wealth": "财务观念薄弱花钱无度，可能因冲动消费、投机或借贷陷入困境，需建立记账习惯。",
+   "study": "学习态度浮躁一知半解缺乏耐心，可能因方法错误或动力不足导致成绩下滑。",
+   "spirit": "幼苗若急于长成大树，只会提前枯萎——先扎根，再向上。"
+  }
+ },
+ {
+  "desc": "星币骑士，象征稳健务实的行动力、对目标的执着追求以及通过持续努力获得物质成就的决心。他并非冲锋陷阵的先锋，而是默默耕耘、厚积薄发的建设者。核心意义在于将愿景转化为现实的持久努力：重视责任、恪守承诺，以马拉松式的耐心推进计划。",
+  "elements": [
+   "骑士形象：端坐于马背姿态沉稳，象征成熟、可靠且富有责任感的实践者。",
+   "黑色骏马：强壮而稳重，代表耐心等待时机的智慧、脚踏实地的行动方式。",
+   "手中星币：专注凝视，象征对物质财富、资源与成就的珍视与追求。",
+   "完整铠甲与红色披风：代表充分的准备、守护与责任，以及内在的热情动力。",
+   "头盔与马首绿叶：象征智慧、生生不息的活力与自然的馈赠。",
+   "远处肥沃田野：隐喻成就的广阔前景与长期耕耘的丰收可能。",
+   "背景山脉：象征前方需克服的挑战与稳步推进的目标。"
+  ],
+  "up": {
+   "love": "对待感情忠诚可靠，以责任和实际行动表达爱意，慢热但专情，注重长期承诺，可能共同规划置业储蓄等务实目标。",
+   "career": "工作量大但有条不紊，擅长长期项目与精细管理，凭借专业能力与可靠表现获得信任，适合技术骨干、项目经理。",
+   "wealth": "通过稳健投资与持续工作积累财富，注重长期价值，适合定投、房产等保守策略。",
+   "study": "学习方法系统扎实懂得循序渐进，善于将知识付诸实践，自律性强，成绩稳步提升。",
+   "spirit": "真正的成就并非昙花一现的灵感，而是日复一日的坚持、对细节的精益求精以及对长期价值的坚守。"
+  },
+  "rev": {
+   "love": "关系因过度务实而缺乏情趣，或一方逃避责任冷暴力，可能因物质攀比失去温情。",
+   "career": "因固执保守错失良机或效率低下导致项目停滞，可能方向错误缺乏专注。",
+   "wealth": "因过度谨慎收益有限或投资决策失误导致损失，需回归稳健策略。",
+   "study": "学习方法僵化难以消化新知识，可能因缺乏毅力与信心进度缓慢。",
+   "spirit": "黑马再稳，也要有方向——在深耕的同时，偶尔抬头校准航向。"
+  }
+ },
+ {
+  "desc": "权杖一，象征纯粹的行动力、创造力的迸发以及全新旅程的开启。一只大手从云端伸出，紧握一根生机勃勃的权杖，嫩绿的枝叶正从杖头萌发。核心意义在于点燃——点燃激情、点燃灵感、点燃行动的欲望。当机遇从天而降时，唯有勇敢地握住并付诸实践，才能让梦想的种子生根发芽。",
+  "elements": [
+   "云中之手：象征神圣的指引、天赐的机遇以及来自高维的灵感启示。",
+   "权杖：木质杖身，代表行动的核心载体，是个人意志与力量的延伸。",
+   "嫩叶芽：象征蓬勃的生命力、源源不断的创造力与项目的初步成长。",
+   "河流：代表情感的流动、潜意识的能量以及生命力的持续滋养。",
+   "城堡：象征最终的目标、成就的彼岸以及需要奔赴的理想愿景。",
+   "远山：暗示通往成功道路上需克服的挑战与自然考验。",
+   "白色光芒：代表内在直觉的推动、灵性的觉醒与纯净的初心。"
+  ],
+  "up": {
+   "love": "新恋情悄然萌芽，或现有关系进入激情四射的新阶段，主动出击可收获甜蜜，适合大胆表达心意。",
+   "career": "新项目新机遇降临，行动力拉满即可突破瓶颈，适合创业、跳槽或开启新计划。",
+   "wealth": "财运呈上升趋势，新的理财机会出现，需抓住时机积极布局，以小额试水积累经验。",
+   "study": "求知欲旺盛灵感源源不断，适合开启新学科或研究课题，备考效率大幅提升。",
+   "spirit": "当机遇从天而降，唯有勇敢地握住并付诸实践，才能让梦想的种子生根发芽。"
+  },
+  "rev": {
+   "love": "感情缺乏行动力，沟通不畅易生误会，可能因冲动言行伤害对方或关系停滞不前。",
+   "career": "机会在手却拖延错失，精力分散导致项目受阻，计划搁置方向迷茫。",
+   "wealth": "留不住财，冲动消费或投资失误导致损失，需制定详细理财计划。",
+   "study": "学习动力不足注意力涣散，知识点混乱备考效果不佳，需调整学习方法。",
+   "spirit": "握住权杖却不挥动，它便只是一根枯木——行动，是点燃一切的开始。"
+  }
+ },
+ {
+  "desc": "权杖二，象征在已有成就的基础上进行抉择、规划未来以及权衡利弊的思考阶段。他一手握着权杖，一手轻抚地球仪，目光眺望远方的海洋与山峦。核心并非立即行动，而是深思熟虑的规划与决策。真正的掌控力不仅在于守住已有的领地，更在于以远见卓识谋划未来。",
+  "elements": [
+   "站立城墙的领主：象征已获得一定权力、地位与物质基础的成功者。",
+   "手持权杖：代表当下握有的行动力、掌控力以及对未来决策的信心。",
+   "固定于墙的权杖：象征已拥有的稳固资源、成就以及无法轻易改变的根基。",
+   "地球仪：代表全球视野、远大计划以及对命运的掌控。",
+   "远方海洋与山脉：海洋象征未知领域与新机遇，山脉代表需跨越的挑战。",
+   "城内花园（百合与玫瑰）：百合象征纯洁的思想，玫瑰代表热情与动力。",
+   "城堡与城墙：代表安全区、已取得的成就以及舒适圈的边界。"
+  ],
+  "up": {
+   "love": "关系进入稳定期，面临未来方向的抉择，可能考虑同居、订婚等长远承诺，需权衡利弊后坚定推进。",
+   "career": "立足现有成就规划扩张或转型，能精准把握机遇，适合制定战略拓展新领域。",
+   "wealth": "财务稳定且有清晰投资规划，可能出现新的理财机会，需谨慎权衡收益与风险。",
+   "study": "明确深造或专业方向，能合理分配精力，适合制定长期学习计划稳步推进。",
+   "spirit": "真正的掌控力不仅在于守住已有的领地，更在于以远见卓识谋划未来。"
+  },
+  "rev": {
+   "love": "关系陷入僵局，对现状不满却不敢改变，可能因过度权衡利弊或逃避承诺导致沟通不畅。",
+   "career": "决策失误或计划流产，因犹豫错失良机，可能对现状不满却不敢突破。",
+   "wealth": "投资优柔寡断守成不前致财富缩水，可能因信息不全踩坑或冲动消费损失。",
+   "study": "备考方向盲目规划混乱，拖延内耗难以聚焦核心目标。",
+   "spirit": "眺望再远，若不迈出城墙，远方永远只是远方。"
+  }
+ },
+ {
+  "desc": "权杖三，象征初步成果的取得、远见卓识的布局以及通过合作探索更广阔天地的决心。一位身着红袍的商人立于高地之上，目光坚定地望向远方的海洋与航船。核心并非满足于现状，而是以现有成果为跳板，眺望更远的机遇。真正的领导者不仅要有征服的野心，更要有整合资源、凝聚团队的智慧。",
+  "elements": [
+   "观望的商人：不纠结过往，专注望向未来，体现沉稳笃定的气场与领导者姿态。",
+   "三根权杖：稳固立于地面顶端萌发新芽，象征稳固基础、过往成就以及持续成长的潜力。",
+   "手中握持的权杖：代表行动的决心、对当下的掌控力。",
+   "红色长袍：象征饱满的热情、充沛的行动力以及内心燃烧的征服欲。",
+   "绿色披风：寓意热血逐梦时需遵循客观规律，方能有机发展。",
+   "远方海面的船只：象征广阔机遇、贸易合作以及探索未知领域的冒险精神。",
+   "脚下高地：象征宏观视野与已取得的战略位置。"
+  ],
+  "up": {
+   "love": "关系稳定且已建立深厚基础，适合共同规划长远未来，异地恋有望修成正果，单身者可能通过工作或旅行结识良缘。",
+   "career": "项目进入扩张期，基础稳固，适合跨域合作或开拓新市场，需立足全局布局耐心等待成果。",
+   "wealth": "过往投资初见回报，可尝试稳健扩张型理财，远方有财运机遇但需注意风险管理。",
+   "study": "视野开阔求知欲强，适合拓展学术边界，留学或深造计划逐步落地。",
+   "spirit": "以现有成果为跳板，眺望更远的机遇——真正的领导者懂得整合资源、凝聚团队。"
+  },
+  "rev": {
+   "love": "关系因目标分歧或信任危机陷入僵局，沟通不畅导致进展停滞，可能因急躁忽视对方感受。",
+   "career": "计划延误基础不牢，或因合作破裂、内部矛盾导致项目受阻，需复盘策略避免盲目扩张。",
+   "wealth": "投资回报延迟或因盲目扩张亏损，需收缩战线规避未知风险。",
+   "study": "进度不及预期方向迷茫，可能因急功近利效率低下，需调整方法重新规划。",
+   "spirit": "航船已在海面，若因迟疑不升帆，再多的风也与你无关。"
+  }
+ },
+ {
+  "desc": "权杖四，象征阶段性成功的稳固落地、丰收后的喜悦庆典以及家园般的归属感。四根粗壮的权杖直立构成稳固的框架，顶端缠绕着鲜花与果实编织的花环，两位手持花束的人物正欢欣起舞。核心意义在于庆祝与扎根——在成就中建立安全感，与所爱之人共享喜悦，让成功的果实成为滋养未来成长的坚实土壤。",
+  "elements": [
+   "四根直立权杖：构成稳固框架，象征火元素落地后的坚实根基。",
+   "花果花环：代表耕耘后的丰收，是欢庆的仪式载体，寓意喜悦与滋养。",
+   "欢庆人物：象征集体共享的喜悦，传递关系联结与情感共鸣的能量。",
+   "远方城堡：不仅是物理居所，更是心灵归宿的象征，承载安全感与归属感。",
+   "晴朗天空：暗示无阻碍的顺遂状态，是享受当下的最佳契机。",
+   "广场与人群：代表社会认同与集体支持，强化和谐共融的氛围。"
+  ],
+  "up": {
+   "love": "关系稳定升温，易迎来订婚、同居等承诺获亲友祝福，双方相处模式和谐，享受平淡却踏实的幸福。",
+   "career": "项目阶段性收尾成功，团队氛围融洽获得认可与回报，适合举办庆功活动巩固凝聚力。",
+   "wealth": "财务基础扎实投资见回报，可支配资金充裕，适合为家庭或亲友消费提升生活品质。",
+   "study": "找到适配的学习节奏收获阶段性成绩，与同学共享成果，学习氛围轻松愉悦。",
+   "spirit": "在忙碌的追逐后，别忘了驻足欢庆——感受集体的温暖与生命的丰盛。"
+  },
+  "rev": {
+   "love": "关系暗藏矛盾，沟通不畅或家庭介入阻碍承诺，表面和谐实则根基不稳。",
+   "career": "团队内耗严重，项目成果不实或庆功变味，职场归属感缺失。",
+   "wealth": "表面收支平衡实则暗藏亏空，消费无规划，需重新审视财务基础。",
+   "study": "学习根基不牢成绩起伏大，难融入学习群体，阶段性目标被搁置。",
+   "spirit": "花环之下若没有真实的情感联结，庆典也只是一场表演。"
+  }
+ },
+ {
+  "desc": "权杖五，象征冲突、竞争与混乱中的成长契机。五位手持权杖的人相互争斗，权杖交错缠绕，场面看似混乱却无人受伤。核心并非单纯的对抗，而是通过良性竞争激发潜力、在摩擦中明晰方向。冲突本身并不可怕，关键在于如何驾驭——是陷入无休止的内耗，还是借博弈之力突破自我。",
+  "elements": [
+   "五名持杖者：姿态各异相互对峙，象征多元观点碰撞、良性竞争或群体冲突。",
+   "交错权杖：象征能量内耗、互相阻挠，偏离核心目标的无用消耗。",
+   "绿色草地：暗示冲突并非恶意厮杀，而是成长中的试炼，有正向转化可能。",
+   "统一着装风格：暗指竞争双方处于公平环境，矛盾源于立场差异而非实力悬殊。",
+   "蓝天：象征冲突的光明性，争斗多停留在表面（如辩论、比赛）。",
+   "权杖上的幼芽：象征正在萌发的新想法，暗示混乱中孕育着创新与突破。"
+  ],
+  "up": {
+   "love": "关系中争吵不断但多为观念碰撞后的磨合，吵后沟通反能增进理解，单身者可能面临多方示好的竞争。",
+   "career": "职场竞争良性有序，观点交锋激发创新，适合竞标、项目攻坚，需专注自身凭实力突围。",
+   "wealth": "存在竞争性理财机会，需凭策略争取突破盈利瓶颈，优化资源分配可获额外收益。",
+   "study": "同学间比拼氛围浓，借竞争查漏补缺，但需专注自身节奏避免被他人干扰。",
+   "spirit": "冲突本身并不可怕，关键在于如何驾驭——正视分歧、保持理性，方能将阻力转化为动力。"
+  },
+  "rev": {
+   "love": "冲突失控或刻意回避，陷入冷战或权力斗争，信任危机加深，可能涉及欺骗、隐瞒或多角关系。",
+   "career": "团队内耗严重拉帮结派，恶意竞争拖慢进度，决策易受情绪裹挟。",
+   "wealth": "盲目竞争致亏损或因回避博弈错失良机，可能遭遇欺诈，财务规划混乱。",
+   "study": "陷入无意义攀比精力分散难聚焦核心，或因恐惧竞争而逃避挑战自我设限。",
+   "spirit": "当竞争变成内耗，停下来问问自己：这场仗，是为了赢谁，还是为了成为谁？"
+  }
+ },
+ {
+  "desc": "权杖六，象征凭借实力赢得的胜利、公众的认可与凯旋而归的荣耀。一位头戴桂冠的骑士骑乘高大白马，手持装饰花环的权杖，在追随者的簇拥下昂首前行。核心并非孤芳自赏的成就，而是被看见、被认可的荣耀。真正的胜利源于实力与品格的积累，在享受荣光的同时更要保持谦逊。",
+  "elements": [
+   "骑士：头戴桂冠昂首挺胸，象征凭实力斩获胜利的领导者，自信且充满掌控力。",
+   "白马：高大健硕，白色代表纯洁与高贵，承载胜利荣光。",
+   "权杖与花环：象征某个领域的成就与荣誉，是行动力结出的果实。",
+   "红色披风/外衣：象征激情、热烈与个人能力的充分展现。",
+   "追随者：手举权杖随行，代表团队支持、公众认可与广泛的社会认同。",
+   "桂冠：象征和平、成就与胜利的正向回馈。",
+   "晴朗天空：清晰的未来规划，目标明确且行动有序。"
+  ],
+  "up": {
+   "love": "关系顺利升温，情侣朝共同目标迈进获得他人祝福，单身者魅力脱颖而出收获真诚好感。",
+   "career": "项目攻坚成功凭实力获晋升或嘉奖，职场口碑向好成为团队核心力量。",
+   "wealth": "投资理财达标盈利符合预期，加薪、奖金等好消息到来，可乘胜追击。",
+   "study": "努力得偿所愿成绩名列前茅，可在各类比赛中获胜成为他人榜样。",
+   "spirit": "在享受荣光的同时，更要保持谦逊，着眼于更远的未来。"
+  },
+  "rev": {
+   "love": "过度炫耀关系或假性甜蜜，矛盾暗藏，可能因傲慢忽视伴侣感受或出现强有力的竞争者。",
+   "career": "靠投机获取表面成功根基不牢易翻车，或因居功自傲遭孤立。",
+   "wealth": "账面光鲜实则暗藏亏损，盲目扩张致资金紧张，选择太多导致自信过度。",
+   "study": "沉迷分数虚名忽视知识积累，易因骄傲自满导致发挥失常。",
+   "spirit": "凯旋的骑士若忘了为什么出发，桂冠也只是一顶沉重的帽子。"
+  }
+ },
+ {
+  "desc": "权杖七，象征以少敌多的挑战、坚守立场的勇气以及不屈不挠的抗争精神。一位身着绿衣的男子站在高地之上，手持一根权杖，奋力抵御下方六根权杖的进攻。核心并非单纯的冲突，而是不放弃的信念：即使身处劣势，只要占据有利位置、保持清醒策略，便能以坚韧之心化解重重压力。真正的勇者不是没有恐惧，而是在恐惧中依然选择坚守。",
+  "elements": [
+   "男子：绿衣男子神情坚毅，代表直面挑战的勇气与内心焦虑的博弈。",
+   "手中权杖：象征主动防御、不愿退缩的决心与当下的行动力。",
+   "地上六根权杖：象征来自各方的挑战、外在压力与看不见的敌人。",
+   "山坡地形：站立于高处，象征占据防御优势与有利位置。",
+   "衣着姿态：身体前倾，彰显主动迎战、毫不退缩的姿态。",
+   "绿色衣服：代表生命力、成长与积极应对挑战的态度。",
+   "黄色点缀：象征智慧与自信，暗示需理性规划行动。",
+   "权杖上的新芽：象征被忽视的机会或在抗争中孕育的新可能。"
+  ],
+  "up": {
+   "love": "主动为关系抵御外界干扰，共同面对压力与挑战，单身者坚守标准终获契合良缘，有伴者共克难关后羁绊加深。",
+   "career": "顶住竞争与质疑压力凭实力稳住局面，虽挑战重重但大多可控，坚持策略精准突破。",
+   "wealth": "财务基础扎实靠努力赚取金钱，坚持现有投资策略会有回报，但不宜盲目扩张新领域。",
+   "study": "直面备考或提升难题不畏惧竞争压力，专注查漏补缺，坚韧付出终换来成绩进阶。",
+   "spirit": "真正的勇者不是没有恐惧，而是在恐惧中依然选择坚守。"
+  },
+  "rev": {
+   "love": "陷入无意义情感拉扯，勉强坚守濒临破裂的关系，或因焦虑猜忌推开良缘。",
+   "career": "盲目硬扛超出能力的项目，方法陈旧难破局，内耗加剧致局面失控。",
+   "wealth": "过度纠结短期亏损而乱调整策略，或盲目跟风投资，坚守错误决策致损失扩大。",
+   "study": "被竞争压力裹挟心态失衡难聚焦，盲目复习导致付出与收获不成正比。",
+   "spirit": "守住高地之前，先确认自己站的是不是值得守的高地。"
+  }
+ },
+ {
+  "desc": "权杖八，象征能量的自由流动、事态的飞速进展以及好消息即将抵达。八根带绿叶的权杖以平行姿态划过天空，掠过平静的河流与绿色的原野，直指远方的山脉。整张牌没有任何人物，凸显能量本身的自主性与自然推进的力量。核心意义在于速度与自由——当机遇来临、方向明确时，需果断把握，顺势而为。",
+  "elements": [
+   "八根平行权杖：象征行动力、能量与信息的自由流动，目标有序推进。",
+   "权杖顶端的新叶：代表新事物、新消息即将抵达生活，充满生机与希望。",
+   "掠过水面的姿态：暗含远行、跨域事务，也象征情绪的顺畅流动。",
+   "绿色原野：代表生命力、积极的结果以及行动扎根于现实的沃土。",
+   "清澈天空：彰显清晰的思路、无限的可能以及向上突破的能量。",
+   "山脉背景：提示远方的高远目标与挑战。",
+   "无人物设计：凸显能量本身的自主性，代表意志可顺势推进。",
+   "河流平静：象征情感与潜意识的稳定，为行动提供内在支持。"
+  ],
+  "up": {
+   "love": "关系发展迅速无拘无束，异地恋易升温，单身者可能遇到一见钟情式缘分，需注意长远规划避免激情褪去后的落差。",
+   "career": "项目快速落地推进中阻碍较少，适合趁热打铁扩大成果，可能有出差、外派等跨域机会。",
+   "wealth": "资金流动顺畅短期盈利见效快，有异地投资或跨境收益机会，需见好就收避免贪多。",
+   "study": "知识点融会贯通备考进度提速，能快速吸收新知突破瓶颈，但需沉心巩固避免三分钟热度。",
+   "spirit": "当机遇来临、方向明确时，需果断把握顺势而为，让生命的箭矢射向更高远的天空。"
+  },
+  "rev": {
+   "love": "沟通延迟滋生误解，关系陷入拉扯或因占有欲束缚对方，可能因意见不合频繁争吵。",
+   "career": "项目进度滞后跨域事务遇阻，急躁决策易致失误，团队内部分歧多需放缓节奏。",
+   "wealth": "资金周转受阻异地投资遇风险，盲目跟风致亏损，需及时止损管控流动性风险。",
+   "study": "急于求成致基础不牢知识点混乱难消化，需沉心梳理逻辑避免空有想法而无行动。",
+   "spirit": "箭已离弦便不再属于你——速度从来不是问题，方向才是。"
+  }
+ },
+ {
+  "desc": "权杖九，象征在创伤与疲惫中坚守阵地、以警惕之心等待转机的坚韧状态。一位额头缠着绷带的男子双手紧握权杖，身体前倾俯身支撑，身后八根权杖竖立成栅栏状。核心意义在于警惕中的坚持——它不是冲锋陷阵的勇猛，而是守在最后防线上，用过往经验筑起护城河。真正的力量往往在极限处显现，而每一次创伤都将成为继续前行的后盾。",
+  "elements": [
+   "头部绷带男子：象征过往创伤未愈，是坚守途中付出的代价。",
+   "双手紧握权杖：既是支撑身体的拐杖，也可当作出击的武器。",
+   "身后八根权杖：竖立成栅栏状，象征过往经历过的挑战与防御屏障。",
+   "身体前倾姿态：非进攻而是防御，能量处于消耗状态。",
+   "目光神情：显露出对现状的不确定，是坚守与怀疑的内心博弈。",
+   "空旷平台：象征各方各面都有可能来临的挑战。",
+   "蓝天与绿叶：象征希望，暗示坚持后会有转机。"
+  ],
+  "up": {
+   "love": "正视过往情感创伤坚定守护现有关系，可能因旧伤未愈保持警惕，但磨合后信任加深，单身者谨慎择人宁缺毋滥。",
+   "career": "面对过往失误的压力稳健防御风险，项目遇瓶颈但知难而退，凭坚韧查漏补缺守住核心成果。",
+   "wealth": "防御型理财策略见效规避潜在亏损风险，谨慎观望保守为上，不宜扩张或投资新领域。",
+   "study": "正视薄弱环节凭坚韧查漏补缺，虽进度放缓但根基扎实，能稳步攻克难点等待突破契机。",
+   "spirit": "真正的力量往往在极限处显现，而每一次创伤都将成为继续前行的后盾。"
+  },
+  "rev": {
+   "love": "被过往创伤束缚猜忌内消耗感情，可能盲目坚守濒临破裂的关系，或因防御过度推开良缘。",
+   "career": "沉溺过往失误无法自拔，硬扛超出能力的压力，决策犹豫致局面失控。",
+   "wealth": "防御过度错失盈利机会或误判风险致亏损，资金规划混乱需及时止损。",
+   "study": "被薄弱点打击自信犹豫不前错失提升时机，内耗严重致效率低下。",
+   "spirit": "绷带下的伤口需要被看见——先疗愈自己，再谈守住阵地。"
+  }
+ },
+ {
+  "desc": "权杖十，象征责任过载的巨大压力、疲惫中的坚持以及成功前最艰难的冲刺阶段。一位男子弯腰俯身，怀抱十根粗重的权杖艰难前行，远方的房屋隐约可见——那是即将抵达的目标，却也是最考验意志的最后一段路程。核心并非单纯的辛劳，而是过度承担的警示——那些看似光荣的责任，若不懂分配与取舍，终将成为压垮自己的重负。",
+  "elements": [
+   "背负十根权杖的男子：象征过度承担的责任与压力，是贪心或边界感缺失的体现。",
+   "俯身弯腰的姿态：具象化身心俱疲的状态，是超负荷付出的直观体现。",
+   "权杖交错缠绕：代表事务繁杂、互相阻挠，精力被过度分散。",
+   "低头前行的视线：前进的视野被阻挡，看不清未来方向。",
+   "远方隐约的房屋：象征即将抵达的目标与胜利的终点。",
+   "荒凉的景象：体现孤立无援的艰辛处境。",
+   "男子衣着：象征责任与使命的正式性，但也暗示被身份所困。"
+  ],
+  "up": {
+   "love": "主动为关系负重包揽过多责任，虽显诚意但易疲惫，可能因忙于事业忽略感情，需学会分摊压力。",
+   "career": "承担核心任务与额外职责顶住压力稳步推进，工作极度忙碌压力巨大，需注意平衡精力避免透支。",
+   "wealth": "背负财务责任可能被账单压得喘不过气，多元投资导致资金周转压力大，需精简规划。",
+   "study": "同时攻克多个难点精力高度分散却咬牙坚持，虽有进展但效率偏低，需聚焦核心优先级。",
+   "spirit": "真正的担当不是独自扛起一切，而是学会寻求帮助、建立边界，让每一步前行都轻盈而坚定。"
+  },
+  "rev": {
+   "love": "执念于关系而勉强负重，矛盾积压致内耗加剧，不愿放手反而让彼此陷入痛苦拉扯。",
+   "career": "内耗严重致进度滞后或因逃避责任错失机遇，压力过大想摆烂，需及时减负调整方向。",
+   "wealth": "多元投资失控致资金链承压，或因逃避债务加剧危机，财务问题需一件件分开解决。",
+   "study": "被过多目标裹挟精力分散难深耕，焦虑情绪影响效率，易因压力放弃核心任务。",
+   "spirit": "放下不是失败——懂得放手的人，才腾得出手去接真正重要的东西。"
+  }
+ },
+ {
+  "desc": "权杖国王，象征火元素成熟后的巅峰状态——天生的领导者、果敢的开拓者与深谋远虑的战略家。他既能以澎湃的激情点燃团队，又能以冷静的谋略规划长远。核心意义在于将炽热的能量转化为照亮前路的光，他经验丰富、自信果敢，却从不盲目冲动，总是谋定而后动。真正的领导力不是耀武扬威的强势，而是收放自如的掌控力。",
+  "elements": [
+   "国王端坐姿态：身体微倾随时准备站立，象征刻在骨子里的行动力与永不熄灭的热情。",
+   "火焰王冠：火元素最高统治者的标志，象征思维活跃、灵感不断与至高无上的权威。",
+   "开花权杖：权杖落地顶端绽放新芽，代表想法已通过行动力落地生根。",
+   "头尾相衔的蜥蜴：衣袍上的火蜥蜴形成完美闭环，象征事物已完成、计划成熟。",
+   "宝座上的雄狮雕刻：象征勇气、力量以及对内在野性的完美掌控。",
+   "金色长袍与盔甲：代表太阳般的生命力、财富地位以及面对挑战时的防御能力。",
+   "远方群山与城堡：象征已建立的稳固基业、需要守护的疆域。",
+   "国王坚定的目光：望向远方，展现远见卓识与对未来局势的清晰洞察。"
+  ],
+  "up": {
+   "love": "感情稳定成熟，经过风雨考验后更加牢固，有伴侣者关系如家人般默契适合计划婚姻，单身者易遇有事业心、有担当的优质对象。",
+   "career": "处于事业黄金期，有机会成为团队核心骨干，适合创业、开新项目，凭借经验与领导力可迎良机。",
+   "wealth": "财务状况稳健投资决策有远见回报丰厚，善于把握先机，但不宜操之过急。",
+   "study": "积极主动执行力强，能制定完备计划并坚持到底，适合挑战高难度课题。",
+   "spirit": "真正的领导力不是耀武扬威的强势，而是收放自如的掌控力，是让每一次行动都成为通往更高目标的坚实阶梯。"
+  },
+  "rev": {
+   "love": "一方控制欲过强另一方感到压抑，感情趋于稳定但无聊，若强行改变反易引发争吵。",
+   "career": "陷入专断不听他人意见，导致团队失序项目停滞，可能因冲动决策或管理混乱错失良机。",
+   "wealth": "决策失智财务管理混乱，可能因冒险投资或过度自信导致损失。",
+   "study": "缺乏目标感不愿承认失误，可能因急躁导致学习效率低下，需虚心求教。",
+   "spirit": "火焰烧得太旺会吞没一切——真正的掌控，是知道何时收火。"
+  }
+ },
+ {
+  "desc": "权杖王后，象征火元素成熟后的自信光芒、热情洋溢的领导力以及直觉与行动完美融合的独立女性力量。她既有果敢的行动力，又有深沉的洞察力，能以自身魅力凝聚人心。真正的力量源于自信与真诚，在热情中保持清醒，在独立中不失温暖，方能成为照亮他人的那束光。",
+  "elements": [
+   "王后端坐姿态：优雅从容表情严肃，象征内在力量强大、自信且掌控全局。",
+   "手中权杖：代表行动力、创造力与对局势的掌控，顶端新芽象征持续成长。",
+   "向日葵：追随阳光的姿态，象征积极向上、乐观热情以及对生命的热爱。",
+   "宝座扶手狮子雕刻：代表勇气、力量与内在兽性的掌控。",
+   "黑猫：蹲守于宝座旁，象征神秘的直觉力、灵性智慧与独立自主的精神。",
+   "金色王冠与长袍：代表统治地位、财富、活力与不可忽视的存在感。",
+   "沙漠/黄色背景：象征挑战与未知，也暗示王后即使在困境中也能绽放光芒。",
+   "权杖上的绿叶：三片叶子呼应女皇牌的数字三，代表创造力与丰饶。"
+  ],
+  "up": {
+   "love": "感情真诚热烈，双方彼此滋养共同成长，单身者散发活力吸引成熟伴侣，恋爱中关系稳定且充满激情。",
+   "career": "能力获认可迎来晋升或重要机会，适合领导岗位能凝聚团队，凭借直觉与自信做出正确决策。",
+   "wealth": "财运丰厚投资直觉敏锐，可获得丰盛回报，善于理财通过努力与智慧积累财富。",
+   "study": "学习主动积极凭自身努力就能看到成果，适合发挥创造力，在团队中可成为核心人物。",
+   "spirit": "真正的力量源于自信与真诚——在热情中保持清醒，在独立中不失温暖。"
+  },
+  "rev": {
+   "love": "表面平和实则矛盾重重，可能因猜忌、控制欲引发冲突，一方易吃醋或出现感情不忠，需放下掌控真诚沟通。",
+   "career": "工作受限听不进意见导致合作不佳，可能因自负失去掌控力，决策冲动或拖延。",
+   "wealth": "小麻烦不断但不影响整体，需节流而非开源，避免因虚荣心乱花钱谨慎投资。",
+   "study": "自信匮乏易因浮躁成绩下滑，需减少娱乐专注复习，避免因嫉妒攀比影响心态。",
+   "spirit": "向日葵若总被乌云遮住，先问问自己为什么不敢转向太阳。"
+  }
+ },
+ {
+  "desc": "权杖侍从，象征生命初始的热情、好奇心与探索精神，是火元素最纯粹的表达。一位年轻的侍从双手高举权杖，目光专注地凝视着杖顶的新芽，仿佛在与未来对话。核心意义在于探索与学习——他以赤子之心面对世界，勇于尝试一切新鲜事物，但同时也因经验不足而显得稚嫩。在开启新征程时，既要保持这份热情与好奇，也要脚踏实地，让行动跟上梦想的步伐。",
+  "elements": [
+   "年轻侍从：象征初学者、学生或内心的小孩，代表对新事物的好奇与探索。",
+   "高举权杖：权杖未触地，象征想法尚未落实但已做好准备行动。",
+   "权杖上的绿叶：代表成长潜力、新计划的萌芽与无限可能。",
+   "红色羽毛：象征接受全新指引、行动力与热情的注入。",
+   "橙黄色服饰：火元素的颜色，代表活力、积极向上的能量与创造力。",
+   "未闭合的蜥蜴装饰：暗示某事尚未完成，需持续努力。",
+   "沙漠背景：象征极端环境与考验，代表前进道路上将面临的挑战。",
+   "黄色天空：明亮乐观的氛围，寓意清晰的思路与对未来的美好憧憬。"
+  ],
+  "up": {
+   "love": "新关系正在萌芽，双方处于互相探索的甜蜜阶段，感情充满新鲜感但尚未稳定，需时间培养默契。",
+   "career": "工作或项目处于起步阶段有大量学习机会，适合探索新领域，但需避免眼高手低。",
+   "wealth": "财务状况虽未丰厚但规划方向正确，需坚持储蓄与理性消费，避免冒进投资。",
+   "study": "学习状态积极基础正在夯实，保持好奇心与求知欲，多尝试不同方法成绩将稳步提升。",
+   "spirit": "以赤子之心面对世界——保持热情与好奇，也要脚踏实地，让行动跟上梦想。"
+  },
+  "rev": {
+   "love": "关系善变不稳定常因小事争吵，沟通方式幼稚，可能陷入分分合合的循环。",
+   "career": "计划不切实际行动力不足，易因经验欠缺而受挫，可能收到坏消息或项目延迟。",
+   "wealth": "消费无计划存钱困难常莫名月光，需开始记账克制冲动消费。",
+   "study": "学习过程充满困惑无人指导导致挫败感强，需主动寻求帮助调整方法。",
+   "spirit": "火苗虽美，若只顾看它摇曳而不添柴，终会熄灭在风里。"
+  }
+ },
+ {
+  "desc": "权杖骑士，象征如火般炽热的行动力、勇往直前的冒险精神以及对目标势不可挡的追求。一位全副武装的骑士骑乘着前蹄高高扬起的骏马，高举权杖，在广袤的沙漠中疾驰。核心意义在于以饱满的热情驱动行动，敢于突破舒适区迎接新的挑战。他如同划破天际的流星，充满爆发力与感染力，但也因速度过快而容易忽略细节。在追逐梦想的路上，既要保持勇往直前的冲劲，也要学会用缰绳驾驭内心的野马，让激情与理性同行。",
+  "elements": [
+   "骑士：年轻勇武，象征彻底的行动派、冒险家与开拓者，充满自信与热情。",
+   "高举权杖：代表明确的行动目标与创造力，权杖上的绿叶象征成长潜力。",
+   "前蹄高扬的骏马：象征行动的迅疾、爆发力与不可抑制的激情。",
+   "红色披风与手套：火元素的颜色，象征火热性格、热情与强烈的行动力。",
+   "盔甲：提供保护，象征面对挑战时的防御能力与坚定意志。",
+   "沙漠背景：代表挑战、未知领域与需要征服的艰难环境。",
+   "金字塔：象征古老智慧、神秘目标与追求的高度。",
+   "缰绳：骑士通过缰绳控制马匹，象征他并非完全冲动，仍保有对方向的掌控。"
+  ],
+  "up": {
+   "love": "大胆追求热情示爱，展开新鲜刺激的热恋，可能有一见钟情、闪婚或旅行中邂逅的缘分，需注意节奏过快带来的后续问题。",
+   "career": "干劲十足进步飞速，适合开拓新市场、启动新项目，可能涉及出差、职业变动，需避免三分钟热度。",
+   "wealth": "财运大起大落投资机会多但风险高，短期可能有不错收益，但需谨慎评估避免冒进。",
+   "study": "对新知识充满渴望学习效率高，适合挑战高难度课题，但需沉心深耕避免贪多。",
+   "spirit": "在追逐梦想的路上，既要保持勇往直前的冲劲，也要学会用缰绳驾驭内心的野马。"
+  },
+  "rev": {
+   "love": "热情变成鲁莽，易因急躁伤害对方，关系争吵频繁，可能一时上头开始却缺乏责任心维系。",
+   "career": "进展不顺利因缺乏耐心和思考导致失误，精力用错地方，内部矛盾争执多。",
+   "wealth": "重大危机信号投资易亏损，可能因跟风或欠缺考虑而破财，需严格控制风险。",
+   "study": "追求速度忽略深度心态急躁效率低，计划半途而废，需静心梳理。",
+   "spirit": "流星再耀眼也会坠落——把爆发力留给方向，而不是留给冲动。"
+  }
+ },
+ {
+  "desc": "宝剑一，编号为1，是宝剑牌组的起点，象征一次全新的心智突破与挑战的开端。这柄剑代表理性、真理与决断力，它既能斩断迷雾、开辟新路，也可能因滥用而带来伤害。真正的力量不在于世俗的权力与地位，而在于能够穿透表象、看清本质的智慧。",
+  "elements": [
+   "云端伸出的手：象征来自潜意识或更高维度的指引，紧握宝剑代表主动把握机遇的决心。",
+   "宝剑：笔直双刃，代表理性与力量的双面性，既能创造也能毁灭，需谨慎驾驭。",
+   "皇冠：位于剑尖之上，象征物质世界的权威与成就，被刺穿暗示心智超越世俗束缚。",
+   "橄榄枝与棕榈叶：分别象征和平与胜利，预示成功与和谐的可能性。",
+   "六道火焰：代表创意、灵感与能量，数字六暗含分享与平衡的意味。",
+   "白色背景：象征心智的清明、真理的光辉与全新的开始。",
+   "手的握姿：主动抓握，体现人的主观能动性、进取心与掌控力。"
+  ],
+  "up": {
+   "love": "新的恋情或现有关系进入新阶段，双方沟通坦诚、理智清醒，愿意共同面对挑战，感情充满活力与真诚。",
+   "career": "迎来重要机遇或全新项目，思路清晰决策果断，能凭借智慧与魄力攻克难关获得突破性进展。",
+   "wealth": "财务状况向好，有新的投资或收入渠道出现，但需理性规划避免过度乐观而冒进。",
+   "study": "学习目标明确思维敏锐，对新知识吸收迅速，考试运佳，能够突破瓶颈取得优异成绩。",
+   "spirit": "你手中已握有改变局势的利刃，关键在于如何驾驭它。"
+  },
+  "rev": {
+   "love": "感情陷入混乱与误解，可能因外界干扰或沟通不良导致关系紧张甚至破裂，需冷静反思避免冲动决定。",
+   "career": "计划受阻方向不明，决策失误或遭遇职场斗争，可能被迫离职或项目搁浅，建议重新评估目标。",
+   "wealth": "财务危机显现，投资失利或冲动消费造成损失，需理性止损避免慌乱扩大风险。",
+   "study": "学习状态迷茫注意力分散，方法错误导致成绩下滑，需调整心态重新制定计划。",
+   "spirit": "剑握反了会伤己——先看清方向，再挥出这一剑。"
+  }
+ },
+ {
+  "desc": "宝剑二描绘了一位蒙眼女子静坐于海边石凳，双手持剑交叉于胸前，背对汹涌的浪潮与天际的新月。这张牌是内心矛盾与僵局的具象化——当理性与情感激烈交锋，我们宁愿用自我封闭的姿态筑起高墙，以逃避那些令人不安的真相。核心课题在于：虚假的和平终将被打破，唯有摘下眼罩、直面恐惧，才能终结这场与自己的冷战。",
+  "elements": [
+   "蒙眼女子：象征主动回避真相，拒绝面对现实或内心的恐惧。",
+   "灰色衣袍：代表情感冷漠、心如死灰，情绪被理性强行压抑。",
+   "两把交叉宝剑：两股对峙的力量，体现内心的矛盾与强烈的自我防御。",
+   "石凳：稳固却冰冷，暗示僵化的处境与孤独的坚守。",
+   "背景大海：潜意识与情绪的汪洋，暗涌着被压抑的情感波澜。",
+   "弯月：象征情绪周期、直觉与潜意识的波动，隐约指引却未被正视。",
+   "背对大海：刻意回避情绪与潜意识的呼唤，拒绝深入探索内心。",
+   "交叉手臂姿态：强烈的抗拒姿态，关闭心门，拒绝外界介入。"
+  ],
+  "up": {
+   "love": "关系陷入冷战，双方固执己见拒绝沟通，表面平静实则暗流涌动，无法看清真相。",
+   "career": "工作面临僵局或对峙，决策停滞，自我防卫过强导致合作困难，需第三方调解。",
+   "wealth": "财务状况不明，潜在问题被掩盖，需冷静审视现有资产避免冲动投资。",
+   "study": "学习动力不足目标模糊，虽有改善意愿却缺乏行动力，需集中突破薄弱环节。",
+   "spirit": "虚假的和平终将被打破——唯有摘下眼罩、直面恐惧，才能终结这场与自己的冷战。"
+  },
+  "rev": {
+   "love": "真相被迫揭露，可能遭遇背叛或激烈冲突，面临两难选择，需勇敢面对而非逃避。",
+   "career": "职场矛盾爆发信任瓦解，被迫做出改变，也可能打破僵局迎来转机但伴随阵痛。",
+   "wealth": "财务问题曝光，投资失误或被骗，需及时止损重新规划理财策略。",
+   "study": "学习方向迷失或因意外事件打乱计划，需调整方法重新聚焦核心目标。",
+   "spirit": "眼罩被摘下时总是痛苦的——但看清的那一秒，你已经自由了。"
+  }
+ },
+ {
+  "desc": "宝剑三是一张令人触目惊心的牌——灰暗的天空下，三把冰冷的利剑直直刺入一颗鲜红的心脏，雨水如泪般洒落。这是塔罗中最直接表达痛苦与悲伤的牌面，描绘了情感被撕裂、信任被背叛、希望被击碎的瞬间。然而它更是一份关于穿透痛苦而觉醒的邀请：唯有允许自己感受这份悲伤，让泪水洗净伤口，才能从废墟中长出新的力量。",
+  "elements": [
+   "三把宝剑：交叉刺入心脏，象征多重打击、思想与情感的激烈冲突。",
+   "鲜红心脏：象征情感的核心，暗示受伤者曾投入真挚的情感，此刻正承受直接刺痛。",
+   "灰暗云层：象征抑郁、压抑的情绪氛围，以及笼罩心灵的阴霾。",
+   "雨滴：代表悲伤的泪水，也暗含清洗与净化的可能。",
+   "剑尖指向心脏中心：表明伤害是集中且深刻的，直击情感最脆弱之处。",
+   "剑与心的颜色对比：冰冷蓝色金属与炽热红色心脏形成强烈反差，象征理性与情感的尖锐对立。",
+   "心脏的完整性：尽管被刺穿心脏依然完整，暗示情感内核并未毁灭，仍有疗愈的根基。"
+  ],
+  "up": {
+   "love": "经历分手、背叛或激烈争吵，内心充满被伤害的痛苦与失望，可能因对方欺骗或价值观冲突导致信任彻底瓦解。",
+   "career": "遭遇重大挫折如项目失败、被裁员、同事出卖，工作中充满委屈与无力感。",
+   "wealth": "财务损失明显，可能因投资失误、他人诈骗或意外支出导致经济状况恶化。",
+   "study": "考试失利、论文被否或师生关系紧张，学习信心崩塌，陷入自我怀疑与沮丧。",
+   "spirit": "心碎之处，恰是光照进来的地方——人生的至暗时刻往往蕴含着最深的疗愈契机。"
+  },
+  "rev": {
+   "love": "最痛苦的阶段已过去，伤口开始缓慢愈合，虽仍有伤感但已能接受现实，准备重新开始。",
+   "career": "混乱局面趋于可控，挫折影响减弱，可能找到补救措施或新的方向。",
+   "wealth": "损失趋势减缓，部分资金可能挽回，财务状况仍脆弱需耐心重建。",
+   "study": "从挫败中逐渐恢复，补考通过或找到新的学习方法，动力仍不足但已开始积累信心。",
+   "spirit": "允许自己感受悲伤，让泪水洗净伤口，才能从废墟中长出新的力量。"
+  }
+ },
+ {
+  "desc": "宝剑四描绘了一位身着盔甲的骑士，静卧于教堂般宁静的石棺之上，双手合十似在祈祷或沉思。数字4象征着稳定、结构与暂时的休止，代表思绪的暂停、压力的暂时搁置，以及为下一次行动积蓄能量的必要退隐。真正的力量不仅在于冲锋陷阵，更在于懂得何时停下脚步，让心灵得以喘息。",
+  "elements": [
+   "躺卧的骑士：象征主动选择休息、沉思或疗愈的状态，暂时脱离外界纷争。",
+   "三把悬挂的剑：代表外界的压力、未解决的冲突或过去的伤痛，此刻被暂时悬置。",
+   "身边横置的剑：象征内在的力量与警觉，随时可以起身行动。",
+   "石棺/床：暗示死亡与重生的过渡，也代表稳固的根基与暂时的安息之所。",
+   "彩色玻璃窗：象征灵性的庇护、神圣的指引，以及对更高智慧的向往。",
+   "黄色背景/光环：代表理性的光芒、希望与精神层面的觉醒。",
+   "双手合十的姿势：祈祷或冥想的状态，体现内在的平静与对更高力量的臣服。",
+   "空荡的教堂：提供神圣的独处空间，远离喧嚣，利于精神恢复。"
+  ],
+  "up": {
+   "love": "争吵后进入冷静期，双方暂时休战反思关系中的问题，需要时间理清感受，不宜急于推进。",
+   "career": "工作迎来喘息机会，项目暂停或压力暂缓，适合复盘规划，利用休整期充电。",
+   "wealth": "财务状况趋于稳定波动减小，适合重新审视理财计划，暂缓高风险投资保守为上。",
+   "study": "学习动力不足处于疲惫或瓶颈期，需要适度放松，调整状态后再投入效率更高。",
+   "spirit": "真正的力量不仅在于冲锋陷阵，更在于懂得何时停下脚步，让心灵得以喘息。"
+  },
+  "rev": {
+   "love": "表面平静实则暗藏危机，可能因冷漠导致关系疏离，内心不安却强装无事，需主动沟通化解。",
+   "career": "看似悠闲实则内心焦虑，工作中有潜在问题未被重视，可能被迫中断休息匆忙应对。",
+   "wealth": "财务计划需立即调整，之前隐藏的问题浮现，支出应更加谨慎。",
+   "study": "想休息却无法如愿，学习状态外松内紧，需克服拖延主动规划时间。",
+   "spirit": "休息不是逃避——若心从未真正静下，躺得再久也只是消耗。"
+  }
+ },
+ {
+  "desc": "宝剑五描绘了一场冲突过后的残局——一个男子怀抱三把剑，回头露出得意而轻蔑的笑容，身后两名落败者垂头丧气地离去，地上散落着另外两把剑。这张牌象征争执、短暂的胜利以及随之而来的空虚与代价。当胜利建立在他人痛苦之上，这样的胜利注定是孤独而苍白的。真正的智慧不在于击败对手，而在于化解冲突，寻求共赢。",
+  "elements": [
+   "胜利者：面带轻蔑笑容怀抱三把剑，象征通过冲突获得表面胜利，却暴露自私与冷酷。",
+   "两把散落的剑：代表战败者遗弃的武器，暗示冲突中的损失与失败者的无奈。",
+   "两名落败者：垂头离去，象征被击败后的羞愧、失落与无力感。",
+   "被风吹散的云：暗示争执带来的不安、混乱与尚未平息的愤怒。",
+   "胜利者的红绿衣着：红色象征激情与攻击性，绿色代表不成熟，凸显内心矛盾。",
+   "远方的水面：空旷的背景，暗示胜利后的荒凉与人际关系的疏离。",
+   "人物之间的空间距离：象征关系破裂与无法沟通。"
+  ],
+  "up": {
+   "love": "关系中充满无意义的争吵与意气之争，即使吵赢了也伤了感情，双方互不相让信任瓦解。",
+   "career": "职场竞争激烈，可能卷入派系斗争或恶意抢功，短期看似获胜实则树敌过多，长远发展受阻。",
+   "wealth": "财务因纠纷（如遗产争夺、合伙拆伙）或投机行为出现严重问题，可能面临损失或信用危机。",
+   "study": "学习上陷入恶性竞争如攀比分数、作弊或打压同学，虽一时得意但基础不牢难以持久。",
+   "spirit": "当胜利建立在他人痛苦之上，这样的胜利注定是孤独而苍白的。"
+  },
+  "rev": {
+   "love": "处于感情劣势，被对方掌控或欺负无力反击，可能遭遇背叛或冷暴力，关系濒临崩溃需果断止损。",
+   "career": "工作中遭遇严重挫败甚至声名狼藉，努力难以扭转局面，可能被迫离职需重新出发。",
+   "wealth": "财务状况极度恶化，问题超出个人能力范围，可能面临破产或巨额亏损，需寻求专业帮助。",
+   "study": "学业表现糟糕考试失利或被否定，自信心受挫，需从基础重新开始避免被失败击垮。",
+   "spirit": "真正的智慧不在于击败对手，而在于化解冲突，寻求共赢。"
+  }
+ },
+ {
+  "desc": "宝剑六描绘了一艘小船正从波涛汹涌的水域驶向远方平静的河岸，船上插着六把剑，载着一名船夫、一位裹紧披风的女子和一个孩童。这张牌象征从伤痛、混乱中缓慢过渡到疗愈与平静的过程。六把剑虽沉重却不可或缺——它们承载着过去的挑战与信念，若强行移除，船将倾覆。真正的疗愈不是遗忘或丢弃伤痛，而是学会带着它们继续前行。",
+  "elements": [
+   "小船：象征过渡的载体，代表从困境驶向安宁的缓慢移动。",
+   "六把插立的剑：代表过去的挑战、信念与伤痛，虽沉重但必须承载。",
+   "船夫：引导者与掌控者，象征内在的意志力与方向感。",
+   "裹披风的女子：隐藏与庇护的形象，代表需要保护的脆弱内心。",
+   "孩童：象征纯真与未来，暗示新希望与未被污染的生命力。",
+   "汹涌的水流（近处）：代表潜意识中的情绪波动、焦虑与未解决的困难。",
+   "平静的水面（远处）：象征疗愈后的安宁、目标与新的开始。",
+   "远方的河岸：安全的终点，代表过渡后的稳定状态。"
+  ],
+  "up": {
+   "love": "关系从激烈冲突中逐渐恢复，双方共同努力解决问题，可能处于冷静期或暂时分离，但方向朝向和解与稳定。",
+   "career": "工作经历动荡后进入平稳过渡期，项目收尾或岗位调整，需低调行事埋头苦干等待时机。",
+   "wealth": "财务状况从危机中缓慢好转，之前的损失正在处理中，需制定长期计划优先解决紧急债务。",
+   "study": "学习状态从低谷回升，虽进展缓慢但方向正确，需坚持基础重建避免与他人比较。",
+   "spirit": "带着伤痕的希望——即使步履沉重，只要保持耐心与方向，终将抵达安全的彼岸。"
+  },
+  "rev": {
+   "love": "关系因逃避问题而陷入僵局，或沉溺于过去无法释怀，可能固执地守着旧情拒绝面对现实。",
+   "career": "转型计划受阻，或因留恋旧模式拒绝适应变化导致效率低下，可能面临突发风波。",
+   "wealth": "财务因拖延决策或回避问题而恶化，可能错过止损时机，需立即处理紧急事务。",
+   "study": "学习因逃避困难（如挂科后弃考）或方法僵化而停滞，需接受现状寻求指导分阶段重启。",
+   "spirit": "船在河中停住，不是因为风浪，而是因为你拒绝划桨。"
+  }
+ },
+ {
+  "desc": "宝剑七描绘了一个男子趁着夜色，悄悄从敌营偷走五把宝剑，脸上带着狡黠得意的笑容，身后帐篷门帘敞开，远处隐约有黑影，地上还留着两把未拿走的剑。这张牌象征以智谋、策略甚至欺诈手段来应对困境，却也暗示着这种行为背后的孤立与风险。耍小聪明或走捷径或许能解一时之急，但若失去诚信，终将付出更大代价。",
+  "elements": [
+   "潜行男子：代表以隐秘、非正面的方式行动，试图规避冲突或责任。",
+   "五把偷取的剑：象征通过不正当手段获取的优势，也代表暂时摆脱的麻烦。",
+   "地上遗留的两把剑：暗示危机未完全解除，对手仍有反击能力，需留后路。",
+   "军营/帐篷：代表对立的环境、他人领域或需要突破的障碍。",
+   "敞开的帐篷门帘：暗示时机正好对方防备松懈，但也是陷阱的可能。",
+   "衣服上的月亮图案：代表变幻、伪装与潜意识，体现欺诈与隐藏。",
+   "脚印：暗示行动并非无迹可寻，可能暴露行踪。",
+   "悬崖尖端：代表危险与边界，提醒谨慎行事否则可能坠入深渊。"
+  ],
+  "up": {
+   "love": "关系中存在欺骗或隐瞒，可能有一方不坦诚甚至出现第三者，表面和谐实则暗藏危机。",
+   "career": "正在执行一个看似不可能的任务，但过度自信可能导致策略失误，可能利用非常规手段竞争短期获利。",
+   "wealth": "财务状况不稳定，可能通过投机或偏门渠道获利但风险极高，需谨慎规划。",
+   "study": "可能通过作弊或小聪明取得好成绩，但基础不牢难以持久，应踏实积累实力。",
+   "spirit": "真正的智慧不在于巧取豪夺，而在于找到光明正大的解决之道。"
+  },
+  "rev": {
+   "love": "谎言被揭穿，关系陷入信任危机，可能遭遇背叛或算计，需面对现实坦诚沟通。",
+   "career": "耍小聪明被识破计划功亏一篑，可能陷入职场纠纷声誉受损，需回归正道。",
+   "wealth": "投机行为失败，可能因诈骗或错误决策蒙受损失，需立即止损重新评估。",
+   "study": "作弊被发现或学习方法混乱导致成绩下滑，需放弃侥幸心理从头补足基础。",
+   "spirit": "偷来的剑终会反噬——用诚信换来的胜利，才握得安稳。"
+  }
+ },
+ {
+  "desc": "宝剑八描绘了一位被蒙住双眼、上半身被束缚的女子，孤立地站在八把剑围成的牢笼中，脚下是泥泞的土地，远处矗立着一座城堡。这张牌象征自我设限、思维禁锢与受害心态——真正的束缚并非来自外界，而是源于内心的恐惧与迷茫。真正的牢笼不在外界，而在于你选择相信它的那一刻。唯有摘下眼罩，迈出脚步，才能发现自由一直都在身边。",
+  "elements": [
+   "蒙眼女子：象征因恐惧或偏见而看不清真相，陷入自我欺骗与盲目。",
+   "白色眼罩/绷带：物质世界的枷锁，代表对现实的误解与无知。",
+   "八把插立的宝剑：象征思维的禁锢、焦虑的念头与自我设限的信念。",
+   "红色袍子：代表内心渴望突破的激情与生命力，被压抑却未熄灭。",
+   "束缚的绳索：象征自认为无法挣脱的限制，实则是内心恐惧的投射。",
+   "泥泞地面：代表情绪的低落、羞辱感与前进的阻力。",
+   "远处城堡：象征安全感、目标或权威，却因宝剑阻隔看似遥不可及。",
+   "女子赤足：代表脆弱与真实，也暗示与大地直接接触，有力量可寻。"
+  ],
+  "up": {
+   "love": "关系因外界反对或自身猜忌陷入困局，感到被束缚却无力挣脱，可能受制于家庭压力或过往创伤。",
+   "career": "工作中处处受限难以发挥实力，常感被规则或人际打压，可能因自我怀疑错失机会。",
+   "wealth": "财务状况被动，可能因错误观念或他人误导陷入危机，需停止逃避理清真实收支。",
+   "study": "学习陷入瓶颈自我否定导致动力不足，考试易紧张失常，需调整心态重建信心。",
+   "spirit": "真正的牢笼不在外界，而在于你选择相信它的那一刻。"
+  },
+  "rev": {
+   "love": "开始挣脱情感绑架，或意识到自身在关系中的责任，可能经历冲突后尝试沟通逐步设立边界。",
+   "career": "从被动转向主动，尝试新方法或调岗，虽伴随阵痛但赢得成长空间。",
+   "wealth": "财务从依赖走向自主，开启副业或独立理财，初期或有波动但掌控力增强。",
+   "study": "学习状态从我不行转向尝试新方法，成绩虽波动但找回节奏，建立进步日记强化正向反馈。",
+   "spirit": "双脚并未被缚，自由近在咫尺——摘下眼罩，迈出那一步。"
+  }
+ },
+ {
+  "desc": "宝剑九描绘了一个从噩梦中惊醒的人，双手掩面，坐在床上痛苦不堪，身后墙上悬挂着九把剑，仿佛悬在头顶的达摩克利斯之剑。这张牌象征焦虑、噩梦、内疚与深夜的恐惧。与宝剑三的外界伤痛不同，宝剑九的痛苦源自内心——对过去的悔恨、对未来的恐惧在深夜被无限放大。真正的敌人不是外界，而是我们内心那个不肯放过自己的声音。",
+  "elements": [
+   "掩面人物：象征因痛苦、羞耻或恐惧而拒绝面对现实，陷入自我封闭。",
+   "九把悬挂的剑：代表累积的焦虑、压力与未解决的心结。",
+   "黑色背景：暗示未知、恐惧与心灵深处的黑暗。",
+   "床：象征睡眠、梦境与潜意识，此处体现失眠与噩梦的困扰。",
+   "被褥上的玫瑰图案：代表希望、爱与生命力，暗示痛苦中仍有温暖可能。",
+   "双手掩耳的姿态：拒绝听到外界声音，也逃避内心的真实呼唤。",
+   "人物头发灰白：象征压力导致的疲惫、活力流失。",
+   "人物赤足：代表脆弱与真实，缺乏保护的状态。"
+  ],
+  "up": {
+   "love": "关系充满猜忌与不安，可能因背叛、冷暴力或旧伤复发陷入焦虑，深夜常因担忧伴侣而失眠，信任完全瓦解。",
+   "career": "工作带来巨大心理压力，项目失败或职场霸凌导致自我怀疑，每天在恐惧中度过身心濒临崩溃。",
+   "wealth": "财务状况糟糕，可能因投资失误或债务问题夜不能寐，因焦虑逃避处理导致问题雪上加霜。",
+   "study": "学习压力过大，考前极度焦虑失眠，或因挂科陷入深深自责，对学习产生恐惧心理。",
+   "spirit": "唯有直面恐惧，才能穿透暗夜，迎来黎明。"
+  },
+  "rev": {
+   "love": "从情感煎熬中缓慢恢复，开始接受现实或结束消耗关系，虽仍有心结但愿意尝试沟通。",
+   "career": "职场压力部分缓解，项目告一段落或调离高压岗位，信心尚未完全恢复但已开始用微小行动重建安全感。",
+   "wealth": "财务危机通过协商暂缓，开始正视问题并制定还款计划，已从逃避转向积极应对。",
+   "study": "从学习崩溃边缘恢复，补考通过或找到新方法，仍需克服失败恐惧但已愿意面对困难。",
+   "spirit": "绝望中仍藏着一丝希望的微光——被褥上的玫瑰，是暗夜中的温暖可能。"
+  }
+ },
+ {
+  "desc": "宝剑十描绘了一个令人震撼的画面——一名男子俯卧在地，背上深深刺入十把剑，鲜血染红衣袍，黑暗的天空笼罩一切，然而远方的地平线上已透出金黄色的曙光。这张牌象征极致的痛苦、彻底的失败与某种形式的终结，是宝剑牌组苦难历程的顶点。最深的绝望往往与希望毗邻，当一切看似无可挽回时，恰恰是重生的开端。",
+  "elements": [
+   "俯卧的男子：象征被生活击垮、精疲力竭，陷入低谷无法动弹的状态。",
+   "十把插入的宝剑：代表极致的痛苦、多重打击与无法逃避的终结。",
+   "红色披风/衣袍：象征生命的热情、牺牲的鲜血，以及行动力的残留。",
+   "黑色天空：压抑绝望的时刻，代表至暗时刻的笼罩。",
+   "远方曙光：金黄色光芒，预示新的希望、重生与黎明即将到来。",
+   "平静的水面：象征情绪的沉淀、潜意识的平静，暗含风暴过后的安宁。",
+   "类似教皇的手势：代表信仰、精神觉醒，即使在毁灭中仍保持内在力量。",
+   "远处的蓝色山脉：浮现的新彼岸，象征未来的目标与新的可能性。"
+  ],
+  "up": {
+   "love": "关系已走到尽头，只剩下痛苦与折磨，可能遭遇背叛、欺骗或彻底的失望，急需放手以获得解脱。",
+   "career": "工作陷入绝境，项目失败、公司倒闭或被裁员，承受巨大打击，但这是结束也是转机。",
+   "wealth": "财务状况千疮百孔濒临破产，投资血本无归，不如彻底清算为将来重生清空负担。",
+   "study": "学习彻底失败考试落榜、论文被否，信心崩溃，必须承认现状放下包袱从头积累。",
+   "spirit": "最深的绝望往往与希望毗邻——当一切看似无可挽回时，恰恰是重生的开端。"
+  },
+  "rev": {
+   "love": "关系已过最痛苦阶段，虽仍有伤痕但开始缓慢复苏，可能经历分离后反思逐渐走出阴影。",
+   "career": "工作从谷底反弹出现微弱转机，可能找到新方向或获得补救机会，但根基不稳需步步为营。",
+   "wealth": "财务状况外强中干，表面好转实则危机四伏，需认清真实状况及时调整策略。",
+   "study": "学习状态开始改善，补考通过或找到新方法，但仍需加倍努力弥补落下的基础。",
+   "spirit": "唯有接受现实的破碎，才能真正放下包袱，迎接破晓后的新生。"
+  }
+ },
+ {
+  "desc": "宝剑国王端坐于石制王座之上，右手持剑斜指前方，左手轻握权杖，目光如炬直视远方。这张牌象征理性思维的完全成熟与权威的巅峰——他是风元素与土元素的完美结合，既有思想的锐利与高度，又有现实的稳固与掌控力。他制定规则、维护秩序，是真理的守护者与公正的裁决人。真正的权威不在于压制他人，而在于以智慧引领、以公正服人。",
+  "elements": [
+   "端坐石制王座：象征理性基础的不可动摇，决策建立在绝对逻辑与经验之上。",
+   "右手持剑斜指：代表果断的行动力，剑尖偏斜暗示会根据外部情况灵活调整。",
+   "左手握权杖：象征权力与掌控，体现对局面的主导地位与决策权威。",
+   "蓝色长袍：代表智慧、冷静与理性。",
+   "红色披风：象征行动力与热情，暗示智慧需转化为实际行动。",
+   "金色王冠：代表权威与至高地位，是智慧与经验积累的象征。",
+   "王座上的蝴蝶雕刻：象征思维的蜕变、灵活性与高度洞察力。",
+   "背景飞翔的鸟：代表智慧的高飞、对更高境界的追求与思想的自由。"
+  ],
+  "up": {
+   "love": "理性对待感情，注重付出平衡，善于通过沟通解决矛盾，双方可能像合作伙伴，有清晰规划但情感表达较少。",
+   "career": "卓越的领导力与战略眼光，专业能力过硬，决策精准富有远见，适合法律、管理、咨询等领域。",
+   "wealth": "通过精密分析进行投资布局，风险控制严谨，擅长长期规划，财富稳定增长。",
+   "study": "逻辑思维达到巅峰，善于构建知识体系，学习方法科学系统，在专业领域具有权威见解。",
+   "spirit": "真正的权威不在于压制他人，而在于以智慧引领、以公正服人。"
+  },
+  "rev": {
+   "love": "变得冷漠疏离控制欲过强，用理性伤害亲密感，可能因固执己见或计较得失引发矛盾。",
+   "career": "因固执己见导致决策失误，或严苛管理引发团队矛盾，可能滥用权力成为苛刻领导。",
+   "wealth": "因过度保守错失良机或盲目自信导致投资失误，财务规划混乱。",
+   "study": "思维僵化影响突破，或苛求完美阻碍进步，学习方法缺乏灵活性。",
+   "spirit": "灯塔照亮航道，却也自身冰冷——智慧若没有温度，便只剩锋利。"
+  }
+ },
+ {
+  "desc": "宝剑王后端坐于石椅之上，右手高举宝剑直指天空，左手微抬似在权衡，神情镇定而洞明。这张牌象征经历过情感淬炼后，用理智武装自己的成熟女性形象。她是风元素与水元素的结合：既有思维的锋利与清晰，又有情感的深度，但情感被严格置于理性的掌控之下。真正的智慧在于平衡理智与情感，既要有剖析真相的勇气，也要保有内心的温度。",
+  "elements": [
+   "高举的宝剑：象征清晰的理性、敏锐的判断力，剑指天空代表追求真理与智慧。",
+   "微抬的左手：体现权衡与思虑，正在做出精准的判断与决策。",
+   "蝴蝶花纹王冠：象征心智的蜕变与觉醒，灵魂的自由与高级思维。",
+   "蓝底白云外袍：代表理性与智慧的融合，云纹暗示思维的流动与广阔。",
+   "红色内袍：外冷内热，内心仍有情感火焰但被理性压制。",
+   "宝座上的蝴蝶与天使：风之精灵，象征好口才、思维敏锐。",
+   "宝座上的月亮图案：代表直觉与潜意识，与理性相辅相成。",
+   "金发垂入河流：风中之水，联通思维与情感两种元素的智慧。"
+  ],
+  "up": {
+   "love": "理性对待感情，喜欢有深度有思想的交流，注重边界感与分寸，可能显得冷静疏离但内心重视对方。",
+   "career": "独立工作能力强，擅长分析与决策，公事公办不受人情干扰，适合咨询、法律、管理等客观判断职位。",
+   "wealth": "通过理性分析与规划做出明智投资决策，擅长理财能维持财务平衡。",
+   "study": "逻辑思维极强能快速抓住重点，擅长梳理复杂知识体系，辩论与分析类科目表现优异。",
+   "spirit": "真正的智慧在于平衡理智与情感——既要有剖析真相的勇气，也要保有内心的温度。"
+  },
+  "rev": {
+   "love": "变得苛刻挑剔，用言语伤害伴侣，或冷漠疏离拒绝沟通，可能因过去创伤无法信任。",
+   "career": "职场中变得尖酸刻薄喜欢挑刺或搬弄是非，人际关系紧张，或因过度理性决策失误。",
+   "wealth": "财务规划混乱凭喜好花钱，情绪化消费导致超支，投资判断失准。",
+   "study": "学习钻牛角尖思维被偏见干扰，无法客观吸收知识，或因情绪问题影响学习效果。",
+   "spirit": "冰山虽可敬却难以亲近——理性过度，连自己也会被冻伤。"
+  }
+ },
+ {
+  "desc": "宝剑侍从描绘了一位年轻机敏的站立者，手握宝剑，目光锐利地望向远方，身处高地，衣袍与发丝随风飘动。这张牌象征敏锐的洞察力、旺盛的好奇心与迅捷的思维。他是信息的侦察兵、思想的探索者——擅长收集情报、分析形势、提出新想法，却未必能将之付诸实践。核心课题在于：如何让思维的锋芒成为照亮真理的光，而非刺伤自我与他人的刃。",
+  "elements": [
+   "年轻侍从：象征思维敏捷的初学者，代表好奇心、探索欲与学习阶段的特质。",
+   "紧握的宝剑：代表理性的力量、清晰的思维与捍卫真理的决心，剑尖向上指向更高目标。",
+   "锐利的眼神：体现警觉与专注，时刻准备捕捉信息。",
+   "高处的山丘：代表更高的视角、俯瞰全局的能力。",
+   "红色外袍与靴子：象征行动力、热情与务实的野心。",
+   "黄色内衬：代表智慧、理性与逻辑思维。",
+   "飘动的头发与被风吹斜的树枝：体现风元素的流动性，象征思维活跃。",
+   "头顶的乌鸦：代表收到的线索与消息，信息的载体。"
+  ],
+  "up": {
+   "love": "处于探索与了解阶段，对新恋情充满好奇，或对现有关系进行深度沟通，但需避免过度分析或侦探式猜疑。",
+   "career": "职场新人或项目初期，擅长信息收集、市场调研与数据分析，思维敏锐但需避免过早下结论。",
+   "wealth": "通过学习财务知识或信息差获利，适合研究新投资策略，需验证信息可靠性避免轻信谣言。",
+   "study": "学习进入高效探索期，擅长逻辑分析、辩论与跨学科研究，考试需注意审题细节。",
+   "spirit": "让思维的锋芒成为照亮真理的光，而非刺伤自我与他人的刃。"
+  },
+  "rev": {
+   "love": "沟通不畅或言语冒犯导致误会，可能因过分好奇侵犯对方隐私，或因轻率言辞引发冲突。",
+   "career": "计划因信息误判或轻率行动受阻，可能因小聪明引发同事不满，需复盘错误根源。",
+   "wealth": "财务因投机失败或信息欺诈受损，可能跟风虚假广告，需停止高风险操作学习基础理财。",
+   "study": "学习因分心或方法错误效率低下，考试易因粗心失分，需建立结构化学习流程。",
+   "spirit": "收集情报之前，先学会筛选信息——不是所有听到的都值得相信。"
+  }
+ },
+ {
+  "desc": "宝剑骑士描绘了一位身披铠甲、高举宝剑的战士，骑乘着白色骏马在狂风中疾驰向前。这张牌象征迅捷的行动、锐利的思维与不可阻挡的冲劲——他是风中之火，将理性的锋芒与行动的热情融为一体。他告诉我们：真正的勇士不仅要有冲锋的勇气，更要有驾驭速度的智慧。如何平衡迅捷与审慎、果断与共情，是他的核心课题。",
+  "elements": [
+   "高举的宝剑：象征清晰的思路、理性的决断力，剑指远方代表目标明确。",
+   "白色骏马：代表纯粹的行动力与迅捷的速度，将思维迅速转化为行动。",
+   "狂风中变形的云与树：暗示环境的混乱与挑战的激烈。",
+   "铠甲：象征坚强防护与战斗准备，但也暗示情感的隔绝与防御姿态。",
+   "红色外袍/披风：代表热情、勇气与行动力，与风元素的理性形成风火交织。",
+   "带尖刺的铁靴：象征杀伤力与攻击性，毫不留情，也可能伤害身边的人。",
+   "马头的红心配件：代表热情的心与追寻的动力。",
+   "骑士坚定目光：体现专注与决心，直视远方目标。"
+  ],
+  "up": {
+   "love": "关系进展迅速，双方直接坦率，喜欢以理性沟通解决问题，单身者可能主动出击快速确定关系，但需避免因讲道理忽略情感温度。",
+   "career": "职场高效执行，擅长处理紧急项目、危机谈判，决策果断能抢占先机，但需注意细节避免求快出错。",
+   "wealth": "通过快速交易或短期投资获利，决策力强能抓住机会，但需设定止损点避免贪快忽视风险。",
+   "study": "思维敏捷学习效率极高，擅长逻辑分析与考前冲刺，但需在速成后巩固基础避免快餐式学习。",
+   "spirit": "真正的勇士不仅要有冲锋的勇气，更要有驾驭速度的智慧。"
+  },
+  "rev": {
+   "love": "关系因急躁冒进或言语攻击陷入冲突，可能因赢争论输感情而分手，缺乏耐心容易冲动争吵。",
+   "career": "计划因草率行动或过度竞争引发团队矛盾，可能因违规受罚，工作混乱想冲却冲不动。",
+   "wealth": "因冲动投资或盲目扩张陷入财务危机，可能跟风炒作导致亏损，需紧急冻结高风险操作。",
+   "study": "学习急于求成导致知识断层，贪多嚼不烂理解不深入，考试易因粗心或超时失利。",
+   "spirit": "剑再快，也要先看准目标再挥——速度从不是鲁莽的借口。"
+  }
+ }
+];
+
+// 将详解数据接入 CARD_MEANINGS：替换四维释义，并挂载核心释义/元素解析/学业参考
+for(let __i=0;__i<78;__i++){
+  const __t=TAROT_DATA[__i];
+  const __m=CARD_MEANINGS[__i];
+  ['love','career','wealth','spirit'].forEach(k=>{__m.up[k]=__t.up[k];__m.rev[k]=__t.rev[k];});
+  __m.desc=__t.desc;
+  __m.elements=__t.elements;
+  __m.up.study=__t.up.study;
+  __m.rev.study=__t.rev.study;
+}
+
+
 const SPREADS = [
   { id:'three-card', name:'无牌阵三张', desc:'灵活分析事情现状与未来走向', count:3,
     positions:[{sub:'现状/主位',x:'20%',y:'50%'},{sub:'辅助/补充',x:'50%',y:'50%'},{sub:'未来/走向',x:'80%',y:'50%'}] },
@@ -506,17 +2983,19 @@ const SPREADS = [
 let state = { spread:null, deck:[], picked:[], pickedCount:0 };
 
 function cardBg(idx) {
-  return `background-image:url("${CARD_IMGS[idx]}");background-size:100% 100%;background-position:center;background-repeat:no-repeat;`;
+  return `background-image:url('${CARD_IMGS[idx]}');background-size:100% 100%;background-position:center;background-repeat:no-repeat;`;
 }
 function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
 // ===== Hash Router =====
-const PAGE_IDS = ['home','spreads','pick','reading','horoscope','horo-result'];
+const PAGE_IDS = ['home','spreads','pick','reading','horoscope','horo-result','cards','library'];
 
 function showPage(pageId){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   const el=document.getElementById(pageId);
   if(el)el.classList.add('active');
+  // Sidebar highlight
+  document.querySelectorAll('.side-item').forEach(it=>it.classList.toggle('on',it.dataset.target===pageId));
   window.scrollTo(0,0);
 }
 
@@ -527,10 +3006,33 @@ function router(){
   // Page init hooks
   if(hash==='spreads')renderSpreads();
   if(hash==='horoscope')initHoroscope();
+  if(hash==='cards')renderCardRef();
   showPage(hash);
 }
 window.addEventListener('hashchange',router);
 window.addEventListener('load',()=>{if(!location.hash)location.hash='home';});
+
+// ===== Sidebar toggle =====
+function toggleSidebar(){
+  document.body.classList.toggle('side-hidden');
+  const t=document.getElementById('sideToggle');
+  t.classList.toggle('on');
+  t.textContent=document.body.classList.contains('side-hidden')?'☰':'☰';
+}
+window.toggleSidebar=toggleSidebar;
+
+// ===== Click FX (爪印点击特效) =====
+document.addEventListener('click',function(e){
+  var img=document.createElement('img');
+  img.className='click-fx';
+  img.src='assets/paw-click.png';
+  img.alt='';
+  img.style.left=e.clientX+'px';
+  img.style.top=e.clientY+'px';
+  img.style.setProperty('--fxRot',(Math.random()*40-20)+'deg');
+  document.body.appendChild(img);
+  setTimeout(function(){img.remove();},700);
+});
 if(location.hash)router();else router();
 
 function renderSpreads(){
@@ -548,9 +3050,6 @@ function renderSpreads(){
 
 function selectSpread(idx){
   state.spread=SPREADS[idx];state.picked=[];state.pickedCount=0;
-  state.question='';
-  const qi=document.getElementById('questionInput');
-  if(qi)qi.value='';
   state.deck=shuffle(Array.from({length:78},(_,i)=>i)).map(i=>({cardIdx:i,reversed:Math.random()<0.5}));
   document.getElementById('pickTitle').textContent=state.spread.name;
   document.getElementById('pickCount').textContent=state.spread.count;
@@ -649,8 +3148,6 @@ function pickCard(deckIdx, el){
 
 function showReading(){
   document.getElementById('readingTitle').textContent=state.spread.name+' · 占卜结果';
-  const qi=document.getElementById('questionInput');
-  state.question=qi?qi.value.trim():'';
 
   // Render spread stage with placed cards (larger, clickable)
   const stage=document.getElementById('readStage');
@@ -687,6 +3184,12 @@ function showReading(){
 }
 
 function getCardDims(idx, reversed){
+  const m=CARD_MEANINGS[idx];
+  if(m){
+    const d=m[reversed?'rev':'up'];
+    return {love:d.love, wealth:d.wealth, career:d.career, spirit:d.spirit};
+  }
+  // Fallback (should not normally happen)
   const card=CARDS[idx];
   const base=reversed?card[4]:card[3];
   // Determine suit and type
@@ -727,32 +3230,81 @@ function getCardDims(idx, reversed){
   return{love,wealth,career,spirit};
 }
 
+function cardRole(idx){
+  if(idx<22)return {type:'major',label:'大阿卡纳'};
+  const g=idx<36?0:idx<50?1:idx<64?2:3;
+  const pos=idx-[22,36,50,64][g];
+  if(pos===0)return {type:'ace',label:'原点牌'};
+  if(pos<=9)return {type:'num',label:'事件牌',num:pos+1};
+  const courtNames=['国王','皇后','侍从','骑士'];
+  return {type:'court',label:'人物牌',court:courtNames[pos-10]};
+}
+
+function classifyQuestion(q){
+  const rules=[
+    {k:'love',re:/感情|恋爱|爱情|对象|男友|女友|伴侣|前任|复合|婚姻|结婚|喜欢|心动|暧昧|关系|TA|他|她/},
+    {k:'career',re:/事业|工作|学业|考试|求职|跳槽|升职|晋升|创业|面试|考研|毕业|读书|论文|offer|转行|实习/},
+    {k:'wealth',re:/财|钱|收入|投资|理财|股票|基金|负债|攒钱|买房|买车|生意|副业|加薪/},
+    {k:'spirit',re:/心灵|成长|健康|迷茫|焦虑|情绪|状态|自己|内心|困惑|意义|方向|人生/}
+  ];
+  for(const r of rules){ if(r.re.test(q)) return r.k; }
+  return '';
+}
+
 function generateOverall(){
   const picked=state.picked;
-  const q=state.question||'';
+  const qEl=document.getElementById('questionInput');
+  const question=(qEl&&qEl.value&&qEl.value.trim())?qEl.value.trim():'';
   let text=`<strong style="color:var(--sage-deep);font-size:16px;">${state.spread.name} · 牌面总览</strong>`;
-  if(q){
-    text+=`<br><br><div style="background:var(--sage-light);border-radius:10px;padding:10px 14px;font-size:14px;color:var(--sage-deep);">
-      💭 <strong>你所问：</strong>${q}
-    </div>`;
+  if(question){
+    text+=`<br><span style="color:var(--gold);font-size:13px;">✦ 你所问：${question}</span>`;
   }
-  const cls=q?classifyQuestion(q):null;
-  const dimLabels={love:'感情',career:'事业',wealth:'财富',spirit:'心灵'};
   
   // Per-card detailed breakdown with four dimensions
+  const qType=classifyQuestion(question);
+  const dimLabels={love:'💕 感情',wealth:'💰 财富',career:'💼 事业',spirit:'✨ 心灵'};
+  const dimOrder=qType?[qType,'love','wealth','career','spirit'].filter((v,i,a)=>a.indexOf(v)===i):['love','wealth','career','spirit'];
   picked.forEach((p,i)=>{
     const card=CARDS[p.cardIdx];
     const meaning=p.reversed?card[4]:card[3];
     const orient=p.reversed?'逆位':'正位';
     const pos=state.spread.positions[i].sub||('位置'+(i+1));
     const dims=getCardDims(p.cardIdx,p.reversed);
-    text+=`<br><br><span style="color:var(--gold);font-weight:600;">▸ ${pos}</span><br><strong>${card[1]}</strong>（${orient}）<br>`;
-    text+=`💕 感情：${dims.love}<br>`;
-    text+=`💰 财富：${dims.wealth}<br>`;
-    text+=`💼 事业：${dims.career}<br>`;
-    text+=`✨ 心灵：${dims.spirit}`;
-    if(q&&cls){
-      text+=`<br><span style="color:var(--gold);font-size:12px;">▸ 针对「${q}」：这张牌提示你先关注${dimLabels[cls.hits[0]]}层面的${p.reversed?'功课与阻力——先疏通内在，再向外求结果':'机会与能量——顺势而为，主动一点会更快见到回应'}。</span>`;
+    const role=cardRole(p.cardIdx);
+    text+=`<br><br><span style="color:var(--gold);font-weight:600;">▸ ${pos}</span><br><strong>${card[1]}</strong>（${orient}）<span style="color:var(--ink-light);font-size:11px;margin-left:4px;">${role.label}</span><br>`;
+    dimOrder.forEach(k=>{
+      if(qType&&k===qType){
+        text+=`<b style="color:var(--sage-deep);">${dimLabels[k]}（你所问）</b>：${dims[k]}<br>`;
+      }else{
+        text+=`${dimLabels[k]}：${dims[k]}<br>`;
+      }
+    });
+    // Question-focused hint per card
+    if(question){
+      const hints={
+        love:[
+          '这张牌提示你先关注感情层面的机会与能量——顺势而为，主动一点会更快见到回应。',
+          '这张牌提示你先关注感情层面的功课与阻力——先疏通内在，再向外求结果。'
+        ],
+        career:[
+          '这张牌提示你先关注事业层面的机会与节奏——把握当下，主动推进会有进展。',
+          '这张牌提示你先关注事业层面的卡点与阻力——先理清思路，再考虑下一步。'
+        ],
+        wealth:[
+          '这张牌提示你先关注财富层面的机会与趋势——稳健布局，顺势行动会有回报。',
+          '这张牌提示你先关注财富层面的风险与波动——先守住基本盘，再谈增长。'
+        ],
+        spirit:[
+          '这张牌提示你先关注内在层面的能量与成长——保持觉察，顺势滋养自己。',
+          '这张牌提示你先关注内在层面的卡顿与消耗——先安顿内心，再应对外界。'
+        ],
+        other:[
+          '这张牌提示你先关注它所指层面的机会与优势——顺势而为，会更快看到进展。',
+          '这张牌提示你先关注它所指层面的功课与阻力——先调整内在状态，再向外求结果。'
+        ]
+      };
+      const hint=hints[qType||'other'][p.reversed?1:0];
+      text+=`<div style="background:var(--sage-light);border-radius:8px;padding:6px 10px;margin-top:6px;font-size:12px;color:var(--ink);">针对「${question}」：${hint}</div>`;
     }
   });
 
@@ -781,6 +3333,50 @@ function generateOverall(){
   if(suits.major>=3)text+='大阿卡纳高度集中，此事并非小事，它与你深层的人生课题紧密相连，值得认真面对。';
   else if(suits.major>=2)text+='有两张以上大阿卡纳，暗示此事背后有重要成长课题，不仅仅是表面的事情。';
 
+  // === 牌面格局（塔罗社会缩影：大秘仪=大格局 / 宫廷牌=人物 / 数字牌=事件）===
+  const roles=picked.map(p=>cardRole(p.cardIdx));
+  const nCourt=roles.filter(r=>r.type==='court').length;
+  const nAce=roles.filter(r=>r.type==='ace').length;
+  const nNum=roles.filter(r=>r.type==='num').length;
+  const nMajor2=roles.filter(r=>r.type==='major').length;
+  const courtList=roles.filter(r=>r.type==='court').map(r=>r.court).join('、');
+  if(nCourt>0)text+=`<br>宫廷牌出现${nCourt}张（${courtList}）——在塔罗里宫廷牌代表「人物与角色」，说明此事很可能涉及具体的人，某个人物将在其中扮演关键作用。`;
+  if(nAce>0)text+=`<br>首牌(ACE)出现${nAce}张——首牌象征「原点与种子」，${nAce>1?'意味着多条线索正在同时萌芽':'意味着这件事正处于开端，新的能量正在注入'}。`;
+  if(nNum>0&&nNum>=picked.length-nMajor2-nCourt-nAce)text+='数字牌为主体，说明此事更偏向具体事务与日常节奏——是需要在现实中一步步推进的问题，而非抽象的宿命安排。';
+  if(nMajor2===0)text+='<br>没有大阿卡纳，整副牌都是小秘仪——这件事属于现实层面的具体事务，关键不在命运安排，而在你每一天的选择与行动。';
+
+  // === 同数字/同宫廷牌重复：传统牌组数量解读 ===
+  const numCount={}, courtCount={};
+  roles.forEach(r=>{
+    if(r.type==='num')numCount[r.num]=(numCount[r.num]||0)+1;
+    if(r.type==='court')courtCount[r.court]=(courtCount[r.court]||0)+1;
+  });
+  const CNUM={1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九',10:'十'};
+  const TWO={1:'诡计',2:'一致',3:'冷静',4:'失眠',5:'警戒',6:'易怒',7:'新闻',8:'新知识',9:'收到',10:'变化'};
+  const THREE={1:'小成功',2:'安全',3:'统一',4:'反思之事',5:'决心',6:'成功',7:'虚弱',8:'婚姻',9:'成功',10:'新环境'};
+  const FOUR={1:'有利的机会',2:'争辩',3:'进步',4:'近期旅行',5:'规律',6:'富裕',7:'阴谋',8:'逆',9:'一个好朋友',10:'谴责'};
+  const TWOCOURT={侍从:'焦虑',骑士:'亲密',王后:'挚友',国王:'咨询'};
+  const THREECOURT={侍从:'争议',骑士:'激烈辩论',王后:'被女人瞒骗',国王:'商议'};
+  const FOURCOURT={侍从:'危险疾病',骑士:'重要事情',王后:'大型辩论',国王:'极大的荣耀'};
+  const dupNums=Object.keys(numCount).filter(n=>numCount[n]>=2);
+  const dupCourts=Object.keys(courtCount).filter(c=>courtCount[c]>=2);
+  if(dupNums.length){
+    const parts=dupNums.map(n=>{
+      const c=numCount[n];
+      if(c===2)return `两张「${CNUM[n]}」象征「${TWO[n]}」`;
+      if(c===3)return `三张「${CNUM[n]}」象征「${THREE[n]}」`;
+      return `四张「${CNUM[n]}」象征「${FOUR[n]}」`;
+    });
+    text+=`<br>按传统牌组数量解读：${parts.join('，')}。`;
+  }
+  if(dupCourts.length){
+    const parts=dupCourts.map(c=>{
+      const n=courtCount[c];
+      return n===2?`两张「${c}」象征「${TWOCOURT[c]}」`:(n===3?`三张「${c}」象征「${THREECOURT[c]}」`:`四张「${c}」象征「${FOURCOURT[c]}」`);
+    });
+    text+=`<br>按传统宫廷牌数量解读：${parts.join('，')}。`;
+  }
+
   // === Orientation analysis ===
   const rc=picked.filter(p=>p.reversed).length;
   text+=`<br><br><strong style="color:var(--sage-deep);">—— 能量状态 ——</strong>`;
@@ -788,6 +3384,27 @@ function generateOverall(){
   else if(rc<=1)text+='<br>只有少量逆位，整体能量通畅，个别位置需要多留意，灵活调整。';
   else if(rc<=picked.length/2)text+='<br>逆位牌占了近一半，提示目前事情有些阻滞或方向不清，不要急于推进，先理清头绪。';
   else text+='<br>逆位牌较多，说明当下能量处于内耗或受阻状态，可能需要先停下来调整心态，不要在焦虑中做决定。';
+
+  // === Narrative flow across cards (energy journey) ===
+  text+=`<br><br><strong style="color:var(--sage-deep);">—— 牌面能量流动 ——</strong>`;
+  const fCard2=CARDS[picked[0].cardIdx], lCard2=CARDS[picked[picked.length-1].cardIdx];
+  const rc2=picked.filter(p=>p.reversed).length;
+  const flowDims=getCardDims(picked[0].cardIdx,picked[0].reversed);
+  const leadKey=state.spread.positions[0].sub||'起始';
+  text+=`<br>「${leadKey}」的${fCard2[1]}${picked[0].reversed?'（逆位）':'（正位）'}定下基调：${picked[0].reversed?'能量有所收敛，课题先于进展':'能量正向铺开，局面开始启动'}——${flowDims.love.split('。')[0]}。`;
+  if(picked.length>2){
+    const mids=picked.slice(1,-1).map(p=>CARDS[p.cardIdx][1]+(p.reversed?'（逆位）':'（正位）')).join('、');
+    const midFlow=picked.slice(1,-1).map(p=>{
+      const dm=getCardDims(p.cardIdx,p.reversed);
+      return dm[p.reversed?'spirit':'career'].split('。')[0];
+    }).join('；');
+    text+=` 中间的${mids}承接转折：${midFlow}。`;
+  }
+  text+=` 最终落在「${state.spread.positions[picked.length-1].sub||'结果'}」的${lCard2[1]}${picked[picked.length-1].reversed?'（逆位）':'（正位）'}，`;
+  if(rc2===0&&picked.every(p=>p.cardIdx<22))text+='整组大阿卡纳正位——这是一段被命运推动的清晰旅程，方向明确，能量充沛。';
+  else if(rc2===0)text+='全程正位，能量一路顺畅，事情会沿着牌面铺设的路径自然推进。';
+  else if(rc2>=picked.length-1)text+='逆位占多数，提示过程多有反复与变数，现阶段以观察和调整为主，不宜急于定论。';
+  else text+='正逆交织，说明推进中会有拉锯与反复，需要根据局势灵活调整策略。';
 
   // === Position-specific insight based on spread type ===
   text+=`<br><br><strong style="color:var(--sage-deep);">—— 走向与建议 ——</strong>`;
@@ -818,49 +3435,35 @@ function generateOverall(){
   if(hasStar)text+=' 星星是希望的指引，保持信念，宇宙在暗中帮你铺路。';
   if(hasSun)text+=' 太阳是最吉祥的牌之一，大胆去做吧，光明就在前方。';
   if(hasMajor&&reversedCards.length===0)text+=' 大牌正位集中，说明你正处在人生的重要节点，勇敢迈出这一步。';
+  // Question-specific wrap-up
+  if(question){
+    const qType=classifyQuestion(question);
+    const firstCard=CARDS[picked[0].cardIdx], lastCard=CARDS[picked[picked.length-1].cardIdx];
+    const lastUp=!picked[picked.length-1].reversed;
+    const openers={
+      love:'感情之事，最忌讳用理性去套住所有感受。',
+      career:'事业与学业之事，重在看清当下的节奏和自己的位置。',
+      wealth:'财运之事，重要的不是一时涨落，而是长期的方向感。',
+      spirit:'关于你自己，牌的答案往往在提醒你向内看。'
+    };
+    const closers={
+      love:'在感情里，真诚比技巧更重要；牌面提示你回到感受本身，而不是纠结于表象的输赢。',
+      career:'行动比空想更能打开局面；结合上面与你问题最相关的维度，优先处理好当下这一步。',
+      wealth:'财运与心态互为因果；避免冲动决策，把注意力放在可持续的积累上。',
+      spirit:'成长不在一夜之间；允许自己慢慢来，答案会在你安静下来之后浮现。'
+    };
+    text+=`<br><br><strong style="color:var(--sage-deep);">—— 关于「${question}」的回应 ——</strong>`;
+    if(qType)text+=`<br>${openers[qType]}`;
+    text+=`<br>开牌的${firstCard[1]}（${picked[0].reversed?'逆位':'正位'}）是你此刻状态的镜子，它提示了这件事起点处的能量基调。`;
+    if(lastUp&&lastCard.cardIdx<22)text+=' 收牌落在大阿卡纳且正位，预示你所问之事终将走向一个有分量的好结果，可以抱持信心。';
+    else if(picked[picked.length-1].reversed)text+=' 收牌为逆位，说明这件事的答案或进展还需要时间，现阶段更适合观察与调整，而不是强求一个立即的结果。';
+    else text+=` 收牌${lastCard[1]}为正位，事情会沿着牌面所示的路径稳步推进，顺势而为即可。`;
+    if(qType)text+=`<br>${closers[qType]}`;
+    text+='<br>记得：牌面给出的不是定论，而是当下能量最可能的走向——你的选择永远比牌更有力量。';
+  }
   text+=' 占卜呈现的是当下能量最可能趋向的走向，而非定局。你始终拥有选择和改变的力量。命由天定，事在人为。';
 
-  if(q)text+=questionResponse(q,picked);
-
   document.getElementById('overallText').innerHTML=text;
-}
-
-// 问题维度识别：感情 / 事业 / 财富 / 心灵
-function classifyQuestion(q){
-  const dims={love:false,career:false,wealth:false,spirit:false};
-  if(/感情|爱情|恋爱|喜欢|暧昧|复合|分手|对象|伴侣|婚姻|相亲|男友|女友|夫妻|关系|TA|他|她|是否还爱/.test(q))dims.love=true;
-  if(/事业|工作|职场|晋升|跳槽|升职|面试|辞职|创业|学业|考试|求职|考研|offer|职业|项目/.test(q))dims.career=true;
-  if(/钱|财富|财运|投资|理财|收入|赚钱|金钱|消费|买房|资金|经济|负债|股票/.test(q))dims.wealth=true;
-  if(/心灵|内心|成长|焦虑|迷茫|情绪|疗愈|修行|状态|自我|健康|释怀/.test(q))dims.spirit=true;
-  const order=['love','career','wealth','spirit'];
-  const hits=order.filter(k=>dims[k]);
-  return hits.length?{hits}:null;
-}
-
-// 结合问题语境的定向回应
-function questionResponse(q,picked){
-  const cls=classifyQuestion(q);
-  const dimLabels={love:'感情',career:'事业',wealth:'财富',spirit:'心灵'};
-  let t=`<br><br><strong style="color:var(--sage-deep);">—— 关于「${q}」的回应 ——</strong><br>`;
-  const first=picked[0], last=picked[picked.length-1];
-  const fCard=CARDS[first.cardIdx], lCard=CARDS[last.cardIdx];
-  t+=`<br>从开牌的${fCard[1]}（${first.reversed?'逆位':'正位'}）到收牌的${lCard[1]}（${last.reversed?'逆位':'正位'}），能量的起点与落点已勾勒出这件事的轮廓：`;
-  t+=first.reversed?'起始阶段还存在未厘清的纠葛或犹豫，先把它理顺再往前推进；':'起步能量是稳的，你可以放心迈出第一步；';
-  if(!last.reversed&&last.cardIdx<22)t+='收牌落在大阿卡纳正位，这件事的结果分量很重，与你更深层的人生课题相连，值得认真对待。';
-  else if(last.reversed)t+='收牌逆位，结果不会一蹴而就，给自己和事情多一点时间，答案会在过程中浮现。';
-  else t+='收牌正位，整体趋势向上，按牌面指引逐步行动即可。';
-  if(cls){
-    t+=`<br><br>回到你的问题——牌面在「${cls.hits.map(k=>dimLabels[k]).join('、')}」这个面向给出的信号：`;
-    const rev=picked.filter(p=>p.reversed).length;
-    cls.hits.forEach(k=>{
-      if(k==='love')t+= rev>picked.length/2?'目前感情向能量偏阻滞，与其追问答案，不如先安顿好自己的心，答案会在你稳下来之后变得清晰。':'感情向能量较为流通，主动表达与真诚沟通会让关系走向更明朗。';
-      else if(k==='career')t+= rev>picked.length/2?'事业向建议稳中求进，先积累再谈突破，避免在情绪驱动下做重大决定。':'事业向能量正向，机会偏爱主动争取的人，准备好了就出手。';
-      else if(k==='wealth')t+= rev>picked.length/2?'财富向提醒理性规划，眼下不宜冒险或大额投入，守住基本盘再谈增量。':'财富向趋势不错，务实经营会带来稳定回报，可适度推进计划。';
-      else t+= rev>picked.length/2?'心灵层面你正处在调整期，慢下来反而更快，允许自己有过渡的时间。':'心灵向能量充盈，相信直觉，它会给你清晰的方向。';
-    });
-  }
-  t+='<br><br>牌面映照的是当下的能量走向，不是判决书。你的选择与行动，永远比任何一张牌更有力量。';
-  return t;
 }
 
 function openLightbox(cardIdx, reversed, name, meaning){
@@ -871,6 +3474,77 @@ function openLightbox(cardIdx, reversed, name, meaning){
   lb.classList.add('show');
 }
 function closeLightbox(){document.getElementById('lightbox').classList.remove('show');}
+
+/* ===== 牌义速查 ===== */
+const CARD_CATS = [
+  {id:'major', name:'大阿卡纳', range:[0,22]},
+  {id:'cups', name:'圣杯组', range:[22,36]},
+  {id:'pentacles', name:'星币组', range:[36,50]},
+  {id:'wands', name:'权杖组', range:[50,64]},
+  {id:'swords', name:'宝剑组', range:[64,78]}
+];
+let curCat = 'major';
+
+function renderCardRef(){
+  const tabs=document.getElementById('catTabs');
+  tabs.innerHTML='';
+  CARD_CATS.forEach(c=>{
+    const b=document.createElement('button');
+    b.className='cat-tab'+(c.id===curCat?' on':'');
+    b.textContent=c.name+' ('+(c.range[1]-c.range[0])+')';
+    b.onclick=()=>{curCat=c.id;renderCardRef();};
+    tabs.appendChild(b);
+  });
+  const cat=CARD_CATS.find(c=>c.id===curCat);
+  const grid=document.getElementById('cardRefGrid');
+  grid.innerHTML='';
+  for(let i=cat.range[0]; i<cat.range[1]; i++){
+    const card=CARDS[i];
+    const it=document.createElement('div');
+    it.className='card-ref-item';
+    it.innerHTML=`<div class="ref-img" style="${cardBg(i)}"></div><div class="ref-name">${card[1]}</div><div class="ref-en">${card[2]}</div>`;
+    it.onclick=()=>openCardDetail(i);
+    grid.appendChild(it);
+  }
+}
+
+function openCardDetail(cardIdx){
+  const m=CARD_MEANINGS[cardIdx];
+  const card=CARDS[cardIdx];
+  const d=document.getElementById('cdModal');
+  document.getElementById('cdImg').style.cssText=cardBg(cardIdx);
+  document.getElementById('cdName').textContent=card[1];
+  document.getElementById('cdEn').textContent=card[2]+' · 大阿卡纳'.replace('大阿卡纳', cardIdx<22?'大阿卡纳':(cardIdx<36?'圣杯组':(cardIdx<50?'星币组':(cardIdx<64?'权杖组':'宝剑组'))));
+  let ori='up';
+  function renderDims(){
+    const dims=m[ori];
+    const orient=ori==='up'?'正位':'逆位';
+    document.getElementById('cdImg').style.transform=ori==='up'?'none':'rotate(180deg)';
+    document.querySelectorAll('.ori-tab').forEach(t=>t.classList.toggle('on',t.dataset.ori===ori));
+    const elemHtml=(m.elements||[]).map(e=>`<div class="cd-el"><span class="cd-el-dot">·</span>${e}</div>`).join('');
+    document.getElementById('cdDims').innerHTML=
+      (m.desc?`<div class="cd-desc"><b>📖 核心释义</b><p>${m.desc}</p></div>`:'')+
+      `<div class="cd-dim"><b>💕 感情</b>${dims.love}</div>`+
+      `<div class="cd-dim"><b>💼 事业</b>${dims.career}</div>`+
+      `<div class="cd-dim"><b>💰 财富</b>${dims.wealth}</div>`+
+      `<div class="cd-dim"><b>📚 学业</b>${dims.study||''}</div>`+
+      `<div class="cd-dim"><b>✨ 心灵</b>${dims.spirit}</div>`+
+      `<div class="cd-dim" style="background:var(--cream);"><b>🔮 ${orient}总义</b>${ori==='up'?card[3]:card[4]}</div>`+
+      (elemHtml?`<div class="cd-el-wrap"><b>🔍 元素解析</b>${elemHtml}</div>`:'');
+  }
+  document.getElementById('cdTabs').innerHTML='';
+  ['up','rev'].forEach(o=>{
+    const b=document.createElement('button');
+    b.className='ori-tab'+(o===ori?' on':'');
+    b.dataset.ori=o;
+    b.textContent=o==='up'?'正位':'逆位';
+    b.onclick=()=>{ori=o;renderDims();};
+    document.getElementById('cdTabs').appendChild(b);
+  });
+  renderDims();
+  d.classList.add('show');
+}
+function closeCardDetail(){document.getElementById('cdModal').classList.remove('show');}
 
 const ZODIAC = [
   {name:'白羊座',icon:'♈',date:'3.21-4.19'},{name:'金牛座',icon:'♉',date:'4.20-5.20'},
@@ -991,8 +3665,8 @@ document.getElementById('noticeModal').addEventListener('click',function(e){if(e
   var closedUrl='https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/UZ0FbYYnSoEK51xxix0c6H0LnDh';
   setInterval(function(){
     img.src=closedUrl;
-    setTimeout(function(){img.src=openUrl;},200);
-  },2200);
+    setTimeout(function(){img.src=openUrl;},500);
+  },2500);
   var dragging=false,ox=0,oy=0;
   pet.addEventListener('mousedown',function(e){
     dragging=true;
@@ -1011,3 +3685,4 @@ document.getElementById('noticeModal').addEventListener('click',function(e){if(e
 </script>
 </body>
 </html>
+<!-- （注：内容由AI生成） -->
