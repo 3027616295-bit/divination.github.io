@@ -126,18 +126,6 @@ body::after {
 /* Pick view: deck + spread below */
 .pick-info { text-align: center; margin-bottom: 16px; font-size: 15px; color: var(--ink-light); }
 .pick-info span { color: var(--sage-deep); font-weight: 600; }
-.question-box {
-  max-width: 560px; margin: 0 auto 18px; background: #fff;
-  border: 1px dashed var(--sage); border-radius: 14px; padding: 14px 18px;
-}
-.question-box label { font-size: 14px; font-weight: 600; color: var(--sage-deep); display: block; }
-.question-box input {
-  width: 100%; margin-top: 8px; padding: 10px 14px; border: 1px solid var(--sage-light);
-  border-radius: 10px; font-size: 14px; font-family: inherit; background: var(--cream);
-  color: var(--ink); outline: none;
-}
-.question-box input:focus { border-color: var(--sage); box-shadow: 0 0 0 3px rgba(122,153,124,.15); }
-.question-hint { font-size: 11px; color: var(--ink-light); margin-top: 6px; }
 .deck-grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
   gap: 8px; justify-items: center; padding: 10px 0 30px;
@@ -263,11 +251,147 @@ body::after {
   .pick-slot { width: 85px; height: 123px; }
   .lightbox-card .lb-img { width: 200px; height: 289px; }
 }
+
+/* ===== Sidebar ===== */
+.sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0; width: 170px; z-index: 90;
+  background: linear-gradient(180deg, #f3ece2, #f7f1e8);
+  border-right: 1px solid var(--sage-light);
+  display: flex; flex-direction: column; align-items: center; padding: 24px 10px;
+  box-shadow: 2px 0 14px var(--shadow);
+  transition: transform .3s ease;
+}
+.side-logo {
+  font-family: 'Ma Shan Zheng', 'Noto Serif SC', cursive;
+  font-size: 26px; color: var(--sage-deep); letter-spacing: 2px;
+  cursor: pointer; margin-bottom: 8px; user-select: none;
+}
+.side-logo small { display:block; font-family:'Noto Serif SC'; font-size:10px; letter-spacing:3px; color:var(--gold); }
+.side-item {
+  display: block; width: 100%; text-align: center; padding: 11px 6px; margin: 4px 0;
+  color: var(--ink); text-decoration: none; font-size: 14px; border-radius: 12px;
+  transition: all .2s; border: 1px solid transparent;
+}
+.side-item:hover { background: var(--sage-light); border-color: var(--sage); }
+.side-item.on { background: var(--sage); color: #fff; }
+.app { padding-left: 190px; transition: padding-left .3s ease; }
+.nav-btn { display: none; }
+/* Sidebar toggle */
+.side-toggle {
+  position: fixed; top: 16px; left: 16px; z-index: 96;
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--sage-light); border: 1px solid var(--sage-deep);
+  color: var(--ink); font-size: 17px; line-height: 1; cursor: pointer;
+  box-shadow: 0 2px 8px var(--shadow); display: flex; align-items: center; justify-content: center;
+  transition: all .25s;
+}
+.side-toggle:hover { background: var(--sage); color: #fff; }
+.side-toggle.on { left: 180px; background: var(--sage); color: #fff; }
+body.side-hidden .sidebar { transform: translateX(-100%); }
+body.side-hidden .app { padding-left: 10px; }
+body.side-hidden .side-toggle.on { left: 16px; background: var(--sage-light); color: var(--ink); }
+
+/* ===== Card Reference (牌义速查) ===== */
+.cat-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 20px auto 24px; }
+.cat-tab {
+  padding: 8px 18px; border-radius: 20px; border: 1px solid var(--sage);
+  background: #fff; color: var(--sage-deep); font-family: inherit; font-size: 13px;
+  cursor: pointer; transition: all .2s;
+}
+.cat-tab:hover { background: var(--sage-light); }
+.cat-tab.on { background: var(--sage); color: #fff; }
+.card-ref-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 14px; padding: 0 10px 30px; max-width: 980px; margin: 0 auto;
+}
+.card-ref-item { text-align: center; cursor: pointer; transition: all .2s; }
+.card-ref-item:hover { transform: translateY(-4px); }
+.card-ref-item .ref-img {
+  width: 96px; height: 139px; margin: 0 auto; border-radius: 6px;
+  background-size: 100% 100%; background-repeat: no-repeat; background-position: center;
+  border: 2px solid #fff; box-shadow: 0 3px 10px var(--shadow);
+}
+.card-ref-item .ref-name { font-size: 11px; margin-top: 6px; color: var(--ink); }
+.card-ref-item .ref-en { font-size: 9px; color: var(--ink-light); }
+
+/* Card detail modal */
+.cd-modal { display:none; position:fixed; inset:0; z-index:320; background:rgba(61,53,48,0.6); backdrop-filter:blur(4px); justify-content:center; align-items:center; padding:20px; }
+.cd-modal.show { display:flex; }
+.cd-box { background:var(--cream); border-radius:16px; max-width:640px; width:100%; max-height:88vh; overflow-y:auto; padding:28px; border:1px solid var(--sage); }
+.cd-top { display:flex; gap:20px; align-items:flex-start; }
+.cd-img { width:150px; height:217px; border-radius:8px; background-size:100% 100%; background-repeat:no-repeat; border:2px solid #fff; box-shadow:0 6px 20px var(--shadow); flex-shrink:0; transition: transform .4s ease; }
+.cd-head h3 { font-size:22px; color:var(--sage-deep); letter-spacing:2px; }
+.cd-head .cd-en { color:var(--ink-light); font-size:12px; margin:4px 0 10px; letter-spacing:1px; }
+.ori-tabs { display:flex; gap:8px; margin-bottom:12px; }
+.ori-tab { padding:6px 16px; border-radius:16px; border:1px solid var(--sage); background:#fff; font-family:inherit; font-size:13px; cursor:pointer; color:var(--ink); }
+.ori-tab.on { background:var(--sage-deep); color:#fff; }
+.cd-dims { width:100%; }
+.cd-dim { background:#fff; border:1px solid var(--sage-light); border-radius:10px; padding:10px 14px; margin-bottom:8px; font-size:13px; line-height:1.7; }
+.cd-dim b { color:var(--sage-deep); margin-right:6px; }
+.cd-close { display:block; margin:20px auto 0; padding:9px 36px; background:var(--sage); color:#fff; border:none; border-radius:22px; font-family:inherit; font-size:14px; cursor:pointer; }
+.cd-close:hover { background:var(--sage-deep); }
+
+/* ===== Question input (自定义问题) ===== */
+.question-box { max-width:560px; margin:0 auto 20px; background:#fff; border:1px solid var(--sage-light); border-radius:14px; padding:18px 20px; text-align:center; }
+.question-box label { font-size:14px; color:var(--sage-deep); font-weight:600; letter-spacing:2px; }
+.question-box input {
+  width:100%; margin-top:10px; padding:11px 14px; border:1px solid var(--sage); border-radius:10px;
+  font-family:inherit; font-size:14px; background:var(--cream); color:var(--ink); outline:none;
+}
+.question-box input:focus { border-color:var(--sage-deep); box-shadow:0 0 0 3px rgba(168,197,184,.3); }
+.question-box .q-hint { font-size:11px; color:var(--ink-light); margin-top:8px; }
+
+/* ===== Knowledge Library (塔罗知识小馆) ===== */
+.lib-wrap { max-width:900px; margin:0 auto; padding:0 10px 40px; }
+.lib-section { background:#fff; border:1px solid var(--sage-light); border-radius:14px; padding:24px; margin-bottom:20px; }
+.lib-section h3 { color:var(--sage-deep); font-size:18px; letter-spacing:2px; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+.lib-section h3 .dot { width:10px; height:10px; border-radius:50%; background:var(--gold); display:inline-block; }
+.lib-section p, .lib-section li { font-size:14px; line-height:1.9; color:var(--ink-light); }
+.lib-section ul { padding-left:20px; }
+.element-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(190px,1fr)); gap:14px; }
+.element-card { background:var(--cream); border:1px solid var(--sage-light); border-radius:12px; padding:16px; }
+.element-card .el-sym { font-size:26px; margin-bottom:6px; }
+.element-card h4 { color:var(--sage-deep); font-size:15px; margin-bottom:6px; }
+.element-card p { font-size:12px; line-height:1.7; color:var(--ink-light); }
+@media (max-width: 768px) {
+  .sidebar { width:100%; height:auto; top:0; bottom:auto; flex-direction:row; justify-content:flex-start; overflow-x:auto; padding:8px 10px; gap:4px; }
+  .side-logo { margin:0 8px 0 0; font-size:20px; white-space:nowrap; }
+  .side-logo small { display:none; }
+  .side-item { width:auto; padding:7px 12px; margin:0; white-space:nowrap; font-size:12px; }
+  .app { padding-left:10px; padding-top:64px; }
+  .side-toggle.on { left: 16px; }
+  .cd-top { flex-direction:column; align-items:center; text-align:center; }
+  .cd-dims { width:100%; }
+}
+
+/* ===== Click FX (爪印点击特效) ===== */
+.click-fx {
+  position: fixed; z-index: 9998; pointer-events: none;
+  width: 84px; height: auto;
+  opacity: 0; rotate: var(--fxRot, 0deg);
+  transform: translate(-50%, -50%) scale(.4);
+  animation: fxPop .65s ease-out forwards;
+}
+@keyframes fxPop {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(.4); }
+  15%  { opacity: .78; }
+  100% { opacity: 0; transform: translate(-50%, -58%) scale(1.25); }
+}
 </style>
 </head>
 <body>
 
-<button class="nav-btn" onclick="location.hash='home'">回到首页</button>
+<!-- ===== Sidebar ===== -->
+<button class="side-toggle on" id="sideToggle" onclick="toggleSidebar()" title="收起/展开菜单">☰</button>
+<nav class="sidebar" id="sidebarNav">
+  <div class="side-logo" onclick="location.hash='home'">🦊<small>狐狐占卜</small></div>
+  <a class="side-item" data-target="home" href="#home">首页</a>
+  <a class="side-item" data-target="spreads" href="#spreads">开始占卜</a>
+  <a class="side-item" data-target="horoscope" href="#horoscope">星座运势</a>
+  <a class="side-item" data-target="cards" href="#cards">牌义速查</a>
+  <a class="side-item" data-target="library" href="#library">塔罗知识小馆</a>
+</nav>
+
 <button class="notice-btn" onclick="openNotice()">占卜须知</button>
 
 <div class="modal-overlay" id="noticeModal">
@@ -311,9 +435,9 @@ body::after {
     <h2 class="view-title" id="pickTitle">抽牌</h2>
     <p class="pick-info">请凭直觉抽取 <span id="pickCount">0</span> 张牌（已抽取 <span id="pickedCount">0</span> 张）</p>
     <div class="question-box">
-      <label for="questionInput">💭 你的问题（可选）</label>
-      <input type="text" id="questionInput" placeholder="例如：我和TA的感情会如何发展？" maxlength="60">
-      <p class="question-hint">填写后，解读会结合你的问题语境呈现；留空则按通用解读</p>
+      <label>✧ 你的问题（可选）</label>
+      <input type="text" id="questionInput" placeholder="例如：我和TA的感情接下来会如何发展？" maxlength="60">
+      <div class="q-hint">填写后，解读结果会结合你的问题语境呈现，更具针对性；不填写则使用通用解读。</div>
     </div>
     <div class="deck-grid" id="deckGrid"></div>
     <div class="pick-spread-section">
@@ -358,6 +482,72 @@ body::after {
     <div class="overall-reading" id="horoResult"></div>
     <button class="again-btn" onclick="location.hash='home'">返回首页</button>
   </section>
+
+  <!-- CARD REFERENCE (牌义速查) -->
+  <section class="page" id="cards">
+    <h2 class="view-title">牌义速查</h2>
+    <p class="view-desc">点击任意一张牌，查看正位 · 逆位与四个维度的详细释义</p>
+    <div class="cat-tabs" id="catTabs"></div>
+    <div class="card-ref-grid" id="cardRefGrid"></div>
+  </section>
+
+  <!-- KNOWLEDGE LIBRARY (塔罗知识小馆) -->
+  <section class="page" id="library">
+    <h2 class="view-title">塔罗知识小馆</h2>
+    <p class="view-desc">了解四元素 · 牌组含义 · 牌阵使用技巧</p>
+    <div class="lib-wrap">
+      <div class="lib-section">
+        <h3><span class="dot"></span>四元素与塔罗</h3>
+        <p>塔罗牌的四组小牌对应四大元素，它们构成了世间万物运行的基本能量。理解四元素，就掌握了塔罗牌的底层语言。</p>
+        <div class="element-grid">
+          <div class="element-card">
+            <div class="el-sym">🔥</div>
+            <h4>火元素 · 权杖组</h4>
+            <p>代表行动、热情、创造力与生命力。火是向外燃烧的能量，与事业、冒险、激情相关。权杖多时，事情需要主动出击。</p>
+          </div>
+          <div class="element-card">
+            <div class="el-sym">💧</div>
+            <h4>水元素 · 圣杯组</h4>
+            <p>代表情感、直觉、关系与潜意识。水是流动的、滋养的能量，与爱情、感受、人际相关。圣杯多时，用心去感受而非用脑。</p>
+          </div>
+          <div class="element-card">
+            <div class="el-sym">🌬️</div>
+            <h4>风元素 · 宝剑组</h4>
+            <p>代表思维、沟通、真相与冲突。风是锋利而理性的能量，与思考、决策、言语相关。宝剑多时，注意表达方式与逻辑判断。</p>
+          </div>
+          <div class="element-card">
+            <div class="el-sym">🌍</div>
+            <h4>土元素 · 星币组</h4>
+            <p>代表物质、金钱、身体与现实。土是稳定而丰饶的能量，与财富、工作、健康相关。星币多时，脚踏实地才是关键。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lib-section">
+        <h3><span class="dot"></span>牌组含义</h3>
+        <ul>
+          <li><strong style="color:var(--sage-deep);">大阿卡纳（22张）</strong>：讲述"愚者之旅"——从愚者出发，经历世界，完成一场灵魂成长的旅程。大牌代表人生的重要课题、转折与深层能量，抽到大牌往往意味着此事非同小可。</li>
+          <li><strong style="color:var(--sage-deep);">权杖组（14张）</strong>：火之牌，关乎行动与热情。问事业、创业、竞争类问题时尤其重要。</li>
+          <li><strong style="color:var(--sage-deep);">圣杯组（14张）</strong>：水之牌，关乎情感与关系。问感情、友情、家庭类问题时重点参考。</li>
+          <li><strong style="color:var(--sage-deep);">宝剑组（14张）</strong>：风之牌，关乎思维与冲突。问决策、沟通、学业、纠纷类问题时值得留意。</li>
+          <li><strong style="color:var(--sage-deep);">星币组（14张）</strong>：土之牌，关乎物质与现实。问财运、工作、房产、健康类问题时的核心参考。</li>
+        </ul>
+        <p style="margin-top:10px;">四组牌与宫廷牌（国王、皇后、骑士、侍从）共同构成小阿卡纳，描绘具体生活场景中的能量显化。</p>
+      </div>
+
+      <div class="lib-section">
+        <h3><span class="dot"></span>牌阵使用技巧</h3>
+        <ul>
+          <li><strong style="color:var(--sage-deep);">按问题选牌阵</strong>：问简单现状选"三张牌"；问事情发展选"时间流"；问感情选"恋人金字塔""爱情十字"；两个选择纠结时用"二选一"；想全面看问题用"六芒星"。</li>
+          <li><strong style="color:var(--sage-deep);">提问要具体</strong>：好的问题是一句完整、具体、聚焦当下的句子，例如"我和TA的关系接下来三个月如何发展"，而不是模糊的"我最近怎么样"。</li>
+          <li><strong style="color:var(--sage-deep);">凭直觉抽牌</strong>：不要反复挑选、不要分析哪张"更好"。深呼吸，放松，让手替你选择，第一眼直觉最准。</li>
+          <li><strong style="color:var(--sage-deep);">结合位置解读</strong>：同一张牌在不同位置含义不同。"过去"位置的逆位死神，与"结果"位置的正位死神，解读重心完全不同。</li>
+          <li><strong style="color:var(--sage-deep);">看整体而非单张</strong>：先看牌面能量构成（哪组牌多）、正逆位比例，再逐张细读，最后整合成一段完整的叙事。</li>
+          <li><strong style="color:var(--sage-deep);">不重复占卜</strong>：同一问题在情况未变时不要反复占卜，尤其避免在焦虑情绪下追问——占卜是当下能量的快照，不是命运的判决书。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
 </div>
 
 <!-- Fixed footer disclaimer -->
@@ -372,6 +562,22 @@ body::after {
     <div class="lb-name" id="lbName"></div>
     <div class="lb-meaning" id="lbMeaning"></div>
     <div class="lb-hint">点击任意处关闭</div>
+  </div>
+</div>
+
+<!-- Card detail modal -->
+<div class="cd-modal" id="cdModal" onclick="if(event.target===this)closeCardDetail()">
+  <div class="cd-box">
+    <div class="cd-top">
+      <div class="cd-img" id="cdImg"></div>
+      <div class="cd-head">
+        <h3 id="cdName"></h3>
+        <div class="cd-en" id="cdEn"></div>
+        <div class="ori-tabs" id="cdTabs"></div>
+      </div>
+    </div>
+    <div class="cd-dims" id="cdDims"></div>
+    <button class="cd-close" onclick="closeCardDetail()">关闭</button>
   </div>
 </div>
 
@@ -484,6 +690,171 @@ const CARDS = [
   [77,"宝剑骑士","Knight of Swords","快速行动、直接、冲劲、为真理而战","鲁莽、言语伤人、冲动、缺乏耐心"],
 ];
 
+/* ===== 牌义速查详细释义：78张 × (正位/逆位) × (感情/事业/财富/心灵) ===== */
+const CARD_MEANINGS = [
+  // 大阿卡纳 0-21
+  {up:{love:"一段充满新鲜感的关系，勇敢表达心意，享受冒险的快乐。",career:"适合尝试全新领域，大胆迈出第一步，不要怕犯错。",wealth:"新的财务机会正在出现，适合小成本试水、轻装上阵。",spirit:"保持纯真与开放，相信未知的可能，人生是一场冒险。"},
+   rev:{love:"害怕承诺、逃避责任，关系充满不确定性。",career:"计划不成熟，容易冲动决策，三分钟热度。",wealth:"财务规划欠缺，警惕冲动消费与盲目投资。",spirit:"迷失方向，需要停下脚步，找回初心。"}},
+  {up:{love:"主动出击魅力四射，善于表达心意，沟通力强。",career:"才华得以施展，适合展示能力、把握主动权。",wealth:"资源运作灵活，投资眼光精准，手中有牌可打。",spirit:"相信自己拥有创造现实的力量，你就是魔术师。"},
+   rev:{love:"花言巧语缺乏真心，警惕情感操控与画饼。",career:"能力被低估，或自我怀疑导致发挥失常。",wealth:"手段不当，警惕投机取巧带来的陷阱。",spirit:"潜能被封印，需要重建自信，连接内在力量。"}},
+  {up:{love:"凭直觉感知对方心意，感情含蓄而深沉，灵魂共鸣。",career:"适合幕后研究、策略规划，倾听内在指引。",wealth:"静观其变，不急于出手，等待最佳时机。",spirit:"相信直觉，连接内在智慧，答案在静默中浮现。"},
+   rev:{love:"隐藏情绪、回避沟通，对方的心思捉摸不透。",career:"信息不透明，警惕被蒙蔽或错过关键信号。",wealth:"判断失误，忽略隐性成本与风险。",spirit:"与内心失联，被外界噪音淹没，需要回归静默。"}},
+  {up:{love:"关系温暖滋养，充满爱的能量，享受被宠爱的感觉。",career:"项目开花结果，创意落地，收获认可与掌声。",wealth:"财运丰盈，物质生活富足，享受成果。",spirit:"学会接纳与自爱，感受生命的丰盛与美好。"},
+   rev:{love:"过度付出导致关系失衡，或过度依赖对方。",career:"创造力枯竭，进度停滞，灵感难以落地。",wealth:"过度消费，财务失衡，量入为出。",spirit:"忽视自我需求，能量枯竭，先照顾好自己。"}},
+  {up:{love:"关系稳定有担当，给人安全感，值得托付。",career:"领导力显现，掌控大局，秩序井然。",wealth:"财务稳健，善于管理资产与长期规划。",spirit:"建立内在秩序，自律带来真正的自由。"},
+   rev:{love:"控制欲过强，关系紧张，让对方喘不过气。",career:"专断固执，听不进意见，团队心生不满。",wealth:"财务僵化，缺乏弹性，守成有余开拓不足。",spirit:"内在僵化，抗拒柔软与变化，需要松动。"}},
+  {up:{love:"关系得到家人与朋友认可，传统而稳定，细水长流。",career:"遵循规范与流程，获得前辈提携与贵人相助。",wealth:"稳健理财，遵循传统方式，积少成多。",spirit:"在信仰、传统与归属感中找到精神寄托。"},
+   rev:{love:"价值观冲突，观念不合，家庭背景差异显现。",career:"束缚于教条与潜规则，创新受阻。",wealth:"固守旧法，错失新兴机会。",spirit:"质疑旧有信念，开始寻求属于自己的道路。"}},
+  {up:{love:"爱情甜蜜，灵魂契合，面临的重要选择指向真心。",career:"重要合作达成，关键选择正确，双赢开局。",wealth:"合作带来财运，共同投资有回报。",spirit:"追随真心，做出忠于自我的选择，心之所向。"},
+   rev:{love:"关系失衡，面临抉择痛苦，或三角关系困扰。",career:"合作破裂，选错方向，悔不当初。",wealth:"合伙财务纠纷，利益分配不均。",spirit:"内心矛盾，无法抉择，先与自己和解。"}},
+  {up:{love:"主动追求，关系向前推进，克服阻碍走向彼此。",career:"项目推进顺利，目标达成，赢得战役。",wealth:"财运强劲，主动出击有收获，果断决策。",spirit:"意志坚定，驾驭内在冲突，掌控人生方向。"},
+   rev:{love:"感情失控，方向不明，或冲动之下做出决定。",career:"计划受阻，方向迷失，力量分散。",wealth:"冲动投资，风险增大，方向盘不稳。",spirit:"内在矛盾激烈，动力不足，先整合自己。"}},
+  {up:{love:"温柔包容，以柔克刚，用耐心化解关系中的难题。",career:"耐心坚持，化解危机，赢得团队信任。",wealth:"稳步积累，不急于求成，复利效应显现。",spirit:"内在力量强大，情绪平和，温柔而坚定。"},
+   rev:{love:"缺乏自信，患得患失，不敢表达真实需求。",career:"自我怀疑，畏难退缩，错失关键节点。",wealth:"底气不足，机会面前犹豫不决。",spirit:"情绪失控，能量低迷，需要找回内在勇气。"}},
+  {up:{love:"感情需要独处思考，宁缺毋滥，等待对的人。",career:"独自钻研，厚积薄发，静待时机成熟。",wealth:"财务保守，积蓄力量，为未来布局。",spirit:"向内探寻，点亮内在明灯，独处亦是修行。"},
+   rev:{love:"过度孤立，拒绝亲密，把自己封闭起来。",career:"闭门造车，脱离团队，错过合作机会。",wealth:"过于保守，资金闲置，错失增长机会。",spirit:"逃避现实，拒绝成长，把孤独当成借口。"}},
+  {up:{love:"缘分流转，关系迎来重要转机，旧去新来。",career:"时来运转，机会降临，顺势而上。",wealth:"财运上升，把握周期规律，乘势而为。",spirit:"顺应命运之流，臣服于变化，相信安排。"},
+   rev:{love:"缘分波折，聚散无常，关系起伏不定。",career:"运势反复，计划生变，难以掌控。",wealth:"财运不稳，起落不定，避免大额投入。",spirit:"抗拒变化，试图抓住流水，陷入循环。"}},
+  {up:{love:"关系平等坦诚，责任分明，经得起考验。",career:"决策公正，赏罚分明，得到应有的回报。",wealth:"财务透明，账目清晰，合规经营。",spirit:"以诚待人，因果不虚，内心坦荡。"},
+   rev:{love:"关系不公，一方付出失衡，旧账被翻出。",career:"遭遇不公对待，或被误解指责。",wealth:"账务纠纷，警惕不义之财与灰色操作。",spirit:"逃避责任，内心不安，先诚实面对自己。"}},
+  {up:{love:"为爱付出与牺牲，学会换位思考，感情升华。",career:"暂时停滞是蓄力，换个角度看问题有惊喜。",wealth:"放缓节奏，以退为进，调整策略。",spirit:"放下执念，换个视角，获得全新领悟。"},
+   rev:{love:"无谓牺牲，自我感动，付出不被看见。",career:"白白等待，僵持不下，白白消耗时间。",wealth:"资金被套，进退两难，等待解套时机。",spirit:"固执己见，钻牛角尖，需要松动认知。"}},
+  {up:{love:"旧关系画上句号，迎来情感新生，凤凰涅槃。",career:"告别旧模式，转型开始，破茧成蝶。",wealth:"放下旧资产，重新布局，轻装出发。",spirit:"一个阶段彻底结束，蜕变重生，脱胎换骨。"},
+   rev:{love:"藕断丝连，无法放手，消耗彼此。",career:"拖延转型，固守旧路，被时代抛下。",wealth:"死守亏损资产，不愿止损，越陷越深。",spirit:"恐惧改变，停滞不前，卡在过去。"}},
+  {up:{love:"关系和谐，细水长流，节奏舒服自然。",career:"节奏稳健，融会贯通，张弛有度。",wealth:"收支平衡，理财有度，财富稳步增长。",spirit:"内心平静，情绪稳定，处世中庸。"},
+   rev:{love:"关系失衡，忽冷忽热，安全感缺失。",career:"资源调配不当，效率低下，忙而无功。",wealth:"收支失衡，过度挥霍，寅吃卯粮。",spirit:"心浮气躁，缺乏耐心，节奏被打乱。"}},
+  {up:{love:"强烈吸引，但也可能是执念与占有，警惕沉溺。",career:"被利益驱使，警惕职场陷阱与不良诱惑。",wealth:"欲望驱动，警惕过度杠杆与高风险操作。",spirit:"直面内心阴影，看清是什么在束缚你。"},
+   rev:{love:"挣脱不健康的关系，摆脱情感操控与依赖。",career:"摆脱不良环境，离开消耗你的组织。",wealth:"戒除不良消费与投机习惯，重获财务自由。",spirit:"觉醒解脱，挣脱枷锁，重获自由。"}},
+  {up:{love:"关系骤变，旧模式崩塌，真相猝不及防。",career:"突发变动，组织重组，项目推倒重来。",wealth:"财务震荡，警惕突发损失与意外开支。",spirit:"遮罩被揭下，破而后立，重建更真实的自我。"},
+   rev:{love:"危机暂时缓解，但问题根源仍在，早晚要面对。",career:"躲过一劫，隐患未除，需要主动加固。",wealth:"险险避过损失，需立刻加固财务防线。",spirit:"抗拒觉醒，自欺欺人，逃避真相。"}},
+  {up:{love:"感情重燃希望，伤口开始愈合，重新相信爱。",career:"愿景清晰，前路光明，目标值得追逐。",wealth:"财运复苏，慢慢好转，曙光初现。",spirit:"心怀信念，被星光指引，黑暗中仍有方向。"},
+   rev:{love:"希望渺茫，信心受挫，对感情悲观。",career:"目标模糊，动力不足，看不到前景。",wealth:"复苏缓慢，需要更多耐心与等待。",spirit:"悲观失望，忘记自己内在的光芒。"}},
+  {up:{love:"关系迷雾重重，真相不明，对方心意难测。",career:"情况不明朗，谨慎前行，信息不全勿下结论。",wealth:"财务不透明，警惕骗局与模糊条款。",spirit:"面对恐惧，穿越迷雾，答案藏在潜意识里。"},
+   rev:{love:"真相浮现，误会解开，拨云见日。",career:"迷雾散去，方向清晰，可以行动了。",wealth:"骗局揭穿，及时止损，悬崖勒马。",spirit:"摆脱恐惧，重获清明，内心重见光明。"}},
+  {up:{love:"感情阳光明媚，幸福满溢，关系光明温暖。",career:"事业成功，大放异彩，成果被看见。",wealth:"财运亨通，收获满满，钱包鼓起来。",spirit:"内心光明，喜悦丰盛，能量高涨。"},
+   rev:{love:"小摩擦不断，短暂阴霾，但整体向好。",career:"略有波折，小人作祟，不影响大局。",wealth:"小损失，小破财，不影响根基。",spirit:"乐观过头，得意忘形，保持清醒。"}},
+  {up:{love:"旧情复燃或关系升华，重新评估彼此，迎来新生。",career:"得到认可，重要转机，过往努力被见证。",wealth:"财务翻盘，重新出发，洗清旧账。",spirit:"灵魂觉醒，迎来第二次机会，与过去和解。"},
+   rev:{love:"纠结过往，无法翻篇，旧伤复发。",career:"错过时机，自我批判，悔恨内耗。",wealth:"旧账未清，难以翻身，先解决遗留问题。",spirit:"拒绝成长，陷入悔恨，卡在审判席上。"}},
+  {up:{love:"关系圆满，修成正果，幸福有了圆满的形状。",career:"项目圆满收官，达成目标，功德圆满。",wealth:"财务丰收，成果兑现，长久努力开花结果。",spirit:"内在完整，圆满自在，与世界合一。"},
+   rev:{love:"差最后一步，仍需努力，圆满在望但未抵达。",career:"收尾未竟，延迟交付，最后一公里最难。",wealth:"成果未兑现，还需耐心，别急着庆功。",spirit:"感觉不完整，寻找闭环，还有课题未完成。"}},
+  // 圣杯组 22-35
+  {up:{love:"新恋情萌芽，心动的开始，爱意满溢。",career:"工作带来情感满足，团队氛围温暖。",wealth:"人脉带来财富机会，情感连接生财。",spirit:"心灵获得滋养，爱意在内在流动。"},
+   rev:{love:"感情空窗期，爱意受阻，渴望被爱却不敢。",career:"职场情绪低落，缺乏动力与热情。",wealth:"情绪化消费，为心情买单。",spirit:"内心枯竭，需要先学会爱自己。"}},
+  {up:{love:"两情相悦，默契十足，心意相通。",career:"合作伙伴默契，协作顺畅，事半功倍。",wealth:"合作共赢，资源互补，财路打开。",spirit:"人际关系和谐，付出与接收平衡。"},
+   rev:{love:"关系疏离，沟通不畅，各怀心思。",career:"合作破裂，信任受损，各做各的。",wealth:"合伙纠纷，账目不清，利益冲突。",spirit:"人际隔阂，内心封闭，需要主动破冰。"}},
+  {up:{love:"感情甜蜜，社交活跃，朋友围绕，共享喜悦。",career:"团队融洽，庆祝成果，士气高涨。",wealth:"聚会带来人脉与财源，社交即生产力。",spirit:"享受当下的喜悦，与所爱之人同在。"},
+   rev:{love:"三人行隐患，社交疲劳，热闹背后是疏离。",career:"团队内耗，小团体纷争，庆祝变闹剧。",wealth:"过度应酬，开销增大，人脉变负担。",spirit:"表面热闹，内心孤独，需要真实的连接。"}},
+  {up:{love:"对现有感情不满，心不在焉，寻求新的可能。",career:"对工作倦怠，渴望改变，眺望窗外。",wealth:"对现状不满，观望新机会，蓄势待发。",spirit:"内省时刻，审视内心真正的需求。"},
+   rev:{love:"重新发现身边的美好，珍惜眼前人。",career:"重燃工作热情，找到价值感。",wealth:"抓住被忽视的机会，回头是岸。",spirit:"走出消沉，重新参与生活。"}},
+  {up:{love:"关系受挫，沉浸在失落中，只看到失去的。",career:"项目失败，士气低落，复盘比抱怨更重要。",wealth:"遭遇损失，懊悔不已，先接纳再行动。",spirit:"允许悲伤流动，转身看见还在的杯子。"},
+   rev:{love:"走出伤痛，向前看，疗愈正在发生。",career:"从失败中学习，收拾心情再出发。",wealth:"止损之后，重新开始，吃一堑长一智。",spirit:"接纳现实，重拾希望，悲伤终会过去。"}},
+  {up:{love:"旧人重逢，回忆美好，重温纯真的感情。",career:"回归熟悉的领域，老客户带来机会。",wealth:"旧投资有回报，积累开始兑现。",spirit:"找回纯真，疗愈内在小孩，与过去和解。"},
+   rev:{love:"沉溺过去，无法向前，旧人旧事成枷锁。",career:"依赖旧方法，创新不足，被时代淘汰。",wealth:"守着旧观念，错过新机会，抱残守缺。",spirit:"放下执念，走向成长，童年已远。"}},
+  {up:{love:"对感情抱有不切实际的幻想，选择太多心乱。",career:"机会很多但难抉择，警惕画饼与空头支票。",wealth:"诱惑众多，投资项目鱼龙混杂，仔细甄别。",spirit:"分辨真实与幻象，找到内心真正的渴望。"},
+   rev:{love:"认清现实，放下幻想，做出清醒的选择。",career:"目标明确，聚焦执行，不再三心二意。",wealth:"脚踏实地，拒绝空想，回归基本面。",spirit:"清醒务实，从云端落地，生根发芽。"}},
+  {up:{love:"离开不够滋养的关系，勇敢走向更深的意义。",career:"离开舒适区，追寻真正想做的事。",wealth:"放弃部分短期收益，换取长远发展。",spirit:"心灵踏上更深处的探索，成长伴随告别。"},
+   rev:{love:"想走又犹豫，反复拉扯，消耗自己。",career:"想跳槽却不敢行动，困在原地。",wealth:"瞻前顾后，错失良机，患得患失。",spirit:"害怕改变，困于现状，温水煮青蛙。"}},
+  {up:{love:"感情满足，幸福自在，心愿达成。",career:"工作顺心，成果满意，一切尽在掌握。",wealth:"财运丰盈，愿望达成，钱包满足。",spirit:"内心满足，感恩当下，享受自己的成果。"},
+   rev:{love:"表面幸福，内心空虚，欲求不满。",career:"自满懈怠，停止进步，躺在功劳簿上。",wealth:"贪心不足，欲望膨胀，得陇望蜀。",spirit:"追逐外在，忽略内在，永不满足。"}},
+  {up:{love:"家庭和睦，感情圆满，归属感强烈。",career:"团队如家，氛围温馨，稳定发展。",wealth:"家族财运，长久稳定，根基深厚。",spirit:"心灵归属，爱满人间，家是港湾。"},
+   rev:{love:"家庭矛盾，表面和谐，暗流涌动。",career:"团队不和，人心涣散，暗藏危机。",wealth:"家庭财务纠纷，分配不均，伤和气。",spirit:"归属感缺失，内心漂泊，无枝可依。"}},
+  {up:{love:"温柔可靠，懂得经营感情，情绪稳定的伴侣。",career:"领导有方，善于协调，以柔克刚。",wealth:"稳健理财，情绪稳定，不冒进不慌乱。",spirit:"情绪成熟，慈悲智慧，内心有海。"},
+   rev:{love:"情感操控，表面温和，实则压抑与算计。",career:"情绪化决策，威权管理，表面一套背后一套。",wealth:"情绪影响判断，忽左忽右，反复无常。",spirit:"压抑情绪，内心失衡，需要释放。"}},
+  {up:{love:"温柔体贴，充满爱意，共情力强的伴侣。",career:"共情力强，善解人意，团队润滑剂。",wealth:"直觉敏锐，财运柔和，贵人相助。",spirit:"爱自己，也滋养他人，能量流动。"},
+   rev:{love:"情感依赖，患得患失，过度付出失去自我。",career:"过度情绪化，影响判断，公私不分。",wealth:"情绪消费，缺乏理性，月光族。",spirit:"自我牺牲，忽视自我，先填满自己。"}},
+  {up:{love:"收到心动讯息，暗恋萌芽，新的情感消息。",career:"新创意涌现，机会敲门，灵感迸发。",wealth:"新的财务信息，学习理财的好时机。",spirit:"保持好奇，灵感涌现，童心未泯。"},
+   rev:{love:"消息落空，情感不成熟，一厢情愿。",career:"创意被否，计划延期，空欢喜。",wealth:"信息有误，警惕误导，以讹传讹。",spirit:"胡思乱想，情绪波动，稳住心神。"}},
+  {up:{love:"浪漫攻势，追随内心，为爱奔赴。",career:"为理想项目投入热情，愿景驱动。",wealth:"为热爱买单，也因热爱获得回报。",spirit:"跟随心灵的召唤，浪漫而不失方向。"},
+   rev:{love:"承诺落空，情绪化逃避，甜言蜜语后消失。",career:"半途而废，理想主义，落地困难。",wealth:"冲动消费，为幻想买单，打水漂。",spirit:"理想与现实脱节，需要落地生根。"}},
+  // 星币组 36-49
+  {up:{love:"感情基础稳固，务实经营，细水长流。",career:"新工作机会，升职加薪，扎根生长。",wealth:"财运启动，播种收获，财源开始流动。",spirit:"内在安全感建立，踏实而安稳。"},
+   rev:{love:"感情缺乏实际基础，空中楼阁。",career:"机会错失，起步不稳，根基薄弱。",wealth:"财务计划受阻，启动资金不足。",spirit:"缺乏安全感，焦虑不安，先稳住自己。"}},
+  {up:{love:"关系在忙碌中保持平衡，彼此支持。",career:"多线并行，灵活调度，游刃有余。",wealth:"多渠道收入，灵活理财，东边不亮西边亮。",spirit:"在变化中保持从容，举重若轻。"},
+   rev:{love:"分身乏术，忽视伴侣，平衡被打破。",career:"顾此失彼，压力山大，疲于奔命。",wealth:"财务失衡，捉襟见肘，拆东补西。",spirit:"手忙脚乱，内心失衡，需要简化。"}},
+  {up:{love:"共同建设关系，目标一致，分工合作。",career:"团队协作，专业受认可，众人拾柴。",wealth:"技能变现，合作生财，专业即财富。",spirit:"在协作中找到价值，彼此成就。"},
+   rev:{love:"关系分工不均，缺乏配合，互相推诿。",career:"团队摩擦，技能不足，项目卡壳。",wealth:"合作不畅，进度停滞，互相牵制。",spirit:"自我怀疑，不敢求助，独自硬扛。"}},
+  {up:{love:"关系稳定，但需更多情感表达，别只谈实际。",career:"守住成果，谨慎扩张，稳步前进。",wealth:"储蓄稳健，守护财富，安全感十足。",spirit:"安全感来自内在，而非占有与囤积。"},
+   rev:{love:"过度控制，关系窒息，抓得越紧失去越快。",career:"固步自封，错失良机，保守过度。",wealth:"吝啬守财，害怕失去，钱变成了枷锁。",spirit:"放下执念，学会流动，富足源于分享。"}},
+  {up:{love:"感情遇冷，感到被忽视，需要主动取暖。",career:"资源紧张，处境艰难，咬牙坚持。",wealth:"财务吃紧，精打细算，寒冬模式。",spirit:"感到被孤立，别怕求助，温暖就在门外。"},
+   rev:{love:"关系回暖，得到支持，走出低谷。",career:"困境缓解，贵人相助，柳暗花明。",wealth:"财务状况改善，缓过来了。",spirit:"走出低谷，相信转机，雪中送炭已至。"}},
+  {up:{love:"关系中的付出与回报平衡，相互扶持。",career:"资源分配合理，回报公平，论功行赏。",wealth:"慷慨助人，财富流动，善因结善果。",spirit:"学会接受，也学会给予，能量循环。"},
+   rev:{love:"付出不对等，一方索取，一方疲惫。",career:"待遇不公，分配失衡，心生怨气。",wealth:"债务纠纷，依赖他人，失去独立。",spirit:"内在匮乏，害怕索取，也不敢付出。"}},
+  {up:{love:"关系需要时间沉淀，不急不躁，静待花开。",career:"长期项目初见成效，耕耘有回报。",wealth:"投资等待回报，耐心是最好的策略。",spirit:"耐心耕耘，静待花开，信任过程。"},
+   rev:{love:"耐心耗尽，急于求成，反而破坏关系。",career:"投入无回报，怀疑方向，动摇信念。",wealth:"投资亏损，缺乏耐心，频繁操作。",spirit:"焦虑等待，怀疑耕耘，忘了春种秋收。"}},
+  {up:{love:"用心经营细节，感情升温，日常即浪漫。",career:"精进技能，匠人精神，专业口碑。",wealth:"勤奋生财，细水长流，手艺就是铁饭碗。",spirit:"在专注中找到心流，劳动即是修行。"},
+   rev:{love:"忙于工作，忽略感情，细节失守。",career:"完美主义，效率低下，钻牛角尖。",wealth:"劳而无获，方向偏差，白忙一场。",spirit:"倦怠麻木，失去热爱，需要重新点燃。"}},
+  {up:{love:"独立自信，享受自我空间，感情与自由兼得。",career:"成果斐然，独当一面，优雅从容。",wealth:"财务自由，享受成果，花园里赏花。",spirit:"内在丰盛，自得其乐，独处也充实。"},
+   rev:{love:"孤芳自赏，害怕亲密，把爱挡在门外。",career:"孤立无援，过度自我，单打独斗。",wealth:"财务依赖他人，失去自主权。",spirit:"表面光鲜，内心空虚，需要真实连接。"}},
+  {up:{love:"感情修成正果，组建家庭，传承延续。",career:"基业稳固，世代传承，长期主义。",wealth:"家族财富，长远规划，富过三代。",spirit:"与根源连接，安定传承，家国情怀。"},
+   rev:{love:"家庭纷争，传统束缚，观念代沟。",career:"企业内斗，根基不稳，内耗严重。",wealth:"财务纠纷，遗产问题，剪不断理还乱。",spirit:"与家族观念冲突，需要找到自己的路。"}},
+  {up:{love:"可靠稳重，给人安全感，值得托付终身。",career:"商业头脑，事业有成，稳坐钓鱼台。",wealth:"财富丰盛，管理有方，财源滚滚。",spirit:"脚踏实地，知行合一，德位相配。"},
+   rev:{love:"物质至上，感情麻木，用钱衡量一切。",career:"固执守旧，抗拒变化，被时代淘汰。",wealth:"贪财吝啬，风险失控，贪字变贫。",spirit:"被物质奴役，迷失本心，忘记为何出发。"}},
+  {up:{love:"温柔务实，把家打理得井井有条，宜室宜家。",career:"后勤保障，支持团队，默默托举。",wealth:"精打细算，理财有道，小钱变大钱。",spirit:"在生活烟火中修行，一粥一饭皆禅。"},
+   rev:{love:"过度操心，忽略自我，成了家里的保姆。",career:"事业家庭失衡，顾此失彼。",wealth:"财务焦虑，过度节省，苦了自己。",spirit:"操劳过度，忘记自爱，先照顾自己。"}},
+  {up:{love:"感情新手，认真探索，真诚学习如何爱。",career:"学习新技能，实习机会，职场新人。",wealth:"理财入门，小试牛刀，开个好头。",spirit:"保持求知，务实成长，一步一个脚印。"},
+   rev:{love:"感情幼稚，缺乏行动，纸上谈兵。",career:"学习拖延，三分钟热度，虎头蛇尾。",wealth:"冲动消费，计划散乱，财来财去。",spirit:"眼高手低，不愿踏实，心浮气躁。"}},
+  {up:{love:"感情稳定，慢热但可靠，值得等待。",career:"稳步推进，值得信赖，靠谱担当。",wealth:"稳扎稳打，积累财富，慢即是快。",spirit:"坚持信念，一步一个脚印，笃定前行。"},
+   rev:{love:"感情停滞，过于木讷，缺少激情。",career:"效率低下，死板固执，错失窗口。",wealth:"进展缓慢，错失机会，太保守。",spirit:"固步自封，缺乏活力，需要突破。"}},
+  // 权杖组 50-63
+  {up:{love:"一见钟情，火花四射，热情点燃。",career:"新项目启动，热情高涨，充满干劲。",wealth:"新财源开启，灵感变现，第一桶金。",spirit:"内在热情被点燃，生命之火燃烧。"},
+   rev:{love:"热情消退，心动不再，关系降温。",career:"项目搁浅，动力不足，虎头蛇尾。",wealth:"新机会受阻，计划搁置，时运未至。",spirit:"灵感枯竭，需要充电，重燃热情。"}},
+  {up:{love:"感情规划未来，目标一致，蓝图清晰。",career:"战略布局，放眼全局，谋定后动。",wealth:"投资规划，布局长远，运筹帷幄。",spirit:"站得高，看得远，格局打开。"},
+   rev:{love:"对关系未来犹豫，规划模糊，走一步看一步。",career:"畏首畏尾，不敢扩张，错失战略机遇。",wealth:"规划混乱，错判方向，南辕北辙。",spirit:"目光短浅，缺乏远见，困于当下。"}},
+  {up:{love:"关系走向新阶段，见家长、同居，水到渠成。",career:"业务扩展，前景广阔，扬帆起航。",wealth:"新市场带来财源，外贸出海，视野打开。",spirit:"视野开阔，期待未来，心中有远方。"},
+   rev:{love:"异地恋考验，进度延迟，相见不易。",career:"扩张受阻，计划推迟，船搁浅。",wealth:"合作延期，收益未至，耐心等待。",spirit:"期待落空，耐心等待，时机未到。"}},
+  {up:{love:"关系稳定，家庭氛围和谐，安居乐业。",career:"项目落地，庆祝成果，阶段性胜利。",wealth:"财务稳固，安居乐业，根基扎实。",spirit:"找到归属，内心安定，此心安处是吾乡。"},
+   rev:{love:"关系动荡，缺乏归属，如浮萍漂泊。",career:"项目不稳，根基不牢，进度反复。",wealth:"财务波动，居无定所，缺乏安全感。",spirit:"内心漂泊，缺乏安全感，需要扎根。"}},
+  {up:{love:"观点冲突，摩擦不断，需要磨合沟通。",career:"竞争激烈，意见分歧，火药味十足。",wealth:"市场竞争，争夺资源，狼多肉少。",spirit:"内在冲突，不同声音交战，需要调和。"},
+   rev:{love:"冲突缓和，达成和解，握手言和。",career:"竞争落幕，尘埃落定，休养生息。",wealth:"避免恶性竞争，及时收手，保存实力。",spirit:"内耗结束，归于平静，心平气和。"}},
+  {up:{love:"感情公开，获得祝福，光明正大的幸福。",career:"项目成功，获得认可，凯旋而归。",wealth:"投资回报，名利双收，载誉而归。",spirit:"自信闪耀，昂首前行，值得骄傲。"},
+   rev:{love:"感情受挫，缺乏支持，独自面对。",career:"成果被否定，落差感强，委屈。",wealth:"回报延迟，骄傲自满，乐极生悲。",spirit:"患得患失，害怕失败，忘了自己已经赢了。"}},
+  {up:{love:"捍卫感情，克服阻碍，为爱坚守。",career:"顶住压力，坚守阵地，寸土不让。",wealth:"守住优势，抵御风险，防守反击。",spirit:"守住初心，不随波逐流，立场坚定。"},
+   rev:{love:"防线失守，疲惫不堪，无力再战。",career:"压力过大，濒临放弃，孤军奋战。",wealth:"防御过重，错失合作，草木皆兵。",spirit:"孤立无援，需要支持，别硬扛。"}},
+  {up:{love:"感情进展神速，消息频传，快马加鞭。",career:"效率飞升，好消息不断，一路畅通。",wealth:"财流快速，收益到账，乘势而上。",spirit:"顺势而为，全速前进，心无挂碍。"},
+   rev:{love:"消息延误，计划延迟，干着急。",career:"进度受阻，混乱无序，方向不清。",wealth:"资金延迟，计划打乱，现金流紧张。",spirit:"节奏错乱，需要调整呼吸，重新对齐。"}},
+  {up:{love:"感情受伤后仍愿坚持，最后一搏的勇气。",career:"压力重重，咬牙坚持，防线犹在。",wealth:"财务吃紧，谨慎防守，守住底线。",spirit:"疲惫但坚定，守护信念，伤痕是勋章。"},
+   rev:{love:"心防太重，不敢再爱，一朝被蛇咬。",career:"精疲力竭，濒临放弃，撑不住了。",wealth:"防线崩溃，损失扩大，需要止损。",spirit:"过度防御，封闭内心，需要被温暖。"}},
+  {up:{love:"为感情付出很多，责任压身，但也幸福。",career:"任务过载，压力山大，身兼数职。",wealth:"债务压力，负担沉重，负重前行。",spirit:"承担过多，需要卸下，学会分轻。"},
+   rev:{love:"学会分担，关系减压，共同承担。",career:"放下重担，合理分工，轻松前行。",wealth:"还清债务，轻装上路，如释重负。",spirit:"学会放手，自我关怀，允许自己休息。"}},
+  {up:{love:"热情主动，魅力领导型伴侣，让人崇拜。",career:"领袖气质，开创事业，登高一呼。",wealth:"商业嗅觉，大胆投资，敢为天下先。",spirit:"内在燃烧，热情驱动，使命必达。"},
+   rev:{love:"强势专断，感情受压，另一半透不过气。",career:"冲动决策，刚愎自用，独断专行。",wealth:"冒进投资，风险失控，孤注一掷。",spirit:"热情失控，急于求成，需要刹车。"}},
+  {up:{love:"自信迷人，主动追求幸福，魅力无法挡。",career:"独立自信，独当一面，自带光芒。",wealth:"自信带来财气，敢于开拓，越敢越有。",spirit:"自我认可，光芒四射，我就是太阳。"},
+   rev:{love:"嫉妒不安，感情焦虑，疑心重重。",career:"强势急躁，团队摩擦，锋芒太露。",wealth:"冲动消费，情绪化决策，财来财去。",spirit:"自我怀疑，能量不稳，需要找回底气。"}},
+  {up:{love:"新恋情讯号，主动探索，勇敢搭话。",career:"新任务挑战，充满干劲，跃跃欲试。",wealth:"新财路消息，小机会也是机会。",spirit:"保持好奇，勇敢尝试，永远年轻。"},
+   rev:{love:"表白受阻，消息延迟，勇气不足。",career:"计划拖延，缺乏方向，热情消退。",wealth:"投资消息有误，轻信传言，注意核实。",spirit:"三分钟热度，缺乏坚持，浅尝辄止。"}},
+  {up:{love:"热情追求，大胆示爱，为爱冲锋。",career:"快速行动，抢占先机，先发制人。",wealth:"大胆投资，高风险高回报，敢拼敢赢。",spirit:"勇气十足，说走就走，自由如风。"},
+   rev:{love:"三分钟热度，承诺落空，追到手就跑。",career:"鲁莽冲动，半途而废，虎头蛇尾。",wealth:"冲动投资，损失惨重，追悔莫及。",spirit:"急于求成，缺乏耐心，需要沉淀。"}},
+  // 宝剑组 64-77
+  {up:{love:"看清感情真相，坦诚沟通，直击要害。",career:"思路清晰，果断决策，快刀斩乱麻。",wealth:"财务透明，明智判断，拨云见日。",spirit:"灵光一现，真理显现，头脑清明。"},
+   rev:{love:"误会丛生，言语伤人，越描越黑。",career:"判断失误，决策混乱，方向错误。",wealth:"信息误导，判断偏差，雾里看花。",spirit:"头脑混乱，看不清真相，需要静心。"}},
+  {up:{love:"逃避问题，关系僵持，假装无事发生。",career:"决策困难，犹豫不决，卡在十字路口。",wealth:"投资观望，进退两难，不敢下注。",spirit:"逃避内心，拒绝面对，蒙上眼睛。"},
+   rev:{love:"打破僵局，坦诚相对，真相浮出水面。",career:"做出决定，突破瓶颈，豁然开朗。",wealth:"看清局势，果断出手，不再犹豫。",spirit:"直面真相，获得解脱，摘下眼罩。"}},
+  {up:{love:"心碎时刻，感情受伤，痛彻心扉。",career:"项目受挫，失望打击，信心受创。",wealth:"财务损失，心痛不已，教训深刻。",spirit:"允许心碎，疗愈开始，哭出来才能好。"},
+   rev:{love:"走出情伤，慢慢愈合，伤口结痂。",career:"从失败中复原，总结经验，卷土重来。",wealth:"损失之后，学会放下，轻装前行。",spirit:"宽恕自己，走出阴霾，心碎亦可愈。"}},
+  {up:{love:"感情冷静期，各自沉淀，给彼此空间。",career:"暂停脚步，充电蓄力，休整再战。",wealth:"财务蛰伏，休养生息，按兵不动。",spirit:"静心冥想，恢复能量，休息是必要的。"},
+   rev:{love:"休息不足，疲惫复出，旧伤未愈。",career:"休息被打断，急于复工，越忙越乱。",wealth:"被迫停止，焦虑不安，无法安歇。",spirit:"无法静心，躁动不安，需要强制休息。"}},
+  {up:{love:"争吵不休，赢了道理，输了感情。",career:"办公室政治，争斗代价，两败俱伤。",wealth:"恶性竞争，损人不利己，杀敌一千自损八百。",spirit:"放下输赢，看清代价，赢了世界输了心。"},
+   rev:{love:"和解到来，放下争执，握手言和。",career:"冲突平息，言归于好，重回正轨。",wealth:"停止内耗，重新合作，共同做大蛋糕。",spirit:"从冲突中学习，成长蜕变，恩怨两清。"}},
+  {up:{love:"离开伤痛关系，走向平静，放下执念。",career:"过渡期，平稳交接，从容转身。",wealth:"财务过渡，慢慢好转，柳暗花明。",spirit:"疗愈之旅，轻舟已过万重山。"},
+   rev:{love:"被困原地，无法释怀，心结未解。",career:"卡在过渡，进退两难，骑虎难下。",wealth:"财务困局难破，困兽犹斗。",spirit:"抗拒疗愈，滞留痛苦，船不愿离岸。"}},
+  {up:{love:"关系中有所保留，需要坦诚，别耍小聪明。",career:"策略灵活，暗中布局，以智取胜。",wealth:"巧妙理财，注意合规，走正道。",spirit:"审视内心，诚实面对，别骗自己。"},
+   rev:{love:"谎言揭穿，信任危机，覆水难收。",career:"小聪明被识破，声誉受损。",wealth:"投机取巧，风险暴露，得不偿失。",spirit:"停止自欺，诚实为上，坦荡心安。"}},
+  {up:{love:"自我设限，不敢表达爱，画地为牢。",career:"思维受限，困于现状，不敢突破。",wealth:"财务观念束缚，不敢尝试，错失良机。",spirit:"受害者心态，以为别无选择，其实门一直开着。"},
+   rev:{love:"打破心墙，勇敢表达，破茧而出。",career:"突破瓶颈，重获自由，海阔天空。",wealth:"挣脱限制，找到新路，财路打开。",spirit:"觉醒解放，视野开阔，枷锁是自己戴的。"}},
+  {up:{love:"深夜emo，感情焦虑，放大担忧。",career:"压力山大，夜不能寐，职场内卷。",wealth:"财务焦虑，忧心忡忡，睡不安稳。",spirit:"恐惧来自内心，需要被看见，而非被喂养。"},
+   rev:{love:"焦虑缓解，放下担忧，安然入睡。",career:"压力释放，重获安宁，想通了。",wealth:"财务担忧缓解，焦虑落地，心宽了。",spirit:"走出恐惧，重见天日，黎明到来。"}},
+  {up:{love:"关系走到尽头，痛彻心扉，但也是解脱。",career:"项目终结，跌入谷底，推倒重来。",wealth:"财务重创，触底，最坏已过。",spirit:"谷底之后，唯有向上，绝处逢生。"},
+   rev:{love:"触底反弹，迎来新生，浴火重生。",career:"绝处逢生，重新开始，东山再起。",wealth:"谷底回升，慢慢恢复，元气渐复。",spirit:"凤凰涅槃，焕然一新，脱胎换骨。"}},
+  {up:{love:"理性冷静，沟通清晰，就事论事。",career:"专业权威，决策英明，令人信服。",wealth:"财务分析精准，理性投资，稳准狠。",spirit:"理性与智慧并存，头脑清明，心如明镜。"},
+   rev:{love:"冷漠刻薄，言语伤人，有理无情。",career:"独裁专断，滥用职权，众叛亲离。",wealth:"算计过度，理性冰冷，失了人情。",spirit:"过度理性，情感隔绝，聪明反被聪明误。"}},
+  {up:{love:"独立清醒，不将就不妥协，宁缺毋滥。",career:"洞察力强，客观公正，慧眼识人。",wealth:"财务独立，判断精准，巾帼不让须眉。",spirit:"清醒独立，智慧通透，精神独立。"},
+   rev:{love:"尖酸刻薄，情感隔绝，拒人千里。",career:"过度批判，难相处，孤家寡人。",wealth:"过度谨慎，错失机会，杯弓蛇影。",spirit:"封闭内心，孤芳自赏，需要柔软。"}},
+  {up:{love:"暗恋观察，心思细腻，静待时机。",career:"学习求知，收集信息，蓄势待发。",wealth:"研究理财，信息敏锐，先调研后出手。",spirit:"保持好奇，观察思考，好奇心是最好的老师。"},
+   rev:{love:"疑神疑鬼，言语八卦，制造是非。",career:"信息错误，判断失误，纸上谈兵。",wealth:"轻信小道消息，被割韭菜。",spirit:"思绪纷乱，无法专注，需要整理心绪。"}},
+  {up:{love:"直球表达，快刀斩乱麻，干脆利落。",career:"雷厉风行，推进神速，行动派。",wealth:"快速决策，抢占先机，唯快不破。",spirit:"为信念而战，勇往直前，虽千万人吾往矣。"},
+   rev:{love:"言语冲动，伤人伤己，覆水难收。",career:"鲁莽冒进，后患无穷，欲速不达。",wealth:"冲动投资，追悔莫及，刹车失灵。",spirit:"急躁冒进，缺乏耐心，欲速则不达。"}},
+];
+
 const SPREADS = [
   { id:'three-card', name:'无牌阵三张', desc:'灵活分析事情现状与未来走向', count:3,
     positions:[{sub:'现状/主位',x:'20%',y:'50%'},{sub:'辅助/补充',x:'50%',y:'50%'},{sub:'未来/走向',x:'80%',y:'50%'}] },
@@ -506,17 +877,19 @@ const SPREADS = [
 let state = { spread:null, deck:[], picked:[], pickedCount:0 };
 
 function cardBg(idx) {
-  return `background-image:url("${CARD_IMGS[idx]}");background-size:100% 100%;background-position:center;background-repeat:no-repeat;`;
+  return `background-image:url('${CARD_IMGS[idx]}');background-size:100% 100%;background-position:center;background-repeat:no-repeat;`;
 }
 function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
 // ===== Hash Router =====
-const PAGE_IDS = ['home','spreads','pick','reading','horoscope','horo-result'];
+const PAGE_IDS = ['home','spreads','pick','reading','horoscope','horo-result','cards','library'];
 
 function showPage(pageId){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   const el=document.getElementById(pageId);
   if(el)el.classList.add('active');
+  // Sidebar highlight
+  document.querySelectorAll('.side-item').forEach(it=>it.classList.toggle('on',it.dataset.target===pageId));
   window.scrollTo(0,0);
 }
 
@@ -527,10 +900,33 @@ function router(){
   // Page init hooks
   if(hash==='spreads')renderSpreads();
   if(hash==='horoscope')initHoroscope();
+  if(hash==='cards')renderCardRef();
   showPage(hash);
 }
 window.addEventListener('hashchange',router);
 window.addEventListener('load',()=>{if(!location.hash)location.hash='home';});
+
+// ===== Sidebar toggle =====
+function toggleSidebar(){
+  document.body.classList.toggle('side-hidden');
+  const t=document.getElementById('sideToggle');
+  t.classList.toggle('on');
+  t.textContent=document.body.classList.contains('side-hidden')?'☰':'☰';
+}
+window.toggleSidebar=toggleSidebar;
+
+// ===== Click FX (爪印点击特效) =====
+document.addEventListener('click',function(e){
+  var img=document.createElement('img');
+  img.className='click-fx';
+  img.src='assets/paw-click.png';
+  img.alt='';
+  img.style.left=e.clientX+'px';
+  img.style.top=e.clientY+'px';
+  img.style.setProperty('--fxRot',(Math.random()*40-20)+'deg');
+  document.body.appendChild(img);
+  setTimeout(function(){img.remove();},700);
+});
 if(location.hash)router();else router();
 
 function renderSpreads(){
@@ -548,9 +944,6 @@ function renderSpreads(){
 
 function selectSpread(idx){
   state.spread=SPREADS[idx];state.picked=[];state.pickedCount=0;
-  state.question='';
-  const qi=document.getElementById('questionInput');
-  if(qi)qi.value='';
   state.deck=shuffle(Array.from({length:78},(_,i)=>i)).map(i=>({cardIdx:i,reversed:Math.random()<0.5}));
   document.getElementById('pickTitle').textContent=state.spread.name;
   document.getElementById('pickCount').textContent=state.spread.count;
@@ -649,8 +1042,6 @@ function pickCard(deckIdx, el){
 
 function showReading(){
   document.getElementById('readingTitle').textContent=state.spread.name+' · 占卜结果';
-  const qi=document.getElementById('questionInput');
-  state.question=qi?qi.value.trim():'';
 
   // Render spread stage with placed cards (larger, clickable)
   const stage=document.getElementById('readStage');
@@ -729,15 +1120,12 @@ function getCardDims(idx, reversed){
 
 function generateOverall(){
   const picked=state.picked;
-  const q=state.question||'';
+  const qEl=document.getElementById('questionInput');
+  const question=(qEl&&qEl.value&&qEl.value.trim())?qEl.value.trim():'';
   let text=`<strong style="color:var(--sage-deep);font-size:16px;">${state.spread.name} · 牌面总览</strong>`;
-  if(q){
-    text+=`<br><br><div style="background:var(--sage-light);border-radius:10px;padding:10px 14px;font-size:14px;color:var(--sage-deep);">
-      💭 <strong>你所问：</strong>${q}
-    </div>`;
+  if(question){
+    text+=`<br><span style="color:var(--gold);font-size:13px;">✦ 你所问：${question}</span>`;
   }
-  const cls=q?classifyQuestion(q):null;
-  const dimLabels={love:'感情',career:'事业',wealth:'财富',spirit:'心灵'};
   
   // Per-card detailed breakdown with four dimensions
   picked.forEach((p,i)=>{
@@ -751,9 +1139,6 @@ function generateOverall(){
     text+=`💰 财富：${dims.wealth}<br>`;
     text+=`💼 事业：${dims.career}<br>`;
     text+=`✨ 心灵：${dims.spirit}`;
-    if(q&&cls){
-      text+=`<br><span style="color:var(--gold);font-size:12px;">▸ 针对「${q}」：这张牌提示你先关注${dimLabels[cls.hits[0]]}层面的${p.reversed?'功课与阻力——先疏通内在，再向外求结果':'机会与能量——顺势而为，主动一点会更快见到回应'}。</span>`;
-    }
   });
 
   // === Suit analysis ===
@@ -818,49 +1203,20 @@ function generateOverall(){
   if(hasStar)text+=' 星星是希望的指引，保持信念，宇宙在暗中帮你铺路。';
   if(hasSun)text+=' 太阳是最吉祥的牌之一，大胆去做吧，光明就在前方。';
   if(hasMajor&&reversedCards.length===0)text+=' 大牌正位集中，说明你正处在人生的重要节点，勇敢迈出这一步。';
+  // Question-specific wrap-up
+  if(question){
+    const firstUp=!picked[0].reversed, lastUp=!picked[picked.length-1].reversed;
+    const keyWord=CARDS[picked[0].cardIdx][1];
+    text+=`<br><br><strong style="color:var(--sage-deep);">—— 关于「${question}」的回应 ——</strong>`;
+    text+=`<br>这张${keyWord}作为开牌，正是你此刻状态的写照。`;
+    if(lastUp&&picked[picked.length-1].cardIdx<22)text+=' 收牌落在大阿卡纳且正位，预示你问的这件事终将走向一个意义重大的好结果，可以抱持信心。';
+    else if(picked[picked.length-1].reversed)text+=' 收牌为逆位，说明这件事的答案或进展还需要时间，现阶段更适合观察与调整，而不是强求一个立即的结果。';
+    else text+=' 事情会沿着牌面所示的路径稳步推进，顺势而为即可。';
+    text+=' 记得：牌面给出的不是定论，而是当下能量最可能的走向——你的选择永远比牌更有力量。';
+  }
   text+=' 占卜呈现的是当下能量最可能趋向的走向，而非定局。你始终拥有选择和改变的力量。命由天定，事在人为。';
 
-  if(q)text+=questionResponse(q,picked);
-
   document.getElementById('overallText').innerHTML=text;
-}
-
-// 问题维度识别：感情 / 事业 / 财富 / 心灵
-function classifyQuestion(q){
-  const dims={love:false,career:false,wealth:false,spirit:false};
-  if(/感情|爱情|恋爱|喜欢|暧昧|复合|分手|对象|伴侣|婚姻|相亲|男友|女友|夫妻|关系|TA|他|她|是否还爱/.test(q))dims.love=true;
-  if(/事业|工作|职场|晋升|跳槽|升职|面试|辞职|创业|学业|考试|求职|考研|offer|职业|项目/.test(q))dims.career=true;
-  if(/钱|财富|财运|投资|理财|收入|赚钱|金钱|消费|买房|资金|经济|负债|股票/.test(q))dims.wealth=true;
-  if(/心灵|内心|成长|焦虑|迷茫|情绪|疗愈|修行|状态|自我|健康|释怀/.test(q))dims.spirit=true;
-  const order=['love','career','wealth','spirit'];
-  const hits=order.filter(k=>dims[k]);
-  return hits.length?{hits}:null;
-}
-
-// 结合问题语境的定向回应
-function questionResponse(q,picked){
-  const cls=classifyQuestion(q);
-  const dimLabels={love:'感情',career:'事业',wealth:'财富',spirit:'心灵'};
-  let t=`<br><br><strong style="color:var(--sage-deep);">—— 关于「${q}」的回应 ——</strong><br>`;
-  const first=picked[0], last=picked[picked.length-1];
-  const fCard=CARDS[first.cardIdx], lCard=CARDS[last.cardIdx];
-  t+=`<br>从开牌的${fCard[1]}（${first.reversed?'逆位':'正位'}）到收牌的${lCard[1]}（${last.reversed?'逆位':'正位'}），能量的起点与落点已勾勒出这件事的轮廓：`;
-  t+=first.reversed?'起始阶段还存在未厘清的纠葛或犹豫，先把它理顺再往前推进；':'起步能量是稳的，你可以放心迈出第一步；';
-  if(!last.reversed&&last.cardIdx<22)t+='收牌落在大阿卡纳正位，这件事的结果分量很重，与你更深层的人生课题相连，值得认真对待。';
-  else if(last.reversed)t+='收牌逆位，结果不会一蹴而就，给自己和事情多一点时间，答案会在过程中浮现。';
-  else t+='收牌正位，整体趋势向上，按牌面指引逐步行动即可。';
-  if(cls){
-    t+=`<br><br>回到你的问题——牌面在「${cls.hits.map(k=>dimLabels[k]).join('、')}」这个面向给出的信号：`;
-    const rev=picked.filter(p=>p.reversed).length;
-    cls.hits.forEach(k=>{
-      if(k==='love')t+= rev>picked.length/2?'目前感情向能量偏阻滞，与其追问答案，不如先安顿好自己的心，答案会在你稳下来之后变得清晰。':'感情向能量较为流通，主动表达与真诚沟通会让关系走向更明朗。';
-      else if(k==='career')t+= rev>picked.length/2?'事业向建议稳中求进，先积累再谈突破，避免在情绪驱动下做重大决定。':'事业向能量正向，机会偏爱主动争取的人，准备好了就出手。';
-      else if(k==='wealth')t+= rev>picked.length/2?'财富向提醒理性规划，眼下不宜冒险或大额投入，守住基本盘再谈增量。':'财富向趋势不错，务实经营会带来稳定回报，可适度推进计划。';
-      else t+= rev>picked.length/2?'心灵层面你正处在调整期，慢下来反而更快，允许自己有过渡的时间。':'心灵向能量充盈，相信直觉，它会给你清晰的方向。';
-    });
-  }
-  t+='<br><br>牌面映照的是当下的能量走向，不是判决书。你的选择与行动，永远比任何一张牌更有力量。';
-  return t;
 }
 
 function openLightbox(cardIdx, reversed, name, meaning){
@@ -871,6 +1227,73 @@ function openLightbox(cardIdx, reversed, name, meaning){
   lb.classList.add('show');
 }
 function closeLightbox(){document.getElementById('lightbox').classList.remove('show');}
+
+/* ===== 牌义速查 ===== */
+const CARD_CATS = [
+  {id:'major', name:'大阿卡纳', range:[0,22]},
+  {id:'cups', name:'圣杯组', range:[22,36]},
+  {id:'pentacles', name:'星币组', range:[36,50]},
+  {id:'wands', name:'权杖组', range:[50,64]},
+  {id:'swords', name:'宝剑组', range:[64,78]}
+];
+let curCat = 'major';
+
+function renderCardRef(){
+  const tabs=document.getElementById('catTabs');
+  tabs.innerHTML='';
+  CARD_CATS.forEach(c=>{
+    const b=document.createElement('button');
+    b.className='cat-tab'+(c.id===curCat?' on':'');
+    b.textContent=c.name+' ('+(c.range[1]-c.range[0])+')';
+    b.onclick=()=>{curCat=c.id;renderCardRef();};
+    tabs.appendChild(b);
+  });
+  const cat=CARD_CATS.find(c=>c.id===curCat);
+  const grid=document.getElementById('cardRefGrid');
+  grid.innerHTML='';
+  for(let i=cat.range[0]; i<cat.range[1]; i++){
+    const card=CARDS[i];
+    const it=document.createElement('div');
+    it.className='card-ref-item';
+    it.innerHTML=`<div class="ref-img" style="${cardBg(i)}"></div><div class="ref-name">${card[1]}</div><div class="ref-en">${card[2]}</div>`;
+    it.onclick=()=>openCardDetail(i);
+    grid.appendChild(it);
+  }
+}
+
+function openCardDetail(cardIdx){
+  const m=CARD_MEANINGS[cardIdx];
+  const card=CARDS[cardIdx];
+  const d=document.getElementById('cdModal');
+  document.getElementById('cdImg').style.cssText=cardBg(cardIdx);
+  document.getElementById('cdName').textContent=card[1];
+  document.getElementById('cdEn').textContent=card[2]+' · 大阿卡纳'.replace('大阿卡纳', cardIdx<22?'大阿卡纳':(cardIdx<36?'圣杯组':(cardIdx<50?'星币组':(cardIdx<64?'权杖组':'宝剑组'))));
+  let ori='up';
+  function renderDims(){
+    const dims=m[ori];
+    const orient=ori==='up'?'正位':'逆位';
+    document.getElementById('cdImg').style.transform=ori==='up'?'none':'rotate(180deg)';
+    document.querySelectorAll('.ori-tab').forEach(t=>t.classList.toggle('on',t.dataset.ori===ori));
+    document.getElementById('cdDims').innerHTML=
+      `<div class="cd-dim"><b>💕 感情</b>${dims.love}</div>`+
+      `<div class="cd-dim"><b>💼 事业</b>${dims.career}</div>`+
+      `<div class="cd-dim"><b>💰 财富</b>${dims.wealth}</div>`+
+      `<div class="cd-dim"><b>✨ 心灵</b>${dims.spirit}</div>`+
+      `<div class="cd-dim" style="background:var(--cream);"><b>🔮 ${orient}总义</b>${ori==='up'?card[3]:card[4]}</div>`;
+  }
+  document.getElementById('cdTabs').innerHTML='';
+  ['up','rev'].forEach(o=>{
+    const b=document.createElement('button');
+    b.className='ori-tab'+(o===ori?' on':'');
+    b.dataset.ori=o;
+    b.textContent=o==='up'?'正位':'逆位';
+    b.onclick=()=>{ori=o;renderDims();};
+    document.getElementById('cdTabs').appendChild(b);
+  });
+  renderDims();
+  d.classList.add('show');
+}
+function closeCardDetail(){document.getElementById('cdModal').classList.remove('show');}
 
 const ZODIAC = [
   {name:'白羊座',icon:'♈',date:'3.21-4.19'},{name:'金牛座',icon:'♉',date:'4.20-5.20'},
@@ -991,8 +1414,8 @@ document.getElementById('noticeModal').addEventListener('click',function(e){if(e
   var closedUrl='https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/UZ0FbYYnSoEK51xxix0c6H0LnDh';
   setInterval(function(){
     img.src=closedUrl;
-    setTimeout(function(){img.src=openUrl;},200);
-  },2200);
+    setTimeout(function(){img.src=openUrl;},500);
+  },2500);
   var dragging=false,ox=0,oy=0;
   pet.addEventListener('mousedown',function(e){
     dragging=true;
@@ -1011,3 +1434,4 @@ document.getElementById('noticeModal').addEventListener('click',function(e){if(e
 </script>
 </body>
 </html>
+<!-- （注：内容由AI生成） -->
